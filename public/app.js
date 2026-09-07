@@ -1,11 +1,82 @@
+const TRANSLATIONS = {
+  es: {
+    "brand.tag": "// LET'S CENSOR!", "topbar.tag": "MAGICAL FILTER // ONLINE", "language.label": "Idioma",
+    "toolbar.chooseInput": "Elegir carpeta", "toolbar.chooseOutput": "Carpeta de salida", "toolbar.noFolder": "Ninguna carpeta seleccionada", "toolbar.outputHint": "Las aprobadas se descargarán si no eliges salida", "toolbar.outputName": "Salida: {name}", "toolbar.analyze": "Analizar carpeta", "toolbar.saveApproved": "Guardar aprobadas",
+    "status.ready": "ESTADO: LISTO", "status.review": "MODO: REVISIÓN",
+    "queue.eyebrow": "COLA", "queue.title": "Imágenes", "queue.empty": "Elige una carpeta para comenzar",
+    "review.eyebrow": "REVISIÓN", "review.empty": "Selecciona una imagen", "review.previous": "Anterior", "review.next": "Siguiente",
+    "canvas.noDetections": "Sin detecciones", "canvas.preview": "VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS", "canvas.auto": "Auto", "canvas.manual": "Manual",
+    "layers.title": "LAYERS", "layers.none": "Ninguna", "layers.stack": "LAYER STACK", "layers.empty": "Analiza una imagen para crear capas", "layers.noDetections": "No hay capas detectadas", "layers.layer": "Capa", "layers.add": "Añadir capa", "layers.delete": "Eliminar", "layers.manual": "Manual", "layers.auto": "Máscara automática", "layers.show": "Mostrar capa", "layers.hide": "Ocultar capa", "layers.selected": "{index} seleccionada",
+    "censor.title": "CENSOR", "censor.style": "Estilo de la selección", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.black": "BARRA", "censor.pixelateOption": "Píxeles", "censor.blurOption": "Desenfoque", "censor.blackOption": "Barra negra", "censor.whiteOption": "Barra blanca",
+    "controls.strength": "Intensidad", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; con el derecho la borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.",
+    "classes.title": "Clases a censurar", "classes.help": "Activa o desactiva las clases de detección antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
+    "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE",
+    "notice.noImages": "No encontré imágenes compatibles en esa carpeta.", "notice.folderUnsupported": "Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.", "notice.saveAtLeast": "Aprueba al menos una imagen antes de guardar aprobadas.", "notice.savedOne": "1 imagen guardada.", "notice.savedMany": "{count} imágenes guardadas.", "notice.analyzing": "Analizando carpeta localmente…", "notice.analysisDone": "Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.", "notice.detectorUnavailable": "Detector automático no disponible: {message} Puedes seguir dibujando zonas manuales.",
+    "status.approved": "Aprobada", "status.rejected": "Saltada", "status.pending": "Pendiente", "status.noLayers": "Sin capas", "status.detectedOne": "1 capa detectada", "status.detectedMany": "{count} capas detectadas", "canvas.summaryOne": "1 capa · {status}", "canvas.summaryMany": "{count} capas · {status}", "canvas.manualHint": "Sin capas detectadas · puedes añadirlas manualmente", "progress.none": "Sin carpeta", "progress.one": "1 aprobada", "progress.many": "{count} aprobadas", "progress.detail": "{count} de {total} aprobadas", "progress.analyzing": "Analizando {current} de {total}", "footer.local": "Censor Station 0.1 · procesamiento local", "footer.instructions": "Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar"
+  },
+  en: {
+    "brand.tag": "// LET'S CENSOR!", "topbar.tag": "MAGICAL FILTER // ONLINE", "language.label": "Language",
+    "toolbar.chooseInput": "Choose folder", "toolbar.chooseOutput": "Output folder", "toolbar.noFolder": "No folder selected", "toolbar.outputHint": "Approved images download if no output folder is chosen", "toolbar.outputName": "Output: {name}", "toolbar.analyze": "Analyze folder", "toolbar.saveApproved": "Save approved",
+    "status.ready": "STATUS: READY", "status.review": "MODE: REVIEW",
+    "queue.eyebrow": "QUEUE", "queue.title": "Images", "queue.empty": "Choose a folder to begin",
+    "review.eyebrow": "REVIEW", "review.empty": "Select an image", "review.previous": "Previous", "review.next": "Next",
+    "canvas.noDetections": "No detections", "canvas.preview": "LIVE PREVIEW // MASK EDITOR", "canvas.auto": "Auto", "canvas.manual": "Manual",
+    "layers.title": "LAYERS", "layers.none": "None", "layers.stack": "LAYER STACK", "layers.empty": "Analyze an image to create layers", "layers.noDetections": "No layers detected", "layers.layer": "Layer", "layers.add": "Add layer", "layers.delete": "Delete", "layers.manual": "Manual", "layers.auto": "Automatic mask", "layers.show": "Show layer", "layers.hide": "Hide layer", "layers.selected": "{index} selected",
+    "censor.title": "CENSOR", "censor.style": "Selection style", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.black": "BAR", "censor.pixelateOption": "Pixels", "censor.blurOption": "Blur", "censor.blackOption": "Black bar", "censor.whiteOption": "White bar",
+    "controls.strength": "Strength", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; right click erases it inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Lower the threshold to find more areas; raise it to reduce false positives.",
+    "classes.title": "Classes to censor", "classes.help": "Enable or disable detection classes before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
+    "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE",
+    "notice.noImages": "No compatible images were found in that folder.", "notice.folderUnsupported": "Your browser cannot choose folders. Use a recent version of Chrome or Edge.", "notice.saveAtLeast": "Approve at least one image before saving approved files.", "notice.savedOne": "1 image saved.", "notice.savedMany": "{count} images saved.", "notice.analyzing": "Analyzing folder locally…", "notice.analysisDone": "Analysis complete. Review each image, adjust the areas and approve only the correct ones.", "notice.detectorUnavailable": "Automatic detector unavailable: {message} You can continue drawing manual areas.",
+    "status.approved": "Approved", "status.rejected": "Skipped", "status.pending": "Pending", "status.noLayers": "No layers", "status.detectedOne": "1 layer detected", "status.detectedMany": "{count} layers detected", "canvas.summaryOne": "1 layer · {status}", "canvas.summaryMany": "{count} layers · {status}", "canvas.manualHint": "No layers detected · you can add them manually", "progress.none": "No folder", "progress.one": "1 approved", "progress.many": "{count} approved", "progress.detail": "{count} of {total} approved", "progress.analyzing": "Analyzing {current} of {total}", "footer.local": "Censor Station 0.1 · local processing", "footer.instructions": "Left click paints · right click erases · drag edges to move · corners to resize"
+  },
+  ja: {
+    "brand.tag": "// 検閲しよう!", "topbar.tag": "魔法フィルター // ONLINE", "language.label": "言語",
+    "toolbar.chooseInput": "フォルダーを選択", "toolbar.chooseOutput": "出力フォルダー", "toolbar.noFolder": "フォルダー未選択", "toolbar.outputHint": "出力先を選ばない場合、承認済み画像をダウンロードします", "toolbar.outputName": "出力: {name}", "toolbar.analyze": "フォルダーを解析", "toolbar.saveApproved": "承認済みを保存",
+    "status.ready": "状態: 準備完了", "status.review": "モード: レビュー",
+    "queue.eyebrow": "キュー", "queue.title": "画像", "queue.empty": "開始するフォルダーを選択",
+    "review.eyebrow": "レビュー", "review.empty": "画像を選択", "review.previous": "前へ", "review.next": "次へ",
+    "canvas.noDetections": "検出なし", "canvas.preview": "ライブプレビュー // マスクエディター", "canvas.auto": "自動", "canvas.manual": "手動",
+    "layers.title": "レイヤー", "layers.none": "なし", "layers.stack": "レイヤー", "layers.empty": "画像を解析してレイヤーを作成", "layers.noDetections": "レイヤー未検出", "layers.layer": "レイヤー", "layers.add": "レイヤー追加", "layers.delete": "削除", "layers.manual": "手動", "layers.auto": "自動マスク", "layers.show": "レイヤーを表示", "layers.hide": "レイヤーを隠す", "layers.selected": "{index} 件を選択",
+    "censor.title": "検閲", "censor.style": "選択範囲のスタイル", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.black": "バー", "censor.pixelateOption": "ピクセル", "censor.blurOption": "ぼかし", "censor.blackOption": "黒いバー", "censor.whiteOption": "白いバー",
+    "controls.strength": "強度", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加、右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "下げると多く検出し、上げると誤検出を減らします。",
+    "classes.title": "検閲クラス", "classes.help": "フォルダーを解析する前に検出クラスを切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
+    "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認",
+    "notice.noImages": "対応する画像が見つかりません。", "notice.folderUnsupported": "このブラウザーではフォルダーを選択できません。新しい Chrome または Edge を使用してください。", "notice.saveAtLeast": "保存する前に画像を1枚以上承認してください。", "notice.savedOne": "1枚を保存しました。", "notice.savedMany": "{count}枚を保存しました。", "notice.analyzing": "フォルダーをローカル解析中…", "notice.analysisDone": "解析完了。各画像を確認し、必要なら調整して承認してください。", "notice.detectorUnavailable": "自動検出が利用できません: {message} 手動で範囲を描けます。",
+    "status.approved": "承認済み", "status.rejected": "スキップ", "status.pending": "保留", "status.noLayers": "レイヤーなし", "status.detectedOne": "1レイヤーを検出", "status.detectedMany": "{count}レイヤーを検出", "canvas.summaryOne": "1レイヤー · {status}", "canvas.summaryMany": "{count}レイヤー · {status}", "canvas.manualHint": "レイヤー未検出 · 手動で追加できます", "progress.none": "フォルダーなし", "progress.one": "1件承認", "progress.many": "{count}件承認", "progress.detail": "{count} / {total} 件承認", "progress.analyzing": "{current} / {total} 件を解析中", "footer.local": "Censor Station 0.1 · ローカル処理", "footer.instructions": "左クリックで追加 · 右クリックで削除 · 辺をドラッグで移動 · 角でサイズ変更"
+  },
+  zh: {
+    "brand.tag": "// 开始遮挡!", "topbar.tag": "魔法过滤器 // ONLINE", "language.label": "语言",
+    "toolbar.chooseInput": "选择文件夹", "toolbar.chooseOutput": "输出文件夹", "toolbar.noFolder": "未选择文件夹", "toolbar.outputHint": "未选择输出文件夹时，已批准图片会下载", "toolbar.outputName": "输出：{name}", "toolbar.analyze": "分析文件夹", "toolbar.saveApproved": "保存已批准",
+    "status.ready": "状态：就绪", "status.review": "模式：审核",
+    "queue.eyebrow": "队列", "queue.title": "图片", "queue.empty": "选择文件夹开始",
+    "review.eyebrow": "审核", "review.empty": "选择一张图片", "review.previous": "上一张", "review.next": "下一张",
+    "canvas.noDetections": "没有检测结果", "canvas.preview": "实时预览 // 遮挡编辑器", "canvas.auto": "自动", "canvas.manual": "手动",
+    "layers.title": "图层", "layers.none": "无", "layers.stack": "图层堆栈", "layers.empty": "分析图片以创建图层", "layers.noDetections": "未检测到图层", "layers.layer": "图层", "layers.add": "添加图层", "layers.delete": "删除", "layers.manual": "手动", "layers.auto": "自动蒙版", "layers.show": "显示图层", "layers.hide": "隐藏图层", "layers.selected": "已选择第 {index} 个",
+    "censor.title": "审查", "censor.style": "选区样式", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.black": "黑条", "censor.pixelateOption": "像素化", "censor.blurOption": "模糊", "censor.blackOption": "黑色遮挡条", "censor.whiteOption": "白色遮挡条",
+    "controls.strength": "强度", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡，右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "降低阈值可发现更多区域，提高阈值可减少误报。",
+    "classes.title": "要遮挡的类别", "classes.help": "分析文件夹前启用或停用检测类别。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
+    "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准",
+    "notice.noImages": "文件夹中没有兼容的图片。", "notice.folderUnsupported": "你的浏览器不支持选择文件夹。请使用新版 Chrome 或 Edge。", "notice.saveAtLeast": "请先批准至少一张图片再保存。", "notice.savedOne": "已保存 1 张图片。", "notice.savedMany": "已保存 {count} 张图片。", "notice.analyzing": "正在本地分析文件夹…", "notice.analysisDone": "分析完成。请检查每张图片，调整区域后再批准。", "notice.detectorUnavailable": "自动检测不可用：{message} 你仍可手动绘制区域。",
+    "status.approved": "已批准", "status.rejected": "已跳过", "status.pending": "待处理", "status.noLayers": "无图层", "status.detectedOne": "检测到 1 个图层", "status.detectedMany": "检测到 {count} 个图层", "canvas.summaryOne": "1 个图层 · {status}", "canvas.summaryMany": "{count} 个图层 · {status}", "canvas.manualHint": "未检测到图层 · 可以手动添加", "progress.none": "未选择文件夹", "progress.one": "已批准 1 张", "progress.many": "已批准 {count} 张", "progress.detail": "已批准 {count} / {total} 张", "progress.analyzing": "正在分析 {current} / {total}", "footer.local": "Censor Station 0.1 · 本地处理", "footer.instructions": "左键绘制 · 右键擦除 · 拖动边缘移动 · 拖动角落调整大小"
+  }
+};
+
+let currentLanguage = localStorage.getItem("censor-station-language") || "es";
+if (!TRANSLATIONS[currentLanguage]) currentLanguage = "es";
+
+function t(key, values = {}) {
+  let text = TRANSLATIONS[currentLanguage][key] || TRANSLATIONS.es[key] || key;
+  return Object.entries(values).reduce((result, [name, value]) => result.replaceAll(`{${name}}`, String(value)), text);
+}
+
 const CLASS_OPTIONS = [
-  { value: "vagina", label: "Vagina", icon: "shield", visible: true, enabled: true },
-  { value: "penis", label: "Pene", icon: "spark", visible: true, enabled: true },
-  { value: "anus", label: "Ano", icon: "target", visible: true, enabled: true },
-  { value: "nipple", label: "Pezones", visible: false, enabled: false },
-  { value: "pubic hair", label: "Vello púbico", visible: false, enabled: false },
-  { value: "female face", label: "Rostro femenino", visible: false, enabled: false },
-  { value: "male face", label: "Rostro masculino", visible: false, enabled: false },
+  { value: "vagina", labelKey: "class.vagina", asset: "/assets/icons/genital_icons/pussy_icon.png", visible: true, enabled: true },
+  { value: "penis", labelKey: "class.penis", asset: "/assets/icons/genital_icons/penis_icon.png", visible: true, enabled: true },
+  { value: "anus", labelKey: "class.anus", asset: "/assets/icons/genital_icons/anus_icon.png", visible: true, enabled: true },
+  { value: "nipple", labelKey: "class.nipple", visible: false, enabled: false },
+  { value: "pubic hair", labelKey: "class.pubicHair", visible: false, enabled: false },
+  { value: "female face", labelKey: "class.femaleFace", visible: false, enabled: false },
+  { value: "male face", labelKey: "class.maleFace", visible: false, enabled: false },
 ];
 
 const state = {
@@ -22,12 +93,24 @@ const $ = (id) => document.getElementById(id);
 const canvas = $("preview");
 const ctx = canvas.getContext("2d");
 
-CLASS_OPTIONS.filter((option) => option.visible).forEach(({ value, label, icon, enabled }) => {
-  const wrapper = document.createElement("div");
-  wrapper.className = "class-toggle";
-  wrapper.innerHTML = `<button type="button" class="class-toggle-button ${enabled ? "is-on" : ""}" data-class-toggle data-class="${value}" role="switch" aria-checked="${enabled}" aria-label="${label}"><span class="class-toggle-icon icon-${icon}" aria-hidden="true"></span><span class="class-toggle-copy"><strong>${label}</strong></span></button>`;
-  $("class-options").appendChild(wrapper);
-});
+function renderClassOptions() {
+  const container = $("class-options");
+  container.innerHTML = "";
+  CLASS_OPTIONS.filter((option) => option.visible).forEach(({ value, labelKey, asset, enabled }) => {
+    const label = t(labelKey);
+    const wrapper = document.createElement("div");
+    wrapper.className = "class-toggle";
+    wrapper.innerHTML = `<button type="button" class="class-toggle-button ${enabled ? "is-on" : ""}" data-class-toggle data-class="${value}" role="switch" aria-checked="${enabled}" aria-label="${escapeHtml(label)}"><span class="class-toggle-icon" aria-hidden="true"><img src="${asset}" alt="" /></span><span class="class-toggle-copy"><strong>${escapeHtml(label)}</strong></span></button>`;
+    container.appendChild(wrapper);
+  });
+  container.querySelectorAll("[data-class-toggle]").forEach((button) => button.addEventListener("click", () => {
+    const enabled = button.getAttribute("aria-checked") !== "true";
+    button.setAttribute("aria-checked", String(enabled));
+    button.classList.toggle("is-on", enabled);
+    const option = CLASS_OPTIONS.find((candidate) => candidate.value === button.dataset.class);
+    if (option) option.enabled = enabled;
+  }));
+}
 
 function setNotice(message, type = "") {
   const notice = $("notice");
@@ -41,17 +124,37 @@ function selectedClasses() {
   return [...document.querySelectorAll("[data-class-toggle][aria-checked=\"true\"]")].map((button) => button.dataset.class);
 }
 
-document.querySelectorAll("[data-class-toggle]").forEach((button) => button.addEventListener("click", () => {
-  const enabled = button.getAttribute("aria-checked") !== "true";
-  button.setAttribute("aria-checked", String(enabled));
-  button.classList.toggle("is-on", enabled);
-}));
+function applyLanguage() {
+  document.documentElement.lang = currentLanguage;
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    if (element.id === "input-name" && state.inputHandle) return;
+    if (element.id === "output-name" && state.outputHandle) return;
+    if (element.id === "current-name" && currentFile()) return;
+    element.textContent = t(element.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((element) => { element.title = t(element.dataset.i18nTitle); });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((element) => { element.setAttribute("aria-label", t(element.dataset.i18nAriaLabel)); });
+  document.querySelectorAll("option[data-i18n]").forEach((element) => { element.textContent = t(element.dataset.i18n); });
+  $("language-select").value = currentLanguage;
+  renderClassOptions();
+  renderQueue();
+  renderLayers();
+  syncControls();
+  draw();
+}
+
+$("language-select").addEventListener("change", (event) => {
+  currentLanguage = TRANSLATIONS[event.target.value] ? event.target.value : "es";
+  localStorage.setItem("censor-station-language", currentLanguage);
+  applyLanguage();
+});
 
 function fileStatus(file) {
-  if (file.status === "approved") return "Aprobada";
-  if (file.status === "rejected") return "Saltada";
-  if (file.detections.length) return `${file.detections.length} capa${file.detections.length === 1 ? "" : "s"} detectada${file.detections.length === 1 ? "" : "s"}`;
-  return file.analyzed ? "Sin capas" : "Pendiente";
+  if (file.status === "approved") return t("status.approved");
+  if (file.status === "rejected") return t("status.rejected");
+  if (file.detections.length === 1) return t("status.detectedOne");
+  if (file.detections.length) return t("status.detectedMany", { count: file.detections.length });
+  return file.analyzed ? t("status.noLayers") : t("status.pending");
 }
 
 function renderQueue() {
@@ -59,7 +162,7 @@ function renderQueue() {
   $("queue-count").textContent = String(state.files.length);
   if (!state.files.length) {
     list.className = "queue-list empty-state";
-    list.textContent = "Elige una carpeta para comenzar.";
+    list.textContent = t("queue.empty");
     return;
   }
   list.className = "queue-list";
@@ -74,7 +177,7 @@ function renderQueue() {
 function escapeHtml(value) { return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char])); }
 
 function layerName(box, index) {
-  return `Layer ${index + 1}`;
+  return `${t("layers.layer")} ${index + 1}`;
 }
 
 function renderLayers() {
@@ -82,16 +185,16 @@ function renderLayers() {
   const item = currentFile();
   if (!item?.detections.length) {
     list.className = "layer-list empty-state";
-    list.textContent = item?.analyzed ? "No hay capas detectadas." : "Analiza una imagen para crear capas.";
+    list.textContent = item?.analyzed ? t("layers.noDetections") : t("layers.empty");
     return;
   }
   list.className = "layer-list";
   list.innerHTML = item.detections.map((box, index) => {
     const mode = ["pixelate", "blur", "black", "white"].includes(box.mode) ? box.mode : "pixelate";
     return `
-    <div class="layer-row">
-      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}"><span class="layer-mini-thumb mode-${mode}"></span><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${box.source === "manual" ? "Manual" : "Máscara automática"}</small></span></button>
-      <button class="layer-visibility ${box.visible === false ? "off" : ""}" data-layer-visibility="${index}" title="${box.visible === false ? "Mostrar capa" : "Ocultar capa"}">${box.visible === false ? "○" : "◉"}</button>
+      <div class="layer-row">
+      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}"><span class="layer-mini-thumb mode-${mode}"></span><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${t(box.source === "manual" ? "layers.manual" : "layers.auto")}</small></span></button>
+      <button class="layer-visibility ${box.visible === false ? "off" : ""}" data-layer-visibility="${index}" title="${t(box.visible === false ? "layers.show" : "layers.hide")}">${box.visible === false ? "○" : "◉"}</button>
     </div>`;
   }).join("");
   list.querySelectorAll("[data-layer-select]").forEach((button) => button.addEventListener("click", () => {
@@ -160,7 +263,11 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
   item.detections.forEach((box, index) => { if (box.visible !== false) drawDetection(box, index === state.selected); });
-  $("detection-summary").textContent = item.detections.length ? `${item.detections.length} capa${item.detections.length === 1 ? "" : "s"} · ${item.status || "pendiente de aprobación"}` : "Sin capas detectadas · puedes añadirlas manualmente";
+  $("detection-summary").textContent = item.detections.length === 1
+    ? t("canvas.summaryOne", { status: item.status || t("status.pending") })
+    : item.detections.length
+      ? t("canvas.summaryMany", { count: item.detections.length, status: item.status || t("status.pending") })
+      : t("canvas.manualHint");
 }
 
 function drawDetection(box, selected) {
@@ -388,7 +495,7 @@ function syncControls() {
   $("padding").disabled = !enabled;
   $("brush-size").disabled = !enabled;
   $("delete-box").disabled = !enabled;
-  $("selected-badge").textContent = enabled ? `${state.selected + 1} seleccionada` : "Ninguna";
+  $("selected-badge").textContent = enabled ? t("layers.selected", { index: state.selected + 1 }) : t("layers.none");
   document.querySelectorAll("[data-style-button]").forEach((button) => {
     button.disabled = !enabled;
     button.classList.toggle("active", enabled && button.dataset.styleButton === box.mode);
@@ -429,7 +536,7 @@ $("delete-box").addEventListener("click", () => { const item = currentFile(); if
 
 $("choose-input").addEventListener("click", async () => {
   try {
-    if (!window.showDirectoryPicker) throw new Error("Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.");
+    if (!window.showDirectoryPicker) throw new Error(t("notice.folderUnsupported"));
     state.inputHandle = await window.showDirectoryPicker({ mode: "read" });
     state.files = [];
     for await (const entry of state.inputHandle.values()) {
@@ -442,30 +549,30 @@ $("choose-input").addEventListener("click", async () => {
     $("detect-all").disabled = !state.files.length;
     $("save-all").disabled = !state.files.length;
     clearNotice(); renderQueue();
-    if (state.files.length) await showFile(0); else setNotice("No encontré imágenes compatibles en esa carpeta.", "error");
+    if (state.files.length) await showFile(0); else setNotice(t("notice.noImages"), "error");
   } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); }
 });
 
 function mimeFromName(name) { const ext = name.split(".").pop().toLowerCase(); return ({ jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", bmp: "image/bmp", avif: "image/avif" })[ext] || ""; }
 
-$("choose-output").addEventListener("click", async () => { try { state.outputHandle = await window.showDirectoryPicker({ mode: "readwrite" }); $("output-name").textContent = `Salida: ${state.outputHandle.name}`; } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); } });
+$("choose-output").addEventListener("click", async () => { try { state.outputHandle = await window.showDirectoryPicker({ mode: "readwrite" }); $("output-name").textContent = t("toolbar.outputName", { name: state.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); } });
 $("previous").addEventListener("click", () => showFile(state.current - 1));
 $("next").addEventListener("click", () => showFile(state.current + 1));
 $("reject").addEventListener("click", () => { if (!currentFile()) return; currentFile().status = "rejected"; renderQueue(); moveNext(); });
 $("approve").addEventListener("click", async () => { if (!currentFile()) return; await saveItem(currentFile()); currentFile().status = "approved"; renderQueue(); updateProgress(); moveNext(); });
-$("save-all").addEventListener("click", async () => { const approved = state.files.filter((file) => file.status === "approved"); if (!approved.length) { setNotice("Aprueba al menos una imagen antes de guardar aprobadas."); return; } for (const item of approved) await saveItem(item); setNotice(`${approved.length} imagen${approved.length === 1 ? "" : "es"} guardada${approved.length === 1 ? "" : "s"}.`); });
+$("save-all").addEventListener("click", async () => { const approved = state.files.filter((file) => file.status === "approved"); if (!approved.length) { setNotice(t("notice.saveAtLeast")); return; } for (const item of approved) await saveItem(item); setNotice(approved.length === 1 ? t("notice.savedOne") : t("notice.savedMany", { count: approved.length })); });
 $("detect-all").addEventListener("click", () => detectAll());
 
 async function detectAll() {
   if (!state.files.length) return;
-  $("detect-all").disabled = true; setNotice("Analizando carpeta localmente…");
+  $("detect-all").disabled = true; setNotice(t("notice.analyzing"));
   for (let i = 0; i < state.files.length; i++) {
     await detectFile(state.files[i]);
     if (state.current === i && state.selected < 0 && state.files[i].detections.length) state.selected = 0;
     if (state.current === i) { renderLayers(); syncControls(); draw(); }
-    renderQueue(); const progressLabel = $("progress-label"); const progressBar = $("progress-bar"); if (progressLabel) progressLabel.textContent = `Analizando ${i + 1} de ${state.files.length}`; if (progressBar) progressBar.style.width = `${((i + 1) / state.files.length) * 100}%`;
+    renderQueue(); const progressLabel = $("progress-label"); const progressBar = $("progress-bar"); if (progressLabel) progressLabel.textContent = t("progress.analyzing", { current: i + 1, total: state.files.length }); if (progressBar) progressBar.style.width = `${((i + 1) / state.files.length) * 100}%`;
   }
-  $("detect-all").disabled = false; setNotice("Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.");
+  $("detect-all").disabled = false; setNotice(t("notice.analysisDone"));
 }
 
 async function detectFile(item) {
@@ -483,7 +590,7 @@ async function detectFile(item) {
       mode: "pixelate", strength: 65, padding: Number($("padding").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
     }));
   } catch (error) {
-    if (!item.analyzed) setNotice(`Detector automático no disponible: ${error.message} Puedes seguir dibujando zonas manuales.`, "error");
+    if (!item.analyzed) setNotice(t("notice.detectorUnavailable", { message: error.message }), "error");
   }
   item.analyzed = true;
 }
@@ -511,7 +618,8 @@ function renderSavedBox(outputCtx, image, box) {
 }
 
 async function moveNext() { updateProgress(); if (state.current < state.files.length - 1) await showFile(state.current + 1); }
-function updateProgress() { const done = state.files.filter((file) => file.status === "approved").length; const progressDetail = $("progress-detail"); const progressBar = $("progress-bar"); const progressLabel = $("progress-label"); if (progressDetail) progressDetail.textContent = `${done} de ${state.files.length} aprobadas`; if (progressBar) progressBar.style.width = state.files.length ? `${done / state.files.length * 100}%` : "0%"; if (progressLabel) progressLabel.textContent = state.files.length ? `${done} aprobada${done === 1 ? "" : "s"}` : "Sin carpeta"; }
+function updateProgress() { const done = state.files.filter((file) => file.status === "approved").length; const progressDetail = $("progress-detail"); const progressBar = $("progress-bar"); const progressLabel = $("progress-label"); if (progressDetail) progressDetail.textContent = t("progress.detail", { count: done, total: state.files.length }); if (progressBar) progressBar.style.width = state.files.length ? `${done / state.files.length * 100}%` : "0%"; if (progressLabel) progressLabel.textContent = state.files.length ? (done === 1 ? t("progress.one") : t("progress.many", { count: done })) : t("progress.none"); }
 
 window.addEventListener("resize", () => { if (currentFile()?.image) { fitCanvas(currentFile()); draw(); } });
+applyLanguage();
 syncControls();

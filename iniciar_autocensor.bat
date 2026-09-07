@@ -31,12 +31,12 @@ if not exist "models\nsfw-anime-xl-x1280.pt" (
     echo.
 )
 
-echo Iniciando AutoCensor...
-start "AutoCensor - servidor" cmd /k "node server.mjs"
+echo Iniciando Censor Station...
+start "Censor Station - servidor" cmd /k "node server.mjs"
 timeout /t 2 /nobreak >nul
 start "" "http://127.0.0.1:4173"
 
 echo.
-echo AutoCensor esta disponible en http://127.0.0.1:4173
+echo Censor Station esta disponible en http://127.0.0.1:4173
 echo Puedes cerrar esta ventana; el servidor queda en su propia ventana.
 endlocal

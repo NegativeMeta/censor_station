@@ -4,26 +4,27 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#080411" />
-    <title>AutoCensor</title>
+    <title>Censor Station</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <header class="topbar">
-      <div class="brand brand-frame"><span class="brand-mark">✦</span><span class="brand-word">AutoCensor</span><small>// neon anime local</small><span class="brand-moon">☾</span></div>
-      <div class="topbar-center"><span>✦</span> 魔法少女フィルター // ONLINE <span>✦</span></div>
+      <div class="brand brand-frame"><span class="brand-mark">✦</span><span class="brand-word">Censor Station</span><small data-i18n="brand.tag">// LET'S CENSOR!</small><span class="brand-moon">☾</span></div>
+      <div class="topbar-center"><span>✦</span> <span data-i18n="topbar.tag">MAGICAL FILTER // ONLINE</span> <span>✦</span></div>
+      <label class="language-switch"><span data-i18n="language.label">Idioma</span><select id="language-select" data-i18n-aria-label="language.label" aria-label="Idioma"><option value="es">ES</option><option value="en">EN</option><option value="ja">日本語</option><option value="zh">中文</option></select></label>
     </header>
 
     <main class="shell">
       <section class="toolbar card">
         <div class="folder-actions">
-          <button id="choose-input" class="button primary"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label">Elegir carpeta</span></button>
-          <button id="choose-output" class="button secondary" disabled><span class="button-icon icon-folder-arrow" aria-hidden="true"></span><span class="button-label">Carpeta de salida</span></button>
-          <div class="folder-text"><strong id="input-name">Ninguna carpeta seleccionada</strong><span id="output-name">Las aprobadas se descargarán si no eliges salida</span></div>
+          <button id="choose-input" class="button primary" data-i18n-title="toolbar.chooseInput"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseInput">Elegir carpeta</span></button>
+          <button id="choose-output" class="button secondary" data-i18n-title="toolbar.chooseOutput" disabled><span class="button-icon icon-folder-arrow" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseOutput">Carpeta de salida</span></button>
+          <div class="folder-text"><strong id="input-name" data-i18n="toolbar.noFolder">Ninguna carpeta seleccionada</strong><span id="output-name" data-i18n="toolbar.outputHint">Las aprobadas se descargarán si no eliges salida</span></div>
         </div>
-        <div class="toolbar-status-strip" aria-hidden="true"><span class="status-online">▮ ONLINE</span><span>STATUS: READY</span><span>MODE: REVIEW</span></div>
+        <div class="toolbar-status-strip" aria-hidden="true"><span class="status-online">▮ ONLINE</span><span data-i18n="status.ready">STATUS: READY</span><span data-i18n="status.review">MODE: REVIEW</span></div>
         <div class="toolbar-actions">
-          <button id="detect-all" class="button secondary" disabled><span class="button-icon icon-radar" aria-hidden="true"></span><span class="button-label">Analizar carpeta</span></button>
-          <button id="save-all" class="button accent" disabled><span class="button-icon icon-floppy" aria-hidden="true"></span><span class="button-label">Guardar aprobadas</span></button>
+          <button id="detect-all" class="button secondary" data-i18n-title="toolbar.analyze" disabled><span class="button-icon icon-radar" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.analyze">Analizar carpeta</span></button>
+          <button id="save-all" class="button accent" data-i18n-title="toolbar.saveApproved" disabled><span class="button-icon icon-floppy" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.saveApproved">Guardar aprobadas</span></button>
         </div>
       </section>
 
@@ -31,8 +32,8 @@
 
       <div class="workspace">
         <aside class="queue card">
-          <div class="panel-heading"><div><span class="eyebrow">COLA</span><h2>Imágenes</h2></div><span id="queue-count" class="count-badge">0</span></div>
-          <div id="queue-list" class="queue-list empty-state">Elige una carpeta para comenzar.</div>
+          <div class="panel-heading"><div><span class="eyebrow" data-i18n="queue.eyebrow">COLA</span><h2 data-i18n="queue.title">Imágenes</h2></div><span id="queue-count" class="count-badge">0</span></div>
+          <div id="queue-list" class="queue-list empty-state" data-i18n="queue.empty">Elige una carpeta para comenzar.</div>
           <div class="queue-mascot" aria-hidden="true">
             <img src="/assets/queue-catgirl-upper.png" alt="" />
             <div class="mascot-status"><span>HP</span><i><b></b></i><span>MP</span><i><b></b></i></div>
@@ -41,61 +42,61 @@
 
         <section class="review card">
           <div class="review-head">
-            <div><span class="eyebrow">REVISIÓN</span><h2 id="current-name">Selecciona una imagen</h2></div>
-            <div class="review-nav"><button id="previous" class="icon-button" title="Anterior" aria-label="Anterior" disabled><span class="button-icon icon-arrow-left" aria-hidden="true"></span></button><span id="current-index">—</span><button id="next" class="icon-button" title="Siguiente" aria-label="Siguiente" disabled><span class="button-icon icon-arrow-right" aria-hidden="true"></span></button></div>
+            <div><span class="eyebrow" data-i18n="review.eyebrow">REVISIÓN</span><h2 id="current-name" data-i18n="review.empty">Selecciona una imagen</h2></div>
+            <div class="review-nav"><button id="previous" class="icon-button" data-i18n-title="review.previous" data-i18n-aria-label="review.previous" disabled><span class="button-icon icon-arrow-left" aria-hidden="true"></span></button><span id="current-index">—</span><button id="next" class="icon-button" data-i18n-title="review.next" data-i18n-aria-label="review.next" disabled><span class="button-icon icon-arrow-right" aria-hidden="true"></span></button></div>
           </div>
 
-          <div id="canvas-wrap" class="canvas-wrap empty-canvas"><canvas id="preview" hidden></canvas></div>
+          <div id="canvas-wrap" class="canvas-wrap empty-canvas"><div class="canvas-preview-label" data-i18n="canvas.preview">VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS</div><canvas id="preview" hidden></canvas></div>
 
-          <div class="canvas-footer"><div id="detection-summary">Sin detecciones</div><div class="legend"><span><i class="legend-swatch auto"></i>Auto</span><span><i class="legend-swatch manual"></i>Manual</span></div></div>
+          <div class="canvas-footer"><div id="detection-summary" data-i18n="canvas.noDetections">Sin detecciones</div><div class="legend"><span><i class="legend-swatch auto"></i><span data-i18n="canvas.auto">Auto</span></span><span><i class="legend-swatch manual"></i><span data-i18n="canvas.manual">Manual</span></span></div></div>
 
         </section>
 
         <aside class="settings card">
-          <div class="panel-heading"><div><h2>LAYERS</h2></div><span id="selected-badge" class="selection-badge">Ninguna</span></div>
+          <div class="panel-heading"><div><h2 data-i18n="layers.title">LAYERS</h2></div><span id="selected-badge" class="selection-badge" data-i18n="layers.none">Ninguna</span></div>
           <div class="settings-body">
-            <label class="field-label layer-heading">LAYER STACK</label>
-            <div id="layer-list" class="layer-list empty-state">Analiza una imagen para crear capas.</div>
-            <div class="selection-actions"><button id="add-box" class="button secondary" disabled><span class="button-icon icon-plus" aria-hidden="true"></span><span class="button-label">Añadir capa</span></button><button id="delete-box" class="button ghost-danger" disabled><span class="button-icon icon-trash" aria-hidden="true"></span><span class="button-label">Eliminar</span></button></div>
+            <label class="field-label layer-heading" data-i18n="layers.stack">LAYER STACK</label>
+            <div id="layer-list" class="layer-list empty-state" data-i18n="layers.empty">Analiza una imagen para crear capas.</div>
+            <div class="selection-actions"><button id="add-box" class="button secondary" data-i18n-title="layers.add" disabled><span class="button-icon icon-plus" aria-hidden="true"></span><span class="button-label" data-i18n="layers.add">Añadir capa</span></button><button id="delete-box" class="button ghost-danger" data-i18n-title="layers.delete" disabled><span class="button-icon icon-trash" aria-hidden="true"></span><span class="button-label" data-i18n="layers.delete">Eliminar</span></button></div>
 
             <div class="wing-divider" aria-hidden="true"><span>♥</span></div>
-            <div class="settings-section-heading"><span class="eyebrow">CENSOR</span><strong>✦ // ✦</strong></div>
-            <label class="field-label" for="style-select">Estilo de la selección</label>
-            <div class="style-cards" role="group" aria-label="Estilo de censura">
-              <button type="button" class="style-card style-pixel" data-style-button="pixelate" disabled><span class="style-icon button-icon icon-pixel" aria-hidden="true"></span><strong>PIXELATE</strong><b>+</b></button>
-              <button type="button" class="style-card style-blur" data-style-button="blur" disabled><span class="style-icon button-icon icon-blur" aria-hidden="true"></span><strong>BLUR</strong><b>+</b></button>
-              <button type="button" class="style-card style-black" data-style-button="black" disabled><span class="style-icon button-icon icon-black" aria-hidden="true"></span><strong>BARRA</strong><b>+</b></button>
+            <div class="settings-section-heading"><span class="eyebrow" data-i18n="censor.title">CENSOR</span><strong>✦ // ✦</strong></div>
+            <label class="field-label" for="style-select" data-i18n="censor.style">Estilo de la selección</label>
+            <div class="style-cards" role="group" data-i18n-aria-label="censor.style">
+              <button type="button" class="style-card style-pixel" data-style-button="pixelate" disabled><span class="style-icon button-icon icon-pixel" aria-hidden="true"></span><strong data-i18n="censor.pixelate">PIXELATE</strong><b>+</b></button>
+              <button type="button" class="style-card style-blur" data-style-button="blur" disabled><span class="style-icon button-icon icon-blur" aria-hidden="true"></span><strong data-i18n="censor.blur">BLUR</strong><b>+</b></button>
+              <button type="button" class="style-card style-black" data-style-button="black" disabled><span class="style-icon button-icon icon-black" aria-hidden="true"></span><strong data-i18n="censor.black">BARRA</strong><b>+</b></button>
             </div>
             <select id="style-select" class="select style-select-hidden" disabled aria-hidden="true" tabindex="-1">
-              <option value="pixelate">Píxeles</option><option value="blur">Desenfoque</option><option value="black">Barra negra</option><option value="white">Barra blanca</option>
+              <option value="pixelate" data-i18n="censor.pixelateOption">Píxeles</option><option value="blur" data-i18n="censor.blurOption">Desenfoque</option><option value="black" data-i18n="censor.blackOption">Barra negra</option><option value="white" data-i18n="censor.whiteOption">Barra blanca</option>
             </select>
 
-            <div class="field-row"><label class="field-label" for="strength">Intensidad</label><output id="strength-value">65%</output></div>
+            <div class="field-row"><label class="field-label" for="strength" data-i18n="controls.strength">Intensidad</label><output id="strength-value">65%</output></div>
             <input id="strength" type="range" min="10" max="100" value="65" disabled />
 
-            <div class="field-row"><label class="field-label" for="padding">Margen de seguridad</label><output id="padding-value">8 px</output></div>
+            <div class="field-row"><label class="field-label" for="padding" data-i18n="controls.padding">Margen de seguridad</label><output id="padding-value">8 px</output></div>
             <input id="padding" type="range" min="0" max="60" value="8" disabled />
 
             <div class="divider"></div>
-            <div class="field-row"><label class="field-label" for="brush-size">Tamaño del pincel</label><output id="brush-size-value">24 px</output></div>
+            <div class="field-row"><label class="field-label" for="brush-size" data-i18n="controls.brushSize">Tamaño del pincel</label><output id="brush-size-value">24 px</output></div>
             <input id="brush-size" type="range" min="4" max="120" value="24" disabled />
-            <p class="help">Con el botón izquierdo pintas censura; con el derecho la borras dentro de la zona seleccionada.</p>
+            <p class="help" data-i18n="controls.brushHelp">Con el botón izquierdo pintas censura; con el derecho la borras dentro de la zona seleccionada.</p>
 
             <div class="divider"></div>
-            <div class="field-row"><label class="field-label" for="threshold">Umbral automático</label><output id="threshold-value">35%</output></div>
+            <div class="field-row"><label class="field-label" for="threshold" data-i18n="controls.threshold">Umbral automático</label><output id="threshold-value">35%</output></div>
             <input id="threshold" type="range" min="10" max="90" value="35" />
-            <p class="help">Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.</p>
+            <p class="help" data-i18n="controls.thresholdHelp">Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.</p>
 
             <div class="divider"></div>
-            <label class="field-label">Clases a censurar</label>
+            <label class="field-label" data-i18n="classes.title">Clases a censurar</label>
             <div id="class-options" class="check-grid"></div>
-            <p class="help">Activa o desactiva las clases de detección antes de analizar la carpeta.</p>
+            <p class="help" data-i18n="classes.help">Activa o desactiva las clases de detección antes de analizar la carpeta.</p>
           </div>
-          <div class="review-actions settings-actions"><button id="reject" class="button danger-outline" title="Rechazar y saltar" aria-label="Rechazar y saltar" disabled><span class="button-icon icon-reject" aria-hidden="true"></span><span class="button-label">Rechazar</span></button><button id="approve" class="button approve" disabled><span class="button-icon icon-moon" aria-hidden="true"></span><span class="button-label">APPROVE</span></button></div>
+          <div class="review-actions settings-actions"><button id="reject" class="button danger-outline" data-i18n-title="actions.reject" data-i18n-aria-label="actions.reject" disabled><span class="button-icon icon-reject" aria-hidden="true"></span><span class="button-label" data-i18n="actions.rejectShort">Rechazar</span></button><button id="approve" class="button approve" disabled><span class="button-icon icon-moon" aria-hidden="true"></span><span class="button-label" data-i18n="actions.approve">APPROVE</span></button></div>
         </aside>
       </div>
 
-      <footer class="footer"><span>AutoCensor 0.1 · procesamiento local</span><span>Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar</span></footer>
+      <footer class="footer"><span data-i18n="footer.local">Censor Station 0.1 · procesamiento local</span><span data-i18n="footer.instructions">Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar</span></footer>
     </main>
     <script src="/app.js"></script>
   </body>

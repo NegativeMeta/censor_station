@@ -180,5 +180,5 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log(`AutoCensor disponible en http://127.0.0.1:${port}`);
+  console.log(`Censor Station disponible en http://127.0.0.1:${port}`);
 });

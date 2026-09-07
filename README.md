@@ -1,4 +1,4 @@
-# AutoCensor
+# Censor Station
 
 Aplicación local para revisar una carpeta de imágenes, detectar zonas sensibles, ajustar la censura y guardar cada imagen únicamente después de aprobarla.
 
