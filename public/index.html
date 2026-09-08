@@ -9,22 +9,30 @@
   </head>
   <body>
     <header class="topbar">
-      <div class="brand brand-frame"><span class="brand-mark">✦</span><span class="brand-word">Censor Station</span><small data-i18n="brand.tag">// LET'S CENSOR!</small><span class="brand-moon">☾</span></div>
+      <div class="brand brand-frame"><span class="brand-mascot brand-mascot-left"><img src="/assets/mascot-silhouette-generated.png" alt="" /></span><span class="brand-word">Censor Station</span><span class="brand-mascot"><img src="/assets/mascot-silhouette-generated.png" alt="" /></span></div>
       <div class="topbar-center"><span>✦</span> <span data-i18n="topbar.tag">MAGICAL FILTER // ONLINE</span> <span>✦</span></div>
       <label class="language-switch"><span data-i18n="language.label">Idioma</span><select id="language-select" data-i18n-aria-label="language.label" aria-label="Idioma"><option value="es">ES</option><option value="en">EN</option><option value="ja">日本語</option><option value="zh">中文</option></select></label>
     </header>
 
     <main class="shell">
+      <nav class="app-tabs" role="tablist" aria-label="Secciones de la aplicación">
+        <button type="button" class="app-tab is-active" data-app-tab="censor" role="tab" aria-selected="true"><span class="button-icon icon-reject" aria-hidden="true"></span><span data-i18n="tabs.censor">CENSURA</span></button>
+        <button type="button" class="app-tab" data-app-tab="optimizer" role="tab" aria-selected="false"><span class="button-icon icon-floppy" aria-hidden="true"></span><span data-i18n="tabs.optimizer">OPTIMIZAR</span></button>
+      </nav>
+      <section id="censor-panel" class="app-panel" data-app-panel="censor">
       <section class="toolbar card">
         <div class="folder-actions">
-          <button id="choose-input" class="button primary" data-i18n-title="toolbar.chooseInput"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseInput">Elegir carpeta</span></button>
+          <button id="choose-single" class="button secondary" data-i18n-title="toolbar.chooseImage"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseImage">Abrir imagen</span></button>
+          <button id="choose-input" class="button primary" data-i18n-title="toolbar.chooseInput"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseInput">Abrir carpeta</span></button>
           <button id="choose-output" class="button secondary" data-i18n-title="toolbar.chooseOutput" disabled><span class="button-icon icon-folder-arrow" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.chooseOutput">Carpeta de salida</span></button>
-          <div class="folder-text"><strong id="input-name" data-i18n="toolbar.noFolder">Ninguna carpeta seleccionada</strong><span id="output-name" data-i18n="toolbar.outputHint">Las aprobadas se descargarán si no eliges salida</span></div>
+          <div class="folder-text"><strong id="input-name" data-i18n="toolbar.noFolder">Ninguna carpeta seleccionada</strong><span id="output-name" data-i18n="toolbar.outputHint">Se guardarán en la subcarpeta censored si no eliges salida</span></div>
+          <input id="single-image-input" type="file" accept="image/*" hidden />
         </div>
-        <div class="toolbar-status-strip" aria-hidden="true"><span class="status-online">▮ ONLINE</span><span data-i18n="status.ready">STATUS: READY</span><span data-i18n="status.review">MODE: REVIEW</span></div>
+        <div class="toolbar-status-strip" aria-hidden="true"><span class="status-online">▮ ONLINE</span><span data-i18n="status.ready">STATUS: READY</span><span id="item-count">ITEMS: 0</span><span data-i18n="status.review">MODE: REVIEW</span></div>
         <div class="toolbar-actions">
           <button id="detect-all" class="button secondary" data-i18n-title="toolbar.analyze" disabled><span class="button-icon icon-radar" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.analyze">Analizar carpeta</span></button>
           <button id="save-all" class="button accent" data-i18n-title="toolbar.saveApproved" disabled><span class="button-icon icon-floppy" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.saveApproved">Guardar aprobadas</span></button>
+          <button id="save-single" class="button accent" data-i18n-title="toolbar.saveImage" hidden disabled><span class="button-icon icon-floppy" aria-hidden="true"></span><span class="button-label" data-i18n="toolbar.saveImage">Guardar imagen</span></button>
         </div>
       </section>
 
@@ -46,6 +54,11 @@
             <div class="review-nav"><button id="previous" class="icon-button" data-i18n-title="review.previous" data-i18n-aria-label="review.previous" disabled><span class="button-icon icon-arrow-left" aria-hidden="true"></span></button><span id="current-index">—</span><button id="next" class="icon-button" data-i18n-title="review.next" data-i18n-aria-label="review.next" disabled><span class="button-icon icon-arrow-right" aria-hidden="true"></span></button></div>
           </div>
 
+          <div id="analysis-progress" class="analysis-progress" hidden aria-live="polite">
+            <div class="analysis-progress-head"><span id="analysis-progress-label">Analizando 1 de 1</span><strong id="analysis-progress-value">0%</strong></div>
+            <div id="analysis-progress-track" class="analysis-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="analysis-progress-bar" class="analysis-progress-bar"></div></div>
+          </div>
+
           <div id="canvas-wrap" class="canvas-wrap empty-canvas"><div class="canvas-preview-label" data-i18n="canvas.preview">VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS</div><canvas id="preview" hidden></canvas></div>
 
           <div class="canvas-footer"><div id="detection-summary" data-i18n="canvas.noDetections">Sin detecciones</div><div class="legend"><span><i class="legend-swatch auto"></i><span data-i18n="canvas.auto">Auto</span></span><span><i class="legend-swatch manual"></i><span data-i18n="canvas.manual">Manual</span></span></div></div>
@@ -65,10 +78,11 @@
             <div class="style-cards" role="group" data-i18n-aria-label="censor.style">
               <button type="button" class="style-card style-pixel" data-style-button="pixelate" disabled><span class="style-icon button-icon icon-pixel" aria-hidden="true"></span><strong data-i18n="censor.pixelate">PIXELATE</strong><b>+</b></button>
               <button type="button" class="style-card style-blur" data-style-button="blur" disabled><span class="style-icon button-icon icon-blur" aria-hidden="true"></span><strong data-i18n="censor.blur">BLUR</strong><b>+</b></button>
-              <button type="button" class="style-card style-black" data-style-button="black" disabled><span class="style-icon button-icon icon-black" aria-hidden="true"></span><strong data-i18n="censor.black">BARRA</strong><b>+</b></button>
+              <button type="button" class="style-card style-lines" data-style-button="lines" disabled><span class="style-icon button-icon icon-lines" aria-hidden="true"></span><strong data-i18n="censor.lines">LÍNEAS</strong><b>+</b></button>
+              <button type="button" class="style-card style-glow" data-style-button="glow-white" disabled><span class="style-icon button-icon icon-glow" aria-hidden="true"></span><strong data-i18n="censor.glowWhite">BLANCO GLOW</strong><b>+</b></button>
             </div>
             <select id="style-select" class="select style-select-hidden" disabled aria-hidden="true" tabindex="-1">
-              <option value="pixelate" data-i18n="censor.pixelateOption">Píxeles</option><option value="blur" data-i18n="censor.blurOption">Desenfoque</option><option value="black" data-i18n="censor.blackOption">Barra negra</option><option value="white" data-i18n="censor.whiteOption">Barra blanca</option>
+              <option value="pixelate" data-i18n="censor.pixelateOption">Píxeles</option><option value="blur" data-i18n="censor.blurOption">Desenfoque</option><option value="lines" data-i18n="censor.linesOption">Múltiples líneas negras</option><option value="glow-white" data-i18n="censor.glowWhiteOption">Blanco resplandeciente</option>
             </select>
 
             <div class="field-row"><label class="field-label" for="strength" data-i18n="controls.strength">Intensidad</label><output id="strength-value">65%</output></div>
@@ -92,11 +106,65 @@
             <div id="class-options" class="check-grid"></div>
             <p class="help" data-i18n="classes.help">Activa o desactiva las clases de detección antes de analizar la carpeta.</p>
           </div>
-          <div class="review-actions settings-actions"><button id="reject" class="button danger-outline" data-i18n-title="actions.reject" data-i18n-aria-label="actions.reject" disabled><span class="button-icon icon-reject" aria-hidden="true"></span><span class="button-label" data-i18n="actions.rejectShort">Rechazar</span></button><button id="approve" class="button approve" disabled><span class="button-icon icon-moon" aria-hidden="true"></span><span class="button-label" data-i18n="actions.approve">APPROVE</span></button></div>
+          <div class="review-actions settings-actions"><button id="reject" class="button danger-outline" data-i18n-title="actions.reject" data-i18n-aria-label="actions.reject" disabled><span class="button-icon icon-reject" aria-hidden="true"></span><span class="button-label" data-i18n="actions.rejectShort">Rechazar</span></button><button id="approve" class="button approve" disabled><span class="button-icon icon-approve" aria-hidden="true"></span><span class="button-label" data-i18n="actions.approve">APPROVE</span></button></div>
         </aside>
       </div>
 
       <footer class="footer"><span data-i18n="footer.local">Censor Station 0.1 · procesamiento local</span><span data-i18n="footer.instructions">Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar</span></footer>
+      </section>
+
+      <section id="optimizer-panel" class="app-panel optimizer-panel" data-app-panel="optimizer" hidden>
+        <section class="optimizer-toolbar card">
+          <div class="folder-actions">
+            <button id="optimizer-choose-input" class="button primary" data-i18n-title="optimizer.chooseInput"><span class="button-icon icon-folder" aria-hidden="true"></span><span class="button-label" data-i18n="optimizer.chooseInput">Abrir carpeta censurada</span></button>
+            <button id="optimizer-choose-output" class="button secondary" data-i18n-title="optimizer.chooseOutput" disabled><span class="button-icon icon-folder-arrow" aria-hidden="true"></span><span class="button-label" data-i18n="optimizer.chooseOutput">Carpeta optimizada</span></button>
+            <div class="folder-text"><strong id="optimizer-input-name" data-i18n="optimizer.inputEmpty">Ninguna carpeta seleccionada</strong><span id="optimizer-output-name" data-i18n="optimizer.outputEmpty">Se guardarán en la subcarpeta optimized si no eliges salida</span></div>
+          </div>
+          <div class="toolbar-status-strip" aria-hidden="true"><span class="status-online">▮ LOCAL</span><span data-i18n="optimizer.statusReady">OPTIMIZER READY</span></div>
+          <div class="toolbar-actions">
+            <button id="optimizer-process" class="button secondary" data-i18n-title="optimizer.process" disabled><span class="button-icon icon-radar" aria-hidden="true"></span><span class="button-label" data-i18n="optimizer.process">Optimizar imágenes</span></button>
+            <button id="optimizer-save-all" class="button accent" data-i18n-title="optimizer.saveAll" disabled><span class="button-icon icon-floppy" aria-hidden="true"></span><span class="button-label" data-i18n="optimizer.saveAll">Guardar optimizadas</span></button>
+          </div>
+        </section>
+
+        <section id="optimizer-notice" class="notice hidden"></section>
+
+        <div class="optimizer-layout">
+          <aside class="optimizer-queue card">
+            <div class="panel-heading"><div><span class="eyebrow" data-i18n="optimizer.eyebrow">OPTIMIZADOR</span><h2 data-i18n="optimizer.queueTitle">Imágenes censuradas</h2></div><span id="optimizer-count" class="count-badge">0</span></div>
+            <div id="optimizer-file-list" class="queue-list empty-state" data-i18n="optimizer.empty">Selecciona una carpeta para comenzar</div>
+          </aside>
+
+          <section class="optimizer-preview card">
+            <div class="review-head"><div><span class="eyebrow" data-i18n="optimizer.previewEyebrow">VISTA PREVIA</span><h2 id="optimizer-current-name" data-i18n="optimizer.previewEmpty">Selecciona una imagen</h2></div><span id="optimizer-current-index">—</span></div>
+            <div class="optimizer-preview-grid">
+              <div class="optimizer-preview-frame"><span data-i18n="optimizer.original">ORIGINAL</span><canvas id="optimizer-original-preview" hidden></canvas></div>
+              <div class="optimizer-preview-frame"><span data-i18n="optimizer.optimized">OPTIMIZADA</span><canvas id="optimizer-optimized-preview" hidden></canvas><div id="optimizer-empty-preview" class="empty-state" data-i18n="optimizer.previewHint">Pulsa optimizar para ver el resultado</div></div>
+            </div>
+            <div class="optimizer-stats"><div><span data-i18n="optimizer.originalSize">Original</span><strong id="optimizer-original-size">—</strong></div><div><span data-i18n="optimizer.optimizedSize">Optimizada</span><strong id="optimizer-optimized-size">—</strong></div><div><span data-i18n="optimizer.reduction">Reducción</span><strong id="optimizer-reduction">—</strong></div></div>
+          </section>
+
+          <aside class="optimizer-settings card">
+            <div class="panel-heading"><div><h2 data-i18n="optimizer.settingsTitle">OPTIMIZACIÓN</h2></div><span class="selection-badge">✦</span></div>
+            <div class="settings-body">
+              <label class="field-label" for="optimizer-format" data-i18n="optimizer.format">Formato de salida</label>
+              <select id="optimizer-format" class="select">
+                <option value="original" data-i18n="optimizer.formatOriginal">Conservar formato</option>
+                <option value="webp" data-i18n="optimizer.formatWebp">WebP · recomendado</option>
+                <option value="jpeg" data-i18n="optimizer.formatJpeg">JPEG</option>
+                <option value="png" data-i18n="optimizer.formatPng">PNG · sin pérdida</option>
+              </select>
+              <div class="field-row"><label class="field-label" for="optimizer-quality" data-i18n="optimizer.quality">Calidad visual</label><output id="optimizer-quality-value">92%</output></div>
+              <input id="optimizer-quality" type="range" min="70" max="100" value="92" />
+              <label class="optimizer-check"><input id="optimizer-lossless" type="checkbox" /><span data-i18n="optimizer.lossless">Modo sin pérdida</span></label>
+              <p class="help" data-i18n="optimizer.qualityHint">PNG conserva cada píxel. WebP y JPEG reducen mucho el peso con calidad visual alta.</p>
+              <div class="divider"></div>
+              <div class="optimizer-detail"><span data-i18n="optimizer.dimensions">Dimensiones</span><strong id="optimizer-dimensions">—</strong></div>
+              <p class="help" data-i18n="optimizer.localHint">Todo el proceso ocurre localmente y los originales no se modifican.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
     </main>
     <script src="/app.js"></script>
   </body>

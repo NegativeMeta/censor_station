@@ -17,6 +17,16 @@ if not exist "server.mjs" (
     exit /b 1
 )
 
+set "SERVER_PID="
+for /f "tokens=5" %%P in ('netstat -ano ^| findstr /R /C:"127.0.0.1:4173 .*LISTENING"') do set "SERVER_PID=%%P"
+if defined SERVER_PID (
+    echo [INFO] Censor Station ya esta ejecutandose con Node PID %SERVER_PID%.
+    start "" "http://127.0.0.1:4173"
+    echo Se reutilizo el servidor existente; no se inicio otro Node.
+    endlocal
+    exit /b 0
+)
+
 if not exist ".venv\Scripts\python.exe" (
     echo [AVISO] No se encontro .venv. La deteccion automatica anime NSFW no estara disponible.
     echo Puedes crearla con:

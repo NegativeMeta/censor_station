@@ -10,11 +10,13 @@ Aplicación local para revisar una carpeta de imágenes, detectar zonas sensible
 - Detecciones editables: arrastrar, redimensionar desde las esquinas, eliminar o añadir zonas manualmente.
 - Cuatro estilos: píxeles, desenfoque, barra negra y barra blanca.
 - Umbral, intensidad y margen de seguridad configurables.
-- Guardado por imagen con el sufijo `_censurada`; sin carpeta de salida, descarga el archivo desde el navegador.
+- Guardado por imagen con el sufijo `_censored`; si no eliges una carpeta de salida, crea la subcarpeta `censored` dentro de la carpeta original.
+- Pestaña **Optimizar** para cargar las imágenes censuradas, comparar el original con el resultado y reducir su peso sin modificar los originales.
+- Salida en formato original, WebP, JPEG o PNG sin pérdida; las dimensiones se conservan.
 
 ## Uso
 
-Requisitos: Node.js 18+ y Python 3.10+ para la detección automática. Esta versión usa `nsfw-anime-xl-x1280.pt`, un modelo YOLO26-seg que devuelve máscaras de regiones NSFW anime. La revisión y edición manual funciona con Node.js solamente.
+Requisitos: Node.js 18+ y Python 3.10+ para la detección automática y la optimización. Esta versión usa `nsfw-anime-xl-x1280.pt`, un modelo YOLO26-seg que devuelve máscaras de regiones NSFW anime. La revisión y edición manual funciona con Node.js solamente.
 
 En Windows, puedes iniciar todo con doble clic en [iniciar_autocensor.bat](C:/Users/johin/Code_Library/AI/AutoCensor/iniciar_autocensor.bat). El script abre el servidor en una ventana separada y lanza el navegador automáticamente.
 
@@ -35,7 +37,7 @@ Descarga `nsfw-anime-xl-x1280.pt` desde [01miku/anime-nsfw-segm-yolo26](https://
 
 En este proyecto `.venv` ya queda configurado como el entorno virtual local. El servidor lo detecta automáticamente, así que también puedes iniciar la app directamente con `npm start` sin activar el entorno en cada terminal.
 
-La primera detección puede tardar más mientras se carga el modelo. El servidor solo recibe la imagen en memoria desde la interfaz local, la escribe temporalmente para ejecutar el detector y la elimina al terminar; no hay un servicio remoto configurado.
+La primera detección puede tardar más mientras se carga el modelo. La pestaña **Optimizar** usa Pillow en un worker Python local: PNG se comprime sin cambiar píxeles y el modo sin pérdida convierte a PNG cuando es necesario. WebP/JPEG usan calidad configurable. El servidor solo recibe las imágenes en memoria desde la interfaz local, las escribe temporalmente para ejecutar el detector u optimizador y las elimina al terminar; no hay un servicio remoto configurado.
 
 Si Python está instalado en una ruta específica, se puede indicar antes de arrancar:
 
@@ -51,11 +53,13 @@ npm start
 3. Pulsa **Analizar carpeta**.
 4. Revisa cada imagen: selecciona una capa para cambiar estilo, intensidad o margen; arrástrala o usa las esquinas para ajustarla.
 5. Con una capa seleccionada, pinta con el botón izquierdo para ampliar la censura y usa el botón derecho para borrar partes de esa máscara. Ajusta el tamaño del pincel desde el panel.
-6. Usa **＋ Añadir zona** si el detector omitió algo.
-7. Pulsa **Aprobar y guardar**. Solo las imágenes aprobadas se escriben en la carpeta de salida.
+6. Usa **Añadir capa** si el detector omitió algo; la capa empieza vacía y solo se censura donde pintes con el pincel.
+7. Pulsa **APPROVE** para marcar cada imagen como aprobada. Al terminar la revisión, la aplicación preguntará si quieres guardar todas las aprobadas; también puedes usar **Guardar aprobadas** en cualquier momento.
+8. En la pestaña **Optimizar**, selecciona la carpeta de imágenes censuradas, el formato y la calidad; pulsa **Optimizar imágenes** y después **Guardar optimizadas**. Si no eliges una salida, crea la subcarpeta `optimized` dentro de la carpeta seleccionada y usa el sufijo `_optimized`.
 
 ## Notas
 
 - La aplicación no sobrescribe los originales.
 - Los GIF animados se leen como una imagen estática del navegador.
 - El detector automático es una ayuda y no sustituye la revisión humana; por eso ninguna imagen se guarda automáticamente.
+- El modo **PNG sin pérdida** conserva exactamente los píxeles, aunque no siempre reduce el tamaño. WebP y JPEG permiten archivos mucho más pequeños con calidad visual alta; su compresión no es matemáticamente sin pérdida.

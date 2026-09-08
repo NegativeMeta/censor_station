@@ -8,8 +8,10 @@ import crypto from "node:crypto";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const publicDir = path.join(__dirname, "public");
 const bridgePath = path.join(__dirname, "tools", "detect_anime_nsfw.py");
+const optimizerPath = path.join(__dirname, "tools", "optimize_image.py");
 const port = Number(process.env.PORT || 4173);
 const detectorWorker = { child: null, buffer: "", pending: [] };
+const optimizerWorker = { child: null, buffer: "", pending: [] };
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -114,6 +116,67 @@ function runAnimeNsfwDetector(imagePath, threshold, classes) {
   });
 }
 
+function rejectOptimizerWorker(error) {
+  const pending = optimizerWorker.pending.splice(0);
+  for (const request of pending) request.reject(error);
+}
+
+function ensureOptimizerWorker() {
+  if (optimizerWorker.child && !optimizerWorker.child.killed) return optimizerWorker.child;
+
+  const python = localPythonPath();
+  const args = process.platform === "win32" && python === "py"
+    ? ["-3", optimizerPath]
+    : [optimizerPath];
+  const child = spawn(python, args, { windowsHide: true, cwd: __dirname });
+  optimizerWorker.child = child;
+  optimizerWorker.buffer = "";
+
+  child.stdout.setEncoding("utf8");
+  child.stdout.on("data", (chunk) => {
+    optimizerWorker.buffer += chunk;
+    let newline;
+    while ((newline = optimizerWorker.buffer.indexOf("\n")) >= 0) {
+      const line = optimizerWorker.buffer.slice(0, newline).trim();
+      optimizerWorker.buffer = optimizerWorker.buffer.slice(newline + 1);
+      if (!line) continue;
+      const request = optimizerWorker.pending.shift();
+      if (!request) continue;
+      try {
+        const result = JSON.parse(line);
+        if (!result.ok) request.reject(new Error(result.error || "El optimizador Pillow devolvió un error."));
+        else request.resolve(result);
+      } catch {
+        request.reject(new Error("El optimizador Pillow devolvió una respuesta inválida."));
+      }
+    }
+  });
+  child.stderr.setEncoding("utf8");
+  child.stderr.on("data", (chunk) => console.error(`[Pillow] ${chunk.trim()}`));
+  child.on("error", (error) => {
+    if (optimizerWorker.child === child) optimizerWorker.child = null;
+    rejectOptimizerWorker(new Error(`No se pudo iniciar Pillow: ${error.message}`));
+  });
+  child.on("close", (code) => {
+    if (optimizerWorker.child === child) optimizerWorker.child = null;
+    if (code !== 0) rejectOptimizerWorker(new Error(`El optimizador Pillow terminó con código ${code}.`));
+  });
+  return child;
+}
+
+function runImageOptimizer(imagePath, outputPath, format, quality, lossless) {
+  const child = ensureOptimizerWorker();
+  return new Promise((resolve, reject) => {
+    optimizerWorker.pending.push({ resolve, reject });
+    try {
+      child.stdin.write(JSON.stringify({ imagePath, outputPath, format, quality, lossless }) + "\n");
+    } catch (error) {
+      optimizerWorker.pending.pop();
+      reject(error);
+    }
+  });
+}
+
 async function detect(request, response) {
   let payload;
   try {
@@ -143,6 +206,45 @@ async function detect(request, response) {
   }
 }
 
+async function optimize(request, response) {
+  let payload;
+  try {
+    payload = JSON.parse(await readBody(request));
+    const { mime, data } = decodeDataUrl(payload.dataUrl);
+    const tempDir = await fs.mkdtemp(path.join(process.env.TEMP || process.env.TMP || ".", "autocensor-optimize-"));
+    const extension = mime === "image/png" ? ".png" : mime === "image/webp" ? ".webp" : ".jpg";
+    const imagePath = path.join(tempDir, `${crypto.randomUUID()}${extension}`);
+    const outputPath = path.join(tempDir, `${crypto.randomUUID()}.optimized`);
+    await fs.writeFile(imagePath, data);
+    try {
+      const allowedFormats = new Set(["original", "png", "webp", "jpeg"]);
+      const format = allowedFormats.has(payload.format) ? payload.format : "original";
+      const quality = Math.min(95, Math.max(1, Number(payload.quality ?? 92)));
+      const result = await runImageOptimizer(imagePath, outputPath, format, quality, payload.lossless === true);
+      const optimized = await fs.readFile(outputPath);
+      sendJson(response, 200, {
+        ok: true,
+        dataUrl: `data:${result.mime};base64,${optimized.toString("base64")}`,
+        mime: result.mime,
+        extension: result.extension,
+        width: result.width,
+        height: result.height,
+        size: optimized.length,
+        lossless: result.lossless,
+      });
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  } catch (error) {
+    sendJson(response, 501, {
+      ok: false,
+      code: "OPTIMIZER_UNAVAILABLE",
+      message: error instanceof Error ? error.message : "Error desconocido al optimizar.",
+      hint: "Instala Pillow con: python -m pip install -r requirements.txt",
+    });
+  }
+}
+
 async function serveStatic(request, response) {
   const url = new URL(request.url, "http://localhost");
   const relative = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
@@ -168,6 +270,10 @@ const server = http.createServer(async (request, response) => {
       await detect(request, response);
       return;
     }
+    if (request.method === "POST" && request.url === "/api/optimize") {
+      await optimize(request, response);
+      return;
+    }
     if (request.method === "GET") {
       await serveStatic(request, response);
       return;
@@ -177,6 +283,16 @@ const server = http.createServer(async (request, response) => {
   } catch (error) {
     sendJson(response, 500, { ok: false, message: error instanceof Error ? error.message : "Error interno." });
   }
+});
+
+server.on("error", (error) => {
+  if (error.code === "EADDRINUSE") {
+    console.error(`[Censor Station] El puerto ${port} ya esta ocupado. Cierra el servidor existente o usa otra instancia.`);
+    process.exitCode = 1;
+    return;
+  }
+  console.error("[Censor Station] Error del servidor:", error);
+  process.exitCode = 1;
 });
 
 server.listen(port, "127.0.0.1", () => {
