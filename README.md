@@ -18,6 +18,12 @@ Local desktop-style web app for reviewing images, detecting sensitive areas, app
 - Python 3.10 or newer for detection and optimization.
 - `nsfw-anime-xl-x1280.pt` in `models/` for automatic detection.
 
+## Detection model
+
+Automatic detection uses the `nsfw-anime-xl-x1280.pt` checkpoint published by [01miku on Hugging Face](https://huggingface.co/01miku/anime-nsfw-segm-yolo26). Download the [checkpoint file](https://huggingface.co/01miku/anime-nsfw-segm-yolo26/resolve/main/nsfw-anime-xl-x1280.pt) and place it in the `models/` directory.
+
+Credit: 01miku. The local checkpoint matches the published file by SHA-256. The model card lists an MIT license, while the embedded Ultralytics checkpoint metadata lists AGPL-3.0; review the upstream terms before redistributing the weights.
+
 ## Run
 
 On Windows:
