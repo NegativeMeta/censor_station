@@ -438,11 +438,13 @@ input[type="range"] { width: 100%; accent-color: var(--neon-pink); margin: 0 0 1
   clip-path: polygon(0 8px, 8px 0, calc(100% - 12px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 12px) 100%, 8px 100%, 0 calc(100% - 8px));
 }
 .toolbar .toolbar-actions .button-icon {
-  position: static;
+  position: relative;
+  top: -2px;
   width: 29px;
   height: 29px;
   filter: drop-shadow(0 0 6px currentColor);
 }
+.toolbar .toolbar-actions .icon-floppy { top: -4px; }
 .toolbar .toolbar-actions .button-label {
   font-size: 12px;
   font-weight: 900;
