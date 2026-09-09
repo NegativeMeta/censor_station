@@ -1,38 +1,40 @@
 # Censor Station
 
-Aplicación local para revisar imágenes, detectar zonas sensibles, aplicar censura y optimizar archivos sin modificar los originales.
+Local desktop-style web app for reviewing images, detecting sensitive areas, applying censorship, and optimizing files without modifying the originals.
 
-## Funciones
+![Censor Station preview](docs/censor-station-preview.png)
 
-- Censura automática y manual.
-- Modos pixelate, blur, líneas negras y white glow.
-- Revisión imagen por imagen antes de guardar.
-- Optimización local con PNG, WebP y JPEG.
-- Interfaz en español, inglés, japonés y chino.
+## Features
 
-## Requisitos
+- Automatic and manual censorship.
+- Pixelate, blur, black-line, and white-glow modes.
+- Image-by-image review before saving.
+- Local optimization with PNG, WebP, and JPEG.
+- Spanish, English, Japanese, and Chinese interface.
 
-- Node.js 20.19 o superior.
-- Python 3.10 o superior para detección y optimización.
-- Modelo `nsfw-anime-xl-x1280.pt` en `models/` para detección automática.
+## Requirements
 
-## Inicio
+- Node.js 20.19 or newer.
+- Python 3.10 or newer for detection and optimization.
+- `nsfw-anime-xl-x1280.pt` in `models/` for automatic detection.
 
-En Windows:
+## Run
+
+On Windows:
 
 ```powershell
 .\iniciar_autocensor.bat
 ```
 
-O desde una terminal:
+Or from a terminal:
 
 ```powershell
 npm install
 npm start
 ```
 
-La aplicación se ejecuta localmente en `http://127.0.0.1:4173`.
+Open `http://127.0.0.1:4173` in your browser.
 
-## Privacidad
+## Privacy
 
-El procesamiento se realiza localmente. Los originales no se sobrescriben.
+Processing runs locally. Original images are never overwritten.
