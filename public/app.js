@@ -9,10 +9,10 @@ const TRANSLATIONS = {
     "review.eyebrow": "REVISIÓN", "review.empty": "Selecciona una imagen", "review.previous": "Anterior", "review.next": "Siguiente",
     "canvas.noDetections": "Sin detecciones", "canvas.preview": "VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS", "canvas.auto": "Auto", "canvas.manual": "Manual",
     "layers.title": "LAYERS", "layers.none": "Ninguna", "layers.stack": "LAYER STACK", "layers.empty": "Analiza una imagen para crear capas", "layers.noDetections": "No hay capas detectadas", "layers.layer": "Capa", "layers.add": "Añadir capa", "layers.delete": "Eliminar", "layers.manual": "Manual", "layers.auto": "Máscara automática", "layers.show": "Mostrar capa", "layers.hide": "Ocultar capa", "layers.selected": "{index} seleccionada",
-    "censor.title": "CENSOR", "censor.style": "Estilo de la selección", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LÍNEAS", "censor.glowWhite": "BLANCO GLOW", "censor.pixelateOption": "Píxeles", "censor.blurOption": "Desenfoque", "censor.linesOption": "Múltiples líneas negras", "censor.glowWhiteOption": "Blanco resplandeciente",
-    "controls.strength": "Intensidad", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; si no hay capas, el primer clic crea una automáticamente. Con el derecho borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.",
-    "classes.title": "Clases a censurar", "classes.help": "Activa o desactiva las clases de detección antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
-    "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE",
+    "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Estilo de la selección", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LÍNEAS", "censor.glowWhite": "BLANCO GLOW", "censor.pixelateOption": "Píxeles", "censor.blurOption": "Desenfoque", "censor.linesOption": "Múltiples líneas negras", "censor.glowWhiteOption": "Blanco resplandeciente",
+    "controls.optionsTitle": "OPTIONS", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; si no hay capas, el primer clic crea una automáticamente. Con el derecho borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.",
+    "classes.title": "Partes a censurar", "classes.help": "Activa o desactiva las partes detectables antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
+    "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE", "actions.save": "GUARDAR",
     "notice.noImages": "No encontré imágenes compatibles en esa carpeta.", "notice.folderUnsupported": "Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.", "notice.saveAtLeast": "Aprueba al menos una imagen antes de guardar aprobadas.", "notice.reviewComplete": "Ya no quedan imágenes por aprobar. ¿Quieres guardar ahora las imágenes aprobadas?", "notice.saveLater": "Las imágenes aprobadas quedaron listas. Puedes guardarlas con «Guardar aprobadas».", "notice.savedOne": "1 imagen guardada.", "notice.savedMany": "{count} imágenes guardadas.", "notice.analyzing": "Analizando carpeta localmente…", "notice.analyzingImage": "Analizando imagen localmente…", "notice.analysisDone": "Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.", "notice.analysisImageDone": "Análisis terminado. Ajusta la zona y guarda la imagen cuando esté lista.", "notice.detectorUnavailable": "Detector automático no disponible: {message} Puedes seguir dibujando zonas manuales.",
     "status.approved": "Aprobada", "status.rejected": "Saltada", "status.pending": "Pendiente", "status.noLayers": "Sin capas", "status.detectedOne": "1 capa detectada", "status.detectedMany": "{count} capas detectadas", "canvas.summaryOne": "1 capa · {status}", "canvas.summaryMany": "{count} capas · {status}", "canvas.manualHint": "Sin capas detectadas · haz clic para crear una capa", "progress.none": "Sin carpeta", "progress.one": "1 aprobada", "progress.many": "{count} aprobadas", "progress.detail": "{count} de {total} aprobadas", "progress.analyzing": "Analizando {current} de {total}", "footer.local": "Censor Station 0.1 · procesamiento local", "footer.instructions": "Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar"
   },
@@ -26,10 +26,10 @@ const TRANSLATIONS = {
     "review.eyebrow": "REVIEW", "review.empty": "Select an image", "review.previous": "Previous", "review.next": "Next",
     "canvas.noDetections": "No detections", "canvas.preview": "LIVE PREVIEW // MASK EDITOR", "canvas.auto": "Auto", "canvas.manual": "Manual",
     "layers.title": "LAYERS", "layers.none": "None", "layers.stack": "LAYER STACK", "layers.empty": "Analyze an image to create layers", "layers.noDetections": "No layers detected", "layers.layer": "Layer", "layers.add": "Add layer", "layers.delete": "Delete", "layers.manual": "Manual", "layers.auto": "Automatic mask", "layers.show": "Show layer", "layers.hide": "Hide layer", "layers.selected": "{index} selected",
-    "censor.title": "CENSOR", "censor.style": "Selection style", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LINES", "censor.glowWhite": "WHITE GLOW", "censor.pixelateOption": "Pixels", "censor.blurOption": "Blur", "censor.linesOption": "Multiple black lines", "censor.glowWhiteOption": "Glowing white",
-    "controls.strength": "Strength", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; if there are no layers, the first click creates one automatically. Right click erases inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Lower the threshold to find more areas; raise it to reduce false positives.",
-    "classes.title": "Classes to censor", "classes.help": "Enable or disable detection classes before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
-    "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE",
+    "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Selection style", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LINES", "censor.glowWhite": "WHITE GLOW", "censor.pixelateOption": "Pixels", "censor.blurOption": "Blur", "censor.linesOption": "Multiple black lines", "censor.glowWhiteOption": "Glowing white",
+    "controls.optionsTitle": "OPTIONS", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; if there are no layers, the first click creates one automatically. Right click erases inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Lower the threshold to find more areas; raise it to reduce false positives.",
+    "classes.title": "Parts to censor", "classes.help": "Enable or disable detectable parts before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
+    "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE", "actions.save": "SAVE",
     "notice.noImages": "No compatible images were found in that folder.", "notice.folderUnsupported": "Your browser cannot choose folders. Use a recent version of Chrome or Edge.", "notice.saveAtLeast": "Approve at least one image before saving approved files.", "notice.reviewComplete": "There are no more images to approve. Do you want to save the approved images now?", "notice.saveLater": "The approved images are ready. You can save them with “Save approved”.", "notice.savedOne": "1 image saved.", "notice.savedMany": "{count} images saved.", "notice.analyzing": "Analyzing folder locally…", "notice.analyzingImage": "Analyzing image locally…", "notice.analysisDone": "Analysis complete. Review each image, adjust the areas and approve only the correct ones.", "notice.analysisImageDone": "Analysis complete. Adjust the area and save the image when ready.", "notice.detectorUnavailable": "Automatic detector unavailable: {message} You can continue drawing manual areas.",
     "status.approved": "Approved", "status.rejected": "Skipped", "status.pending": "Pending", "status.noLayers": "No layers", "status.detectedOne": "1 layer detected", "status.detectedMany": "{count} layers detected", "canvas.summaryOne": "1 layer · {status}", "canvas.summaryMany": "{count} layers · {status}", "canvas.manualHint": "No layers detected · click to create a layer", "progress.none": "No folder", "progress.one": "1 approved", "progress.many": "{count} approved", "progress.detail": "{count} of {total} approved", "progress.analyzing": "Analyzing {current} of {total}", "footer.local": "Censor Station 0.1 · local processing", "footer.instructions": "Left click paints · right click erases · drag edges to move · corners to resize"
   },
@@ -43,10 +43,10 @@ const TRANSLATIONS = {
     "review.eyebrow": "レビュー", "review.empty": "画像を選択", "review.previous": "前へ", "review.next": "次へ",
     "canvas.noDetections": "検出なし", "canvas.preview": "ライブプレビュー // マスクエディター", "canvas.auto": "自動", "canvas.manual": "手動",
     "layers.title": "レイヤー", "layers.none": "なし", "layers.stack": "レイヤー", "layers.empty": "画像を解析してレイヤーを作成", "layers.noDetections": "レイヤー未検出", "layers.layer": "レイヤー", "layers.add": "レイヤー追加", "layers.delete": "削除", "layers.manual": "手動", "layers.auto": "自動マスク", "layers.show": "レイヤーを表示", "layers.hide": "レイヤーを隠す", "layers.selected": "{index} 件を選択",
-    "censor.title": "検閲", "censor.style": "選択範囲のスタイル", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "ライン", "censor.glowWhite": "白い光", "censor.pixelateOption": "ピクセル", "censor.blurOption": "ぼかし", "censor.linesOption": "複数の黒い線", "censor.glowWhiteOption": "光る白",
-    "controls.strength": "強度", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加します。レイヤーがない場合、最初のクリックで自動作成します。右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "下げると多く検出し、上げると誤検出を減らします。",
-    "classes.title": "検閲クラス", "classes.help": "フォルダーを解析する前に検出クラスを切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
-    "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認",
+    "censor.title": "検閲", "censor.type": "検閲タイプ", "censor.style": "選択範囲のスタイル", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "ライン", "censor.glowWhite": "白い光", "censor.pixelateOption": "ピクセル", "censor.blurOption": "ぼかし", "censor.linesOption": "複数の黒い線", "censor.glowWhiteOption": "光る白",
+    "controls.optionsTitle": "オプション", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加します。レイヤーがない場合、最初のクリックで自動作成します。右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "下げると多く検出し、上げると誤検出を減らします。",
+    "classes.title": "検閲する部位", "classes.help": "フォルダーを解析する前に検出する部位を切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
+    "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認", "actions.save": "保存",
     "notice.noImages": "対応する画像が見つかりません。", "notice.folderUnsupported": "このブラウザーではフォルダーを選択できません。新しい Chrome または Edge を使用してください。", "notice.saveAtLeast": "保存する前に画像を1枚以上承認してください。", "notice.reviewComplete": "承認する画像はもうありません。承認済みの画像を保存しますか？", "notice.saveLater": "承認済みの画像を保存できます。「承認済みを保存」を押してください。", "notice.savedOne": "1枚を保存しました。", "notice.savedMany": "{count}枚を保存しました。", "notice.analyzing": "フォルダーをローカル解析中…", "notice.analyzingImage": "画像をローカル解析中…", "notice.analysisDone": "解析完了。各画像を確認し、必要なら調整して承認してください。", "notice.analysisImageDone": "解析完了。範囲を調整して、準備ができたら画像を保存してください。", "notice.detectorUnavailable": "自動検出が利用できません: {message} 手動で範囲を描けます。",
     "status.approved": "承認済み", "status.rejected": "スキップ", "status.pending": "保留", "status.noLayers": "レイヤーなし", "status.detectedOne": "1レイヤーを検出", "status.detectedMany": "{count}レイヤーを検出", "canvas.summaryOne": "1レイヤー · {status}", "canvas.summaryMany": "{count}レイヤー · {status}", "canvas.manualHint": "レイヤー未検出 · クリックでレイヤーを作成", "progress.none": "フォルダーなし", "progress.one": "1件承認", "progress.many": "{count}件承認", "progress.detail": "{count} / {total} 件承認", "progress.analyzing": "{current} / {total} 件を解析中", "footer.local": "Censor Station 0.1 · ローカル処理", "footer.instructions": "左クリックで追加 · 右クリックで削除 · 辺をドラッグで移動 · 角でサイズ変更"
   },
@@ -60,10 +60,10 @@ const TRANSLATIONS = {
     "review.eyebrow": "审核", "review.empty": "选择一张图片", "review.previous": "上一张", "review.next": "下一张",
     "canvas.noDetections": "没有检测结果", "canvas.preview": "实时预览 // 遮挡编辑器", "canvas.auto": "自动", "canvas.manual": "手动",
     "layers.title": "图层", "layers.none": "无", "layers.stack": "图层堆栈", "layers.empty": "分析图片以创建图层", "layers.noDetections": "未检测到图层", "layers.layer": "图层", "layers.add": "添加图层", "layers.delete": "删除", "layers.manual": "手动", "layers.auto": "自动蒙版", "layers.show": "显示图层", "layers.hide": "隐藏图层", "layers.selected": "已选择第 {index} 个",
-    "censor.title": "审查", "censor.style": "选区样式", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "黑线", "censor.glowWhite": "白色光晕", "censor.pixelateOption": "像素化", "censor.blurOption": "模糊", "censor.linesOption": "多条黑线", "censor.glowWhiteOption": "发光白色",
-    "controls.strength": "强度", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡；如果没有图层，第一次点击会自动创建。右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "降低阈值可发现更多区域，提高阈值可减少误报。",
-    "classes.title": "要遮挡的类别", "classes.help": "分析文件夹前启用或停用检测类别。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
-    "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准",
+    "censor.title": "审查", "censor.type": "遮挡类型", "censor.style": "选区样式", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "黑线", "censor.glowWhite": "白色光晕", "censor.pixelateOption": "像素化", "censor.blurOption": "模糊", "censor.linesOption": "多条黑线", "censor.glowWhiteOption": "发光白色",
+    "controls.optionsTitle": "选项", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡；如果没有图层，第一次点击会自动创建。右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "降低阈值可发现更多区域，提高阈值可减少误报。",
+    "classes.title": "要遮挡的部位", "classes.help": "分析文件夹前启用或停用要检测的部位。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
+    "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准", "actions.save": "保存",
     "notice.noImages": "文件夹中没有兼容的图片。", "notice.folderUnsupported": "你的浏览器不支持选择文件夹。请使用新版 Chrome 或 Edge。", "notice.saveAtLeast": "请先批准至少一张图片再保存。", "notice.reviewComplete": "已经没有需要批准的图片了。现在要保存已批准的图片吗？", "notice.saveLater": "已批准的图片已经准备好。你可以点击“保存已批准”进行保存。", "notice.savedOne": "已保存 1 张图片。", "notice.savedMany": "已保存 {count} 张图片。", "notice.analyzing": "正在本地分析文件夹…", "notice.analyzingImage": "正在本地分析图片…", "notice.analysisDone": "分析完成。请检查每张图片，调整区域后再批准。", "notice.analysisImageDone": "分析完成。请调整区域，准备好后保存图片。", "notice.detectorUnavailable": "自动检测不可用：{message} 你仍可手动绘制区域。",
     "status.approved": "已批准", "status.rejected": "已跳过", "status.pending": "待处理", "status.noLayers": "无图层", "status.detectedOne": "检测到 1 个图层", "status.detectedMany": "检测到 {count} 个图层", "canvas.summaryOne": "1 个图层 · {status}", "canvas.summaryMany": "{count} 个图层 · {status}", "canvas.manualHint": "未检测到图层 · 点击创建图层", "progress.none": "未选择文件夹", "progress.one": "已批准 1 张", "progress.many": "已批准 {count} 张", "progress.detail": "已批准 {count} / {total} 张", "progress.analyzing": "正在分析 {current} / {total}", "footer.local": "Censor Station 0.1 · 本地处理", "footer.instructions": "左键绘制 · 右键擦除 · 拖动边缘移动 · 拖动角落调整大小"
   }
@@ -99,6 +99,16 @@ const state = {
   analysis: { active: false, current: 0, completed: 0, total: 0, stepFraction: 0, timer: null },
   optimizer: { files: [], current: -1, inputHandle: null, outputHandle: null, previewToken: 0 },
 };
+
+const ADVANCED_STYLE_COPY = {
+  es: { pixelate: "AJUSTES PIXELATE", blur: "AJUSTES BLUR", lines: "AJUSTES LÍNEAS", "glow-white": "AJUSTES WHITE GLOW", frequency: "Frecuencia", shape: "Forma", irregularity: "Bordes irregulares", square: "Cuadrado", circle: "Círculo", diamond: "Diamante", radius: "Radio", passes: "Pasadas", count: "Cantidad", thickness: "Grosor", angle: "Ángulo", haloSize: "Tamaño del halo", haloStrength: "Intensidad del halo" },
+  en: { pixelate: "PIXELATE TUNING", blur: "BLUR TUNING", lines: "LINES TUNING", "glow-white": "WHITE GLOW TUNING", frequency: "Frequency", shape: "Shape", irregularity: "Irregular edges", square: "Square", circle: "Circle", diamond: "Diamond", radius: "Radius", passes: "Passes", count: "Count", thickness: "Thickness", angle: "Angle", haloSize: "Halo size", haloStrength: "Halo strength" },
+  ja: { pixelate: "PIXELATE 設定", blur: "BLUR 設定", lines: "ライン設定", "glow-white": "白い光の設定", frequency: "頻度", shape: "形", irregularity: "不規則なエッジ", square: "四角", circle: "円", diamond: "ひし形", radius: "半径", passes: "回数", count: "本数", thickness: "太さ", angle: "角度", haloSize: "ハローの大きさ", haloStrength: "ハローの強さ" },
+  zh: { pixelate: "像素化设置", blur: "模糊设置", lines: "线条设置", "glow-white": "白色光晕设置", frequency: "频率", shape: "形状", irregularity: "不规则边缘", square: "方形", circle: "圆形", diamond: "菱形", radius: "半径", passes: "层数", count: "数量", thickness: "粗细", angle: "角度", haloSize: "光晕大小", haloStrength: "光晕强度" },
+};
+
+function advancedCopy(key) { return (ADVANCED_STYLE_COPY[currentLanguage] || ADVANCED_STYLE_COPY.en)[key] || key; }
+const advancedValue = (box, key, fallback) => Number.isFinite(Number(box?.[key])) ? Number(box[key]) : fallback;
 
 const $ = (id) => document.getElementById(id);
 const canvas = $("preview");
@@ -140,9 +150,23 @@ function updateSingleModeUi() {
   const item = currentFile();
   const analyzeLabel = $("detect-all").querySelector(".button-label");
   const analyzeButton = $("detect-all");
-  analyzeLabel.textContent = t(single ? "toolbar.analyzeImage" : "toolbar.analyze");
+  const modeKnown = Boolean(state.inputHandle || state.singleMode);
+  if (!modeKnown) {
+    analyzeLabel.textContent = "-----";
+    $("save-all").querySelector(".button-label").textContent = "-----";
+    $("save-single").querySelector(".button-label").textContent = "-----";
+    $("approve").querySelector(".button-label").textContent = "-----";
+  } else {
+    analyzeLabel.textContent = t(single ? "toolbar.analyzeImage" : "toolbar.analyze");
+    $("save-all").querySelector(".button-label").textContent = t("toolbar.saveApproved");
+    $("save-single").querySelector(".button-label").textContent = t("toolbar.saveImage");
+    const actionKey = item && state.current === state.files.length - 1 ? "actions.save" : "actions.approve";
+    $("approve").querySelector(".button-label").textContent = t(actionKey);
+  }
   analyzeButton.title = t(single ? "toolbar.analyzeImage" : "toolbar.analyze");
   analyzeButton.disabled = !state.files.length || state.analysis.active;
+  $("reject").disabled = !item;
+  $("approve").disabled = !item;
   $("save-all").hidden = single;
   $("save-single").hidden = !single;
   $("save-single").disabled = !single || !item;
@@ -325,6 +349,75 @@ function renderLayers() {
   }));
 }
 
+async function folderRequest(payload) {
+  const response = await fetch("/api/folder", {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-censor-station": "folder-access" },
+    body: JSON.stringify(payload),
+  });
+  const result = await response.json();
+  if (!response.ok || !result.ok) throw new Error(result.message || "No se pudo acceder a la carpeta local.");
+  return result;
+}
+
+function localFolderHandle(id, name, subfolder = "") {
+  return {
+    name,
+    async *values() {
+      const result = await folderRequest({ action: "list", id });
+      for (const filename of result.files) {
+        yield {
+          kind: "file", name: filename,
+          async getFile() {
+            const result = await folderRequest({ action: "read", id, name: filename });
+            const bytes = Uint8Array.from(atob(result.data), char => char.charCodeAt(0));
+            return new File([bytes], filename, { type: mimeFromName(filename) });
+          },
+        };
+      }
+    },
+    async getDirectoryHandle(child) { return localFolderHandle(id, child, child); },
+    async getFileHandle(filename) {
+      return {
+        async createWritable() {
+          let blob;
+          return {
+            async write(value) { blob = value; },
+            async close() {
+              await folderRequest({ action: "write", id, subfolder, name: filename, dataUrl: await blobToDataUrl(blob) });
+            },
+          };
+        },
+      };
+    },
+  };
+}
+
+async function pickFolder() {
+  if (window.showDirectoryPicker) return window.showDirectoryPicker({ mode: "readwrite" });
+  const result = await folderRequest({ action: "pick" });
+  if (result.cancelled) throw new DOMException("Cancelled", "AbortError");
+  return localFolderHandle(result.id, result.name);
+}
+
+const folderLoadingText = {
+  es: ["Cargando carpeta…", "imágenes cargadas"],
+  en: ["Loading folder…", "images loaded"],
+  ja: ["フォルダーを読み込み中…", "枚読み込み済み"],
+  zh: ["正在加载文件夹…", "张图片已加载"],
+};
+function updateFolderLoading(count) {
+  $("folder-loading-count").textContent = count + " " + (folderLoadingText[currentLanguage] || folderLoadingText.en)[1];
+}
+async function startFolderLoading(name) {
+  $("folder-loading-title").textContent = (folderLoadingText[currentLanguage] || folderLoadingText.en)[0];
+  $("folder-loading-name").textContent = name;
+  updateFolderLoading(0);
+  $("folder-loading").showModal();
+  await new Promise(resolve => setTimeout(resolve, 20));
+}
+$("folder-loading").addEventListener("cancel", event => event.preventDefault());
+
 function makeFile(file) {
   return { file, name: file.name, url: URL.createObjectURL(file), image: null, detections: [], analyzed: false, status: "" };
 }
@@ -359,6 +452,7 @@ async function showFile(index) {
   fitCanvas(item);
   draw();
   syncControls();
+  updateSingleModeUi();
 }
 
 function fitCanvas(item) {
@@ -439,6 +533,55 @@ function drawSquareBar(target, x1, y1, x2, y2, thickness) {
   target.fill();
 }
 
+function pixelBlockSize(box, renderScale) {
+  const frequency = advancedValue(box, "pixelFrequency", 100);
+  return Math.max(2, Math.round((24 - frequency / 9) * renderScale));
+}
+
+function tileNoise(x, y, seed = 0) {
+  const value = Math.sin(x * 12.9898 + y * 78.233 + seed * 37.719) * 43758.5453;
+  return value - Math.floor(value);
+}
+
+function drawAdvancedPixelate(target, source, width, height, block, box) {
+  target.imageSmoothingEnabled = false;
+  target.drawImage(source, 0, 0, source.width, source.height, 0, 0, width, height);
+  const shape = box.pixelShape || "square";
+  const irregularity = advancedValue(box, "pixelIrregularity", 0);
+  if (shape === "square" && irregularity <= 0) return;
+  const pixels = source.getContext("2d").getImageData(0, 0, source.width, source.height).data;
+  const jitter = block * irregularity / 180;
+  for (let row = 0, y = 0; y < height; row++, y += block) {
+    for (let column = 0, x = 0; x < width; column++, x += block) {
+      const sampleX = Math.min(source.width - 1, Math.floor((x + block / 2) / block));
+      const sampleY = Math.min(source.height - 1, Math.floor((y + block / 2) / block));
+      const offset = (sampleY * source.width + sampleX) * 4;
+      target.fillStyle = `rgb(${pixels[offset]}, ${pixels[offset + 1]}, ${pixels[offset + 2]})`;
+      const centerX = x + block / 2;
+      const centerY = y + block / 2;
+      target.beginPath();
+      if (shape === "circle") {
+        target.arc(centerX, centerY, block * .72, 0, Math.PI * 2);
+      } else if (shape === "diamond") {
+        const radius = block * .74;
+        target.moveTo(centerX, centerY - radius);
+        target.lineTo(centerX + radius, centerY);
+        target.lineTo(centerX, centerY + radius);
+        target.lineTo(centerX - radius, centerY);
+        target.closePath();
+      } else {
+        const corner = (index) => (tileNoise(column, row, index) - .5) * jitter;
+        target.moveTo(x + corner(1), y + corner(2));
+        target.lineTo(x + block + corner(3), y + corner(4));
+        target.lineTo(x + block + corner(5), y + block + corner(6));
+        target.lineTo(x + corner(7), y + block + corner(8));
+        target.closePath();
+      }
+      target.fill();
+    }
+  }
+}
+
 function createEffectLayer(image, box, width, height) {
   const effect = document.createElement("canvas");
   effect.width = width;
@@ -454,13 +597,15 @@ function createEffectLayer(image, box, width, height) {
   if (box.mode === "lines" || box.mode === "black") {
     effectCtx.globalAlpha = 1;
     effectCtx.fillStyle = "#000000";
-    const thickness = Math.max(3, boxH * (box.mode === "lines" ? .075 : .14));
-    const lineCount = box.mode === "lines" ? 6 : 1;
-    const firstY = boxY + boxH * (box.mode === "lines" ? .1 : .16);
-    const spacing = boxH * (box.mode === "lines" ? .16 : 0);
+    const lineCount = box.mode === "lines" ? advancedValue(box, "lineCount", 6) : 1;
+    const thickness = Math.max(3, boxH * (box.mode === "lines" ? advancedValue(box, "lineThickness", 8) / 100 : .14));
+    const firstY = boxY + boxH * (lineCount === 1 ? .5 : .12);
+    const spacing = lineCount === 1 ? 0 : boxH * .76 / (lineCount - 1);
+    const angle = (box.mode === "lines" ? advancedValue(box, "lineAngle", -10) : -10) * Math.PI / 180;
+    const halfLength = boxW * .44;
     for (let index = 0; index < lineCount; index++) {
       const y = firstY + spacing * index;
-      drawSquareBar(effectCtx, boxX + boxW * .06, y + boxH * .08, boxX + boxW * .94, y - boxH * .08, thickness);
+      drawSquareBar(effectCtx, boxX + boxW / 2 - Math.cos(angle) * halfLength, y - Math.sin(angle) * halfLength, boxX + boxW / 2 + Math.cos(angle) * halfLength, y + Math.sin(angle) * halfLength, thickness);
     }
     return effect;
   }
@@ -471,14 +616,21 @@ function createEffectLayer(image, box, width, height) {
     return effect;
   }
 
-  const block = box.mode === "pixelate" ? Math.max(2, Math.round(22 - Number(box.strength || 65) / 7)) : 1;
+  const renderScale = (scaleX + scaleY) / 2;
+  const block = box.mode === "pixelate" ? pixelBlockSize(box, renderScale) : 1;
   const source = document.createElement("canvas");
   source.width = Math.max(1, Math.round(width / block));
   source.height = Math.max(1, Math.round(height / block));
   source.getContext("2d").drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, source.width, source.height);
-  if (box.mode === "blur") effectCtx.filter = `blur(${Math.max(2, Number(box.strength || 65) / 10)}px)`;
-  effectCtx.imageSmoothingEnabled = box.mode !== "pixelate";
-  effectCtx.drawImage(source, 0, 0, source.width, source.height, 0, 0, width, height);
+  if (box.mode === "pixelate") drawAdvancedPixelate(effectCtx, source, width, height, block, box);
+  else {
+    if (box.mode === "blur") {
+      const radius = advancedValue(box, "blurRadius", 10) * advancedValue(box, "blurPasses", 1) * renderScale;
+      effectCtx.filter = `blur(${Math.max(1, radius)}px)`;
+    }
+    effectCtx.imageSmoothingEnabled = true;
+    effectCtx.drawImage(source, 0, 0, source.width, source.height, 0, 0, width, height);
+  }
   effectCtx.filter = "none";
   return effect;
 }
@@ -535,7 +687,7 @@ canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
 function createManualLayer(item) {
   const scale = Number(canvas.dataset.scale || 1);
-  item.detections.push({ x: 0, y: 0, w: canvas.width / scale, h: canvas.height / scale, mode: "pixelate", strength: 65, padding: 0, source: "manual", class: "MANUAL", brushEdits: [], visible: true, manualBlank: true });
+  item.detections.push({ x: 0, y: 0, w: canvas.width / scale, h: canvas.height / scale, mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", brushEdits: [], visible: true, manualBlank: true });
   state.selected = item.detections.length - 1;
 }
 
@@ -646,12 +798,52 @@ function resizeBox(box, original, corner, dx, dy) {
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
+function advancedRange(box, key, label, min, max, fallback, suffix = "") {
+  const value = advancedValue(box, key, fallback);
+  return `<label class="advanced-setting"><span class="field-row"><span class="field-label">${escapeHtml(label)}</span><output>${value}${suffix}</output></span><input type="range" data-advanced-key="${key}" min="${min}" max="${max}" value="${value}" /></label>`;
+}
+
+function renderAdvancedSettings(box) {
+  const panel = $("style-advanced");
+  if (!box) { panel.hidden = true; panel.innerHTML = ""; return; }
+  const title = advancedCopy(box.mode);
+  let fields = "";
+  if (box.mode === "pixelate") {
+    const shape = box.pixelShape || "square";
+    fields = advancedRange(box, "pixelFrequency", advancedCopy("frequency"), 10, 200, 100)
+      + `<label class="advanced-setting"><span class="field-row"><span class="field-label">${advancedCopy("shape")}</span></span><select data-advanced-key="pixelShape"><option value="square" ${shape === "square" ? "selected" : ""}>${advancedCopy("square")}</option><option value="circle" ${shape === "circle" ? "selected" : ""}>${advancedCopy("circle")}</option><option value="diamond" ${shape === "diamond" ? "selected" : ""}>${advancedCopy("diamond")}</option></select></label>`
+      + advancedRange(box, "pixelIrregularity", advancedCopy("irregularity"), 0, 100, 0, "%");
+  } else if (box.mode === "blur") {
+    fields = advancedRange(box, "blurRadius", advancedCopy("radius"), 1, 50, 10, " px")
+      + advancedRange(box, "blurPasses", advancedCopy("passes"), 1, 3, 1, "×");
+  } else if (box.mode === "lines") {
+    fields = advancedRange(box, "lineCount", advancedCopy("count"), 1, 12, 6)
+      + advancedRange(box, "lineThickness", advancedCopy("thickness"), 2, 25, 8, "%")
+      + advancedRange(box, "lineAngle", advancedCopy("angle"), -45, 45, -10, "°");
+  } else if (box.mode === "glow-white") {
+    fields = advancedRange(box, "glowRadius", advancedCopy("haloSize"), 2, 50, 20, " px")
+      + advancedRange(box, "glowStrength", advancedCopy("haloStrength"), 10, 100, 100, "%");
+  }
+  panel.hidden = !fields;
+  panel.innerHTML = fields ? `<div class="style-advanced-heading">✦ ${escapeHtml(title)}</div>${fields}` : "";
+}
+
+$("style-advanced").addEventListener("input", (event) => {
+  const input = event.target.closest("[data-advanced-key]");
+  const box = currentFile()?.detections[state.selected];
+  if (!input || !box) return;
+  const value = input instanceof HTMLSelectElement ? input.value : Number(input.value);
+  box[input.dataset.advancedKey] = value;
+  const output = input.closest(".advanced-setting")?.querySelector("output");
+  if (output) output.textContent = `${value}${input.dataset.advancedKey === "pixelIrregularity" || input.dataset.advancedKey === "lineThickness" || input.dataset.advancedKey === "glowStrength" ? "%" : input.dataset.advancedKey === "blurRadius" || input.dataset.advancedKey === "glowRadius" ? " px" : input.dataset.advancedKey === "blurPasses" ? "×" : input.dataset.advancedKey === "lineAngle" ? "°" : ""}`;
+  draw();
+});
+
 function syncControls() {
   const box = currentFile()?.detections[state.selected];
   const enabled = Boolean(box);
   $("add-box").disabled = !currentFile();
   $("style-select").disabled = !enabled;
-  $("strength").disabled = !enabled;
   $("padding").disabled = !enabled || Boolean(box?.manualBlank);
   $("brush-size").disabled = !enabled;
   $("delete-box").disabled = !enabled;
@@ -662,12 +854,11 @@ function syncControls() {
   });
   if (enabled) {
     $("style-select").value = box.mode;
-    $("strength").value = box.strength;
     $("padding").value = box.padding;
   }
-  $("strength-value").textContent = `${$("strength").value}%`;
   $("padding-value").textContent = `${$("padding").value} px`;
   $("brush-size-value").textContent = `${$("brush-size").value} px`;
+  renderAdvancedSettings(box);
 }
 
 $("style-select").addEventListener("change", (event) => updateSelected("mode", event.target.value));
@@ -678,7 +869,6 @@ document.querySelectorAll("[data-style-button]").forEach((button) => button.addE
   renderLayers();
   syncControls();
 }));
-$("strength").addEventListener("input", (event) => { $("strength-value").textContent = `${event.target.value}%`; updateSelected("strength", Number(event.target.value)); });
 $("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value)); });
 $("brush-size").addEventListener("input", (event) => { $("brush-size-value").textContent = `${event.target.value} px`; });
 $("threshold").addEventListener("input", (event) => { $("threshold-value").textContent = `${event.target.value}%`; });
@@ -716,15 +906,15 @@ $("single-image-input").addEventListener("change", async (event) => {
 
 $("choose-input").addEventListener("click", async () => {
   try {
-    if (!window.showDirectoryPicker) throw new Error(t("notice.folderUnsupported"));
-    state.inputHandle = await window.showDirectoryPicker({ mode: "readwrite" });
+    const handle = await pickFolder();
+    await startFolderLoading(handle.name);
+    const files = await readImageFolder(handle);
+    state.inputHandle = handle;
     state.singleMode = false;
     state.files.forEach((item) => URL.revokeObjectURL(item.url));
-    state.files = [];
-    for await (const entry of state.inputHandle.values()) {
-      if (entry.kind !== "file" || !/^image\/(jpeg|png|webp|gif|bmp|avif)$/i.test(entry.name.match(/\.[^.]+$/)?.[0] ? mimeFromName(entry.name) : "")) continue;
-      state.files.push(makeFile(await entry.getFile()));
-    }
+    state.files = files.map(makeFile);
+    state.current = -1;
+    state.selected = -1;
     state.files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
     $("input-name").textContent = state.inputHandle.name;
     $("choose-output").disabled = false;
@@ -733,11 +923,12 @@ $("choose-input").addEventListener("click", async () => {
     clearNotice(); updateSingleModeUi(); renderQueue();
     if (state.files.length) await showFile(0); else setNotice(t("notice.noImages"), "error");
   } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); }
+  finally { $("folder-loading").close(); }
 });
 
 function mimeFromName(name) { const ext = name.split(".").pop().toLowerCase(); return ({ jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", bmp: "image/bmp", avif: "image/avif" })[ext] || ""; }
 
-$("choose-output").addEventListener("click", async () => { try { state.outputHandle = await window.showDirectoryPicker({ mode: "readwrite" }); $("output-name").textContent = t("toolbar.outputName", { name: state.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); } });
+$("choose-output").addEventListener("click", async () => { try { state.outputHandle = await pickFolder(); $("output-name").textContent = t("toolbar.outputName", { name: state.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); } });
 $("previous").addEventListener("click", () => showFile(state.current - 1));
 $("next").addEventListener("click", () => showFile(state.current + 1));
 $("reject").addEventListener("click", () => { if (!currentFile()) return; currentFile().status = "rejected"; renderQueue(); moveNext(); });
@@ -818,7 +1009,7 @@ async function detectFile(item) {
       x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3],
       base: { x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3] },
       polygon: detection.polygon || [], basePolygon: detection.polygon || [],
-      mode: "pixelate", strength: 65, padding: Number($("padding").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
+      mode: "pixelate", padding: Number($("padding").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
     }));
   } catch (error) {
     if (!item.analyzed) setNotice(t("notice.detectorUnavailable", { message: error.message }), "error");
@@ -861,7 +1052,8 @@ function createCensoredLayer(image, box, width, height) {
     maskCtx.globalCompositeOperation = "source-in";
     maskCtx.fillStyle = "#fff";
     maskCtx.fillRect(0, 0, width, height);
-    const radius = (6 + Number(box.strength || 65) * .22) * scale;
+    const radius = advancedValue(box, "glowRadius", 20) * scale;
+    target.globalAlpha = advancedValue(box, "glowStrength", 100) / 100;
     target.filter = `blur(${radius}px)`;
     target.drawImage(mask, 0, 0);
     target.drawImage(mask, 0, 0);
@@ -869,6 +1061,7 @@ function createCensoredLayer(image, box, width, height) {
     target.drawImage(mask, 0, 0);
     target.filter = "none";
     // Restore a fully opaque core after drawing the exterior halo.
+    target.globalAlpha = 1;
     target.drawImage(mask, 0, 0);
     return effect;
   }
@@ -898,6 +1091,8 @@ async function readImageFolder(handle) {
   for await (const entry of handle.values()) {
     if (entry.kind !== "file" || !mimeFromName(entry.name)) continue;
     files.push(await entry.getFile());
+    updateFolderLoading(files.length);
+    if (files.length % 20 === 0) await new Promise(resolve => setTimeout(resolve, 0));
   }
   return files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 }
@@ -1077,10 +1272,12 @@ $("optimizer-quality").addEventListener("input", () => { invalidateOptimizerResu
 $("optimizer-lossless").addEventListener("change", () => { invalidateOptimizerResults(); syncOptimizerControls(); refreshOptimizerPreview(); });
 $("optimizer-choose-input").addEventListener("click", async () => {
   try {
-    if (!window.showDirectoryPicker) throw new Error(t("notice.folderUnsupported"));
-    state.optimizer.inputHandle = await window.showDirectoryPicker({ mode: "readwrite" });
+    const handle = await pickFolder();
+    await startFolderLoading(handle.name);
+    const files = await readImageFolder(handle);
+    state.optimizer.inputHandle = handle;
     state.optimizer.files.forEach((item) => { URL.revokeObjectURL(item.url); if (item.optimizedUrl) URL.revokeObjectURL(item.optimizedUrl); });
-    state.optimizer.files = (await readImageFolder(state.optimizer.inputHandle)).map(makeOptimizerFile);
+    state.optimizer.files = files.map(makeOptimizerFile);
     state.optimizer.current = -1;
     $("optimizer-input-name").textContent = state.optimizer.inputHandle.name;
     $("optimizer-choose-output").disabled = !state.optimizer.files.length;
@@ -1089,8 +1286,9 @@ $("optimizer-choose-input").addEventListener("click", async () => {
     syncOptimizerControls();
     if (state.optimizer.files.length) await showOptimizerFile(0); else setOptimizerNotice(t("notice.noImages"), "error");
   } catch (error) { if (error.name !== "AbortError") setOptimizerNotice(error.message, "error"); }
+  finally { $("folder-loading").close(); }
 });
-$("optimizer-choose-output").addEventListener("click", async () => { try { state.optimizer.outputHandle = await window.showDirectoryPicker({ mode: "readwrite" }); $("optimizer-output-name").textContent = t("toolbar.outputName", { name: state.optimizer.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setOptimizerNotice(error.message, "error"); } });
+$("optimizer-choose-output").addEventListener("click", async () => { try { state.optimizer.outputHandle = await pickFolder(); $("optimizer-output-name").textContent = t("toolbar.outputName", { name: state.optimizer.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setOptimizerNotice(error.message, "error"); } });
 $("optimizer-process").addEventListener("click", () => optimizeAll());
 $("optimizer-save-all").addEventListener("click", async () => {
   if (!state.optimizer.files.length) return;

@@ -16,15 +16,19 @@ Aplicación local para revisar una carpeta de imágenes, detectar zonas sensible
 
 ## Uso
 
-Requisitos: Node.js 18+ y Python 3.10+ para la detección automática y la optimización. Esta versión usa `nsfw-anime-xl-x1280.pt`, un modelo YOLO26-seg que devuelve máscaras de regiones NSFW anime. La revisión y edición manual funciona con Node.js solamente.
+Requisitos: Node.js 20.19+ y Python 3.10+ para la detección automática y la optimización. Esta versión usa `nsfw-anime-xl-x1280.pt`, un modelo YOLO26-seg que devuelve máscaras de regiones NSFW anime. La revisión y edición manual funciona con Node.js solamente.
 
-En Windows, puedes iniciar todo con doble clic en [iniciar_autocensor.bat](C:/Users/johin/Code_Library/AI/AutoCensor/iniciar_autocensor.bat). El script abre el servidor en una ventana separada y lanza el navegador automáticamente.
+En Windows, puedes iniciar todo con doble clic en [iniciar_autocensor.bat](C:/Users/johin/Code_Library/AI/AutoCensor/iniciar_autocensor.bat). El servidor se ejecuta en esa misma ventana y abre el navegador cuando está listo. Mantén la ventana abierta mientras usas la app; pulsa Ctrl+C para detenerla. Si el servidor termina o falla, la ventana muestra el resultado y espera una tecla antes de cerrarse.
 
 ```powershell
 npm start
 ```
 
-Abre [http://127.0.0.1:4173](http://127.0.0.1:4173) en Chrome o Edge. El navegador necesita `showDirectoryPicker`, por eso se recomienda una versión reciente de uno de esos dos navegadores.
+`npm start` construye la interfaz Preact y después inicia el servidor local. Para desarrollar únicamente la interfaz puedes usar `npm run dev`; este modo redirige las llamadas API al servidor local de `127.0.0.1:4173`, que debe estar ejecutándose por separado.
+
+Abre [http://127.0.0.1:4173](http://127.0.0.1:4173) en Chrome, Edge o Firefox. En Windows, Firefox utiliza el selector de carpetas del servidor local; Chrome y Edge mantienen su selector integrado. El servidor debe ejecutarse en el mismo equipo que las carpetas. Si cancelas el selector, se conserva la selección anterior.
+
+También puedes elegir carpetas de salida en Firefox. Sin salida explícita, los resultados se guardan en `censored` o `optimized` dentro de la carpeta de entrada, con los sufijos `_censored` y `_optimized`. Después de reiniciar el servidor, vuelve a elegir las carpetas.
 
 Para instalar el detector anime NSFW:
 
@@ -38,6 +42,14 @@ Descarga `nsfw-anime-xl-x1280.pt` desde [01miku/anime-nsfw-segm-yolo26](https://
 En este proyecto `.venv` ya queda configurado como el entorno virtual local. El servidor lo detecta automáticamente, así que también puedes iniciar la app directamente con `npm start` sin activar el entorno en cada terminal.
 
 La primera detección puede tardar más mientras se carga el modelo. La pestaña **Optimizar** usa Pillow en un worker Python local: PNG se comprime sin cambiar píxeles y el modo sin pérdida convierte a PNG cuando es necesario. WebP/JPEG usan calidad configurable. El servidor solo recibe las imágenes en memoria desde la interfaz local, las escribe temporalmente para ejecutar el detector u optimizador y las elimina al terminar; no hay un servicio remoto configurado.
+
+## Arquitectura local
+
+- [server.mjs](C:/Users/johin/Code_Library/AI/AutoCensor/server.mjs) expone la interfaz y las rutas locales; no abre un segundo servidor Python.
+- [tools/server](C:/Users/johin/Code_Library/AI/AutoCensor/tools/server) contiene el protocolo de workers persistentes y el manejo seguro de imágenes temporales.
+- [tools/python](C:/Users/johin/Code_Library/AI/AutoCensor/tools/python) es el motor Python dividido por responsabilidad: `detector`, `optimizer`, `images`, `config` y `protocol`.
+- Los workers se ejecutan como módulos JSONL persistentes. Por ello el modelo YOLO se carga una vez y Pillow puede procesar varias imágenes sin lanzar Python por cada archivo.
+- [tools/detect_anime_nsfw.py](C:/Users/johin/Code_Library/AI/AutoCensor/tools/detect_anime_nsfw.py) y [tools/optimize_image.py](C:/Users/johin/Code_Library/AI/AutoCensor/tools/optimize_image.py) permanecen como entradas compatibles para scripts existentes.
 
 Si Python está instalado en una ruta específica, se puede indicar antes de arrancar:
 

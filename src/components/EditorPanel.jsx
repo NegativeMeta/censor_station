@@ -1,0 +1,8 @@
+export function EditorPanel() {
+  return <section className="review card">
+    <div className="review-head"><div><span className="eyebrow" data-i18n="review.eyebrow">REVISIÓN</span><h2 id="current-name" data-i18n="review.empty">Selecciona una imagen</h2></div><div className="review-nav"><button id="previous" className="icon-button" data-i18n-title="review.previous" data-i18n-aria-label="review.previous" disabled><span className="button-icon icon-arrow-left" aria-hidden="true" /></button><span id="current-index">—</span><button id="next" className="icon-button" data-i18n-title="review.next" data-i18n-aria-label="review.next" disabled><span className="button-icon icon-arrow-right" aria-hidden="true" /></button></div></div>
+    <div id="analysis-progress" className="analysis-progress" hidden aria-live="polite"><div className="analysis-progress-head"><span id="analysis-progress-label">Analizando 1 de 1</span><strong id="analysis-progress-value">0%</strong></div><div id="analysis-progress-track" className="analysis-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="analysis-progress-bar" className="analysis-progress-bar" /></div></div>
+    <div id="canvas-wrap" className="canvas-wrap empty-canvas"><div className="canvas-preview-label" data-i18n="canvas.preview">VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS</div><canvas id="preview" hidden /></div>
+    <div className="canvas-footer"><div id="detection-summary" data-i18n="canvas.noDetections">Sin detecciones</div><div className="legend"><span><i className="legend-swatch auto" /><span data-i18n="canvas.auto">Auto</span></span><span><i className="legend-swatch manual" /><span data-i18n="canvas.manual">Manual</span></span></div></div>
+  </section>;
+}

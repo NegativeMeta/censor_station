@@ -7,10 +7,11 @@ const path = require('node:path');
   const browser = await chromium.launch({ channel: 'msedge', headless: true });
   try {
     const page = await browser.newPage();
-    await page.setContent(fs.readFileSync(path.join(__dirname, '../public/index.html'), 'utf8').replace(/<script[^>]*src="\/app.js"[^>]*><\/script>/, ''));
+    await page.setContent('<!doctype html><canvas id="preview"></canvas>');
     const source = fs.readFileSync(path.join(__dirname, '../public/app.js'), 'utf8');
     // Load the actual rendering functions without starting the application.
-    await page.addScriptTag({ content: source.slice(source.indexOf('function renderPolygon('), source.indexOf('function hitTest(')) + source.slice(source.indexOf('function createCensoredLayer('), source.indexOf('async function moveNext(')) });
+    const advancedValue = source.match(/const advancedValue =[^\n]+/)[0];
+    await page.addScriptTag({ content: advancedValue + ';' + source.slice(source.indexOf('function renderPolygon('), source.indexOf('function hitTest(')) + source.slice(source.indexOf('function createCensoredLayer('), source.indexOf('async function moveNext(')) });
     const results = await page.evaluate(() => {
       const image = { naturalWidth: 240, naturalHeight: 240 };
       const base = { x: 80, y: 80, w: 80, h: 80, mode: 'glow-white', strength: 65, brushEdits: [] };

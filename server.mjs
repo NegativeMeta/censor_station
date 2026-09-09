@@ -3,15 +3,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promises as fs, existsSync } from "node:fs";
 import { spawn } from "node:child_process";
-import crypto from "node:crypto";
+import { folderAccess } from "./tools/folder-access.mjs";
+import { clamp, decodeDataUrl, readJsonBody, withTemporaryImage } from "./tools/server/image-api.mjs";
+import { createPythonWorker } from "./tools/server/python-worker.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.join(__dirname, "public");
-const bridgePath = path.join(__dirname, "tools", "detect_anime_nsfw.py");
-const optimizerPath = path.join(__dirname, "tools", "optimize_image.py");
+const distDir = path.join(__dirname, "dist");
+const publicDir = existsSync(distDir) ? distDir : path.join(__dirname, "public");
 const port = Number(process.env.PORT || 4173);
-const detectorWorker = { child: null, buffer: "", pending: [] };
-const optimizerWorker = { child: null, buffer: "", pending: [] };
+const detectorWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.detector_worker", label: "Anime NSFW" });
+const optimizerWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.optimizer_worker", label: "Pillow" });
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -23,179 +24,20 @@ const mimeTypes = {
 };
 
 function sendJson(response, status, body) {
-  response.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "cache-control": "no-store",
-  });
+  response.writeHead(status, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
   response.end(JSON.stringify(body));
 }
 
-async function readBody(request) {
-  const chunks = [];
-  let size = 0;
-  for await (const chunk of request) {
-    size += chunk.length;
-    if (size > 35 * 1024 * 1024) throw new Error("La imagen supera el límite de 35 MB.");
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks).toString("utf8");
-}
-
-function decodeDataUrl(dataUrl) {
-  const match = /^data:([^;]+);base64,(.+)$/s.exec(dataUrl || "");
-  if (!match) throw new Error("Formato de imagen inválido.");
-  return { mime: match[1], data: Buffer.from(match[2], "base64") };
-}
-
-function localPythonPath() {
-  const localPython = process.platform === "win32"
-    ? path.join(__dirname, ".venv", "Scripts", "python.exe")
-    : path.join(__dirname, ".venv", "bin", "python");
-  const fallbackPython = process.platform === "win32" ? "py" : "python3";
-  return process.env.PYTHON || (existsSync(localPython) ? localPython : fallbackPython);
-}
-
-function rejectWorker(error) {
-  const pending = detectorWorker.pending.splice(0);
-  for (const request of pending) request.reject(error);
-}
-
-function ensureDetectorWorker() {
-  if (detectorWorker.child && !detectorWorker.child.killed) return detectorWorker.child;
-
-  const python = localPythonPath();
-  const args = process.platform === "win32" && python === "py"
-    ? ["-3", bridgePath]
-    : [bridgePath];
-  const child = spawn(python, args, { windowsHide: true, cwd: __dirname });
-  detectorWorker.child = child;
-  detectorWorker.buffer = "";
-
-  child.stdout.setEncoding("utf8");
-  child.stdout.on("data", (chunk) => {
-    detectorWorker.buffer += chunk;
-    let newline;
-    while ((newline = detectorWorker.buffer.indexOf("\n")) >= 0) {
-      const line = detectorWorker.buffer.slice(0, newline).trim();
-      detectorWorker.buffer = detectorWorker.buffer.slice(newline + 1);
-      if (!line) continue;
-      const request = detectorWorker.pending.shift();
-      if (!request) continue;
-      try {
-        const result = JSON.parse(line);
-        if (!result.ok) request.reject(new Error(result.error || "El detector anime NSFW devolvió un error."));
-        else request.resolve(result.detections || []);
-      } catch {
-        request.reject(new Error("El detector anime NSFW devolvió una respuesta inválida."));
-      }
-    }
-  });
-  child.stderr.setEncoding("utf8");
-  child.stderr.on("data", (chunk) => console.error(`[Anime NSFW] ${chunk.trim()}`));
-  child.on("error", (error) => {
-    if (detectorWorker.child === child) detectorWorker.child = null;
-    rejectWorker(new Error(`No se pudo iniciar el detector anime NSFW: ${error.message}`));
-  });
-  child.on("close", (code) => {
-    if (detectorWorker.child === child) detectorWorker.child = null;
-    if (code !== 0) rejectWorker(new Error(`El detector anime NSFW terminó con código ${code}.`));
-  });
-  return child;
-}
-
-function runAnimeNsfwDetector(imagePath, threshold, classes) {
-  const child = ensureDetectorWorker();
-  return new Promise((resolve, reject) => {
-    detectorWorker.pending.push({ resolve, reject });
-    try {
-      child.stdin.write(JSON.stringify({ imagePath, threshold, classes }) + "\n");
-    } catch (error) {
-      detectorWorker.pending.pop();
-      reject(error);
-    }
-  });
-}
-
-function rejectOptimizerWorker(error) {
-  const pending = optimizerWorker.pending.splice(0);
-  for (const request of pending) request.reject(error);
-}
-
-function ensureOptimizerWorker() {
-  if (optimizerWorker.child && !optimizerWorker.child.killed) return optimizerWorker.child;
-
-  const python = localPythonPath();
-  const args = process.platform === "win32" && python === "py"
-    ? ["-3", optimizerPath]
-    : [optimizerPath];
-  const child = spawn(python, args, { windowsHide: true, cwd: __dirname });
-  optimizerWorker.child = child;
-  optimizerWorker.buffer = "";
-
-  child.stdout.setEncoding("utf8");
-  child.stdout.on("data", (chunk) => {
-    optimizerWorker.buffer += chunk;
-    let newline;
-    while ((newline = optimizerWorker.buffer.indexOf("\n")) >= 0) {
-      const line = optimizerWorker.buffer.slice(0, newline).trim();
-      optimizerWorker.buffer = optimizerWorker.buffer.slice(newline + 1);
-      if (!line) continue;
-      const request = optimizerWorker.pending.shift();
-      if (!request) continue;
-      try {
-        const result = JSON.parse(line);
-        if (!result.ok) request.reject(new Error(result.error || "El optimizador Pillow devolvió un error."));
-        else request.resolve(result);
-      } catch {
-        request.reject(new Error("El optimizador Pillow devolvió una respuesta inválida."));
-      }
-    }
-  });
-  child.stderr.setEncoding("utf8");
-  child.stderr.on("data", (chunk) => console.error(`[Pillow] ${chunk.trim()}`));
-  child.on("error", (error) => {
-    if (optimizerWorker.child === child) optimizerWorker.child = null;
-    rejectOptimizerWorker(new Error(`No se pudo iniciar Pillow: ${error.message}`));
-  });
-  child.on("close", (code) => {
-    if (optimizerWorker.child === child) optimizerWorker.child = null;
-    if (code !== 0) rejectOptimizerWorker(new Error(`El optimizador Pillow terminó con código ${code}.`));
-  });
-  return child;
-}
-
-function runImageOptimizer(imagePath, outputPath, format, quality, lossless) {
-  const child = ensureOptimizerWorker();
-  return new Promise((resolve, reject) => {
-    optimizerWorker.pending.push({ resolve, reject });
-    try {
-      child.stdin.write(JSON.stringify({ imagePath, outputPath, format, quality, lossless }) + "\n");
-    } catch (error) {
-      optimizerWorker.pending.pop();
-      reject(error);
-    }
-  });
-}
-
 async function detect(request, response) {
-  let payload;
   try {
-    payload = JSON.parse(await readBody(request));
-    const { data } = decodeDataUrl(payload.dataUrl);
-    const tempDir = await fs.mkdtemp(path.join(process.env.TEMP || process.env.TMP || ".", "autocensor-"));
-    const extension = payload.mime === "image/png" ? ".png" : payload.mime === "image/webp" ? ".webp" : ".jpg";
-    const imagePath = path.join(tempDir, `${crypto.randomUUID()}${extension}`);
-    await fs.writeFile(imagePath, data);
-    try {
-      const result = await runAnimeNsfwDetector(
-        imagePath,
-        Math.min(0.99, Math.max(0.01, Number(payload.threshold ?? 0.35))),
-        Array.isArray(payload.classes) ? payload.classes : [],
-      );
-      sendJson(response, 200, { ok: true, detections: result });
-    } finally {
-      await fs.rm(tempDir, { recursive: true, force: true });
-    }
+    const payload = await readJsonBody(request);
+    const { mime, data } = decodeDataUrl(payload.dataUrl);
+    const result = await withTemporaryImage({ data, mime, prefix: "autocensor-" }, async ({ imagePath }) => detectorWorker.request({
+      imagePath,
+      threshold: clamp(payload.threshold, 0.01, 0.99, 0.35),
+      classes: Array.isArray(payload.classes) ? payload.classes : [],
+    }));
+    sendJson(response, 200, { ok: true, detections: result.detections || [] });
   } catch (error) {
     sendJson(response, 501, {
       ok: false,
@@ -207,34 +49,26 @@ async function detect(request, response) {
 }
 
 async function optimize(request, response) {
-  let payload;
   try {
-    payload = JSON.parse(await readBody(request));
+    const payload = await readJsonBody(request);
     const { mime, data } = decodeDataUrl(payload.dataUrl);
-    const tempDir = await fs.mkdtemp(path.join(process.env.TEMP || process.env.TMP || ".", "autocensor-optimize-"));
-    const extension = mime === "image/png" ? ".png" : mime === "image/webp" ? ".webp" : ".jpg";
-    const imagePath = path.join(tempDir, `${crypto.randomUUID()}${extension}`);
-    const outputPath = path.join(tempDir, `${crypto.randomUUID()}.optimized`);
-    await fs.writeFile(imagePath, data);
-    try {
-      const allowedFormats = new Set(["original", "png", "webp", "jpeg"]);
-      const format = allowedFormats.has(payload.format) ? payload.format : "original";
-      const quality = Math.min(95, Math.max(1, Number(payload.quality ?? 92)));
-      const result = await runImageOptimizer(imagePath, outputPath, format, quality, payload.lossless === true);
-      const optimized = await fs.readFile(outputPath);
-      sendJson(response, 200, {
-        ok: true,
-        dataUrl: `data:${result.mime};base64,${optimized.toString("base64")}`,
-        mime: result.mime,
-        extension: result.extension,
-        width: result.width,
-        height: result.height,
-        size: optimized.length,
-        lossless: result.lossless,
-      });
-    } finally {
-      await fs.rm(tempDir, { recursive: true, force: true });
-    }
+    const allowedFormats = new Set(["original", "png", "webp", "jpeg"]);
+    const format = allowedFormats.has(payload.format) ? payload.format : "original";
+    const quality = clamp(payload.quality, 1, 95, 92);
+    const optimized = await withTemporaryImage({ data, mime, prefix: "autocensor-optimize-" }, async ({ imagePath, outputPath }) => {
+      const result = await optimizerWorker.request({ imagePath, outputPath, format, quality, lossless: payload.lossless === true });
+      return { result, bytes: await fs.readFile(outputPath) };
+    });
+    sendJson(response, 200, {
+      ok: true,
+      dataUrl: `data:${optimized.result.mime};base64,${optimized.bytes.toString("base64")}`,
+      mime: optimized.result.mime,
+      extension: optimized.result.extension,
+      width: optimized.result.width,
+      height: optimized.result.height,
+      size: optimized.bytes.length,
+      lossless: optimized.result.lossless,
+    });
   } catch (error) {
     sendJson(response, 501, {
       ok: false,
@@ -266,18 +100,20 @@ async function serveStatic(request, response) {
 
 const server = http.createServer(async (request, response) => {
   try {
-    if (request.method === "POST" && request.url === "/api/detect") {
-      await detect(request, response);
+    if (request.url === "/api/folder") {
+      const host = request.headers.host;
+      const allowedHosts = [`127.0.0.1:${port}`, `localhost:${port}`];
+      if (request.method !== "POST" || !allowedHosts.includes(host) || request.headers.origin !== `http://${host}` || request.headers["x-censor-station"] !== "folder-access") {
+        sendJson(response, 403, { ok: false, message: "Acceso local no autorizado." });
+        return;
+      }
+      const result = await folderAccess(await readJsonBody(request));
+      sendJson(response, 200, { ok: true, ...result });
       return;
     }
-    if (request.method === "POST" && request.url === "/api/optimize") {
-      await optimize(request, response);
-      return;
-    }
-    if (request.method === "GET") {
-      await serveStatic(request, response);
-      return;
-    }
+    if (request.method === "POST" && request.url === "/api/detect") return detect(request, response);
+    if (request.method === "POST" && request.url === "/api/optimize") return optimize(request, response);
+    if (request.method === "GET") return serveStatic(request, response);
     response.writeHead(405);
     response.end("Method not allowed");
   } catch (error) {
@@ -287,14 +123,36 @@ const server = http.createServer(async (request, response) => {
 
 server.on("error", (error) => {
   if (error.code === "EADDRINUSE") {
-    console.error(`[Censor Station] El puerto ${port} ya esta ocupado. Cierra el servidor existente o usa otra instancia.`);
+    console.error(`[Censor Station] Port ${port} is already in use. Stop the existing server or choose another port.`);
     process.exitCode = 1;
     return;
   }
-  console.error("[Censor Station] Error del servidor:", error);
+  console.error("[Censor Station] Server error:", error);
   process.exitCode = 1;
 });
 
+process.once("exit", () => {
+  detectorWorker.stop();
+  optimizerWorker.stop();
+});
+
 server.listen(port, "127.0.0.1", () => {
-  console.log(`Censor Station disponible en http://127.0.0.1:${port}`);
+  console.log(String.raw`
+        /\_/\
+      .'     '.
+     /  /\ /\  \       C E N S O R   S T A T I O N
+    |  / o   o\  |
+    |  |  ._. |  |      Let's censor until the world is free
+    |  |      |  |      and this tool is no longer needed.
+    | /'-----'\ |
+     / /| >o< |\ \      SERVER ON {127.0.0.1:${port}}
+    (_/ |_____| \_)
+        /_____\          http://127.0.0.1:${port}
+         | | |
+         |_|_|           Press Ctrl+C to stop the server.
+  `);
+  if (process.platform === "win32" && process.argv.includes("--open-browser")) {
+    const browser = spawn("explorer.exe", [`http://127.0.0.1:${port}`], { windowsHide: true, stdio: "ignore" });
+    browser.on("error", () => console.error("[Censor Station] Could not open the browser. Open the address above manually."));
+  }
 });
