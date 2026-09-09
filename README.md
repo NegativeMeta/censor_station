@@ -23,7 +23,7 @@ Local desktop-style web app for reviewing images, detecting sensitive areas, app
 On Windows:
 
 ```powershell
-.\iniciar_autocensor.bat
+.\start_censor_station.bat
 ```
 
 Or from a terminal:
