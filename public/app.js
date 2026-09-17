@@ -200,20 +200,33 @@ function startAnalysisProgress(total) {
   startAnalysisStep(1, 0);
 }
 
+let analysisEtaMs = 0;
+
 function startAnalysisStep(current, completed) {
   if (state.analysis.timer) clearInterval(state.analysis.timer);
   state.analysis.current = current;
   state.analysis.completed = completed;
   state.analysis.stepFraction = 0;
+  state.analysis.stepStart = performance.now();
   state.analysis.timer = setInterval(() => {
     if (!state.analysis.active) return;
-    state.analysis.stepFraction = Math.min(.9, state.analysis.stepFraction + .035);
+    if (analysisEtaMs > 0) {
+      const elapsed = performance.now() - state.analysis.stepStart;
+      state.analysis.stepFraction = Math.min(.95, .95 * (1 - Math.exp(-2 * elapsed / analysisEtaMs)));
+    } else {
+      const fraction = state.analysis.stepFraction;
+      state.analysis.stepFraction = fraction < .45 ? Math.min(.45, fraction + .05) : Math.min(.9, fraction + .004);
+    }
     renderAnalysisProgress();
   }, 120);
   renderAnalysisProgress();
 }
 
 function updateAnalysisProgress(current, completed) {
+  if (state.analysis.stepStart) {
+    const elapsed = Math.max(1, performance.now() - state.analysis.stepStart);
+    analysisEtaMs = analysisEtaMs > 0 ? analysisEtaMs * .6 + elapsed * .4 : elapsed;
+  }
   state.analysis.current = current;
   state.analysis.completed = completed;
   state.analysis.stepFraction = 0;
@@ -1007,19 +1020,19 @@ $("single-image-input").addEventListener("change", async (event) => {
   event.target.value = "";
   if (!file) return;
   if (!mimeFromName(file.name)) { setNotice(t("notice.noImages"), "error"); return; }
-  state.files.forEach((item) => URL.revokeObjectURL(item.url));
-  state.singleMode = true;
-  state.inputHandle = null;
-  state.outputHandle = null;
-  state.files = [makeFile(file)];
-  state.current = -1;
+  if (!state.files.length) {
+    state.singleMode = true;
+    state.inputHandle = null;
+    state.outputHandle = null;
+  }
+  state.files.push(makeFile(file));
   state.selected = -1;
   state.drag = null;
   state.brush = null;
   clearNotice();
   updateSingleModeUi();
   renderQueue();
-  await showFile(0);
+  await showFile(state.files.length - 1);
   updateSingleModeUi();
 });
 
