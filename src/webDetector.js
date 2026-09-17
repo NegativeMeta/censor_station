@@ -1,6 +1,7 @@
 const MODEL_INPUT_SIZE = 1280;
 const MASK_SIZE = 320;
 const MASK_CHANNELS = 32;
+const MASK_CONTEXT_CELLS = 2;
 const OUTPUT_ROW_SIZE = 6 + MASK_CHANNELS;
 const DEFAULT_MODEL_URL = "https://huggingface.co/negativemeta/censor-station-web-model/resolve/main/nsfw-anime-xl-x1280.onnx";
 const CLASS_NAMES = ["anus", "nipple", "penis", "vagina", "female face", "male face", "pubic hair"];
@@ -23,8 +24,8 @@ function sigmoid(value) {
 
 function modelPointToImage(x, y, meta) {
   return [
-    clamp((x - meta.padX) / meta.scale, 0, meta.width),
-    clamp((y - meta.padY) / meta.scale, 0, meta.height),
+    clamp((x - meta.padX) / meta.scaleX, 0, meta.width),
+    clamp((y - meta.padY) / meta.scaleY, 0, meta.height),
   ];
 }
 
@@ -53,7 +54,7 @@ function preprocess(image) {
     data[plane + index] = pixels[pixel + 1] / 255;
     data[plane * 2 + index] = pixels[pixel + 2] / 255;
   }
-  return { data, width, height, scale: drawWidth / width, padX, padY };
+  return { data, width, height, scale: drawWidth / width, scaleX: drawWidth / width, scaleY: drawHeight / height, padX, padY };
 }
 
 function addSegment(adjacency, first, second) {
@@ -67,13 +68,25 @@ function addSegment(adjacency, first, second) {
   adjacency.get(secondKey).neighbors.add(firstKey);
 }
 
-function marchingSquares(mask, width, height, offsetX, offsetY) {
+function marchingSquares(values, width, height, offsetX, offsetY, threshold = 0.5, activeMask = null) {
   const adjacency = new Map();
-  const top = (x, y) => [offsetX + x + 0.5, offsetY + y];
-  const right = (x, y) => [offsetX + x + 1, offsetY + y + 0.5];
-  const bottom = (x, y) => [offsetX + x + 0.5, offsetY + y + 1];
-  const left = (x, y) => [offsetX + x, offsetY + y + 0.5];
-  const filled = (x, y) => x >= 0 && y >= 0 && x < width && y < height && mask[y * width + x];
+  const indexAt = (x, y) => y * width + x;
+  const valueAt = (x, y) => {
+    const index = indexAt(x, y);
+    return activeMask && !activeMask[index] ? threshold - 1 : values[index];
+  };
+  const filled = (x, y) => x >= 0 && y >= 0 && x < width && y < height && valueAt(x, y) >= threshold;
+  const crossing = (firstX, firstY, secondX, secondY) => {
+    const first = valueAt(firstX, firstY);
+    const second = valueAt(secondX, secondY);
+    const difference = second - first;
+    const amount = Math.abs(difference) < 0.000001 ? 0.5 : clamp((threshold - first) / difference, 0, 1);
+    return [offsetX + firstX + (secondX - firstX) * amount, offsetY + firstY + (secondY - firstY) * amount];
+  };
+  const top = (x, y) => crossing(x, y, x + 1, y);
+  const right = (x, y) => crossing(x + 1, y, x + 1, y + 1);
+  const bottom = (x, y) => crossing(x, y + 1, x + 1, y + 1);
+  const left = (x, y) => crossing(x, y, x, y + 1);
   const cases = {
     1: [[left, top]], 2: [[top, right]], 3: [[left, right]], 4: [[right, bottom]],
     5: [[left, top], [right, bottom]], 6: [[top, bottom]], 7: [[left, bottom]],
@@ -123,29 +136,82 @@ function simplify(points, maxPoints = 180) {
   return Array.from({ length: maxPoints }, (_, index) => points[Math.floor(index * step)]);
 }
 
-function decodePolygon(proto, coefficients, box, meta) {
+function keepLargestMaskComponent(mask, width, height) {
+  const visited = new Uint8Array(mask.length);
+  let largest = [];
+  for (let start = 0; start < mask.length; start++) {
+    if (!mask[start] || visited[start]) continue;
+    const component = [];
+    const stack = [start];
+    visited[start] = 1;
+    while (stack.length) {
+      const current = stack.pop();
+      component.push(current);
+      const x = current % width;
+      const y = Math.floor(current / width);
+      for (let offsetY = -1; offsetY <= 1; offsetY++) {
+        for (let offsetX = -1; offsetX <= 1; offsetX++) {
+          if (!offsetX && !offsetY) continue;
+          const neighborX = x + offsetX;
+          const neighborY = y + offsetY;
+          if (neighborX < 0 || neighborY < 0 || neighborX >= width || neighborY >= height) continue;
+          const neighbor = neighborY * width + neighborX;
+          if (mask[neighbor] && !visited[neighbor]) {
+            visited[neighbor] = 1;
+            stack.push(neighbor);
+          }
+        }
+      }
+    }
+    if (component.length > largest.length) largest = component;
+  }
+  const cleaned = new Uint8Array(mask.length);
+  largest.forEach((index) => { cleaned[index] = 1; });
+  return cleaned;
+}
+
+function decodePolygon(proto, coefficients, box, meta, maskThreshold = 0.58) {
   const protoPlane = MASK_SIZE * MASK_SIZE;
   const stride = MODEL_INPUT_SIZE / MASK_SIZE;
-  const x1 = clamp(Math.floor(box[0] / stride), 0, MASK_SIZE - 1);
-  const y1 = clamp(Math.floor(box[1] / stride), 0, MASK_SIZE - 1);
-  const x2 = clamp(Math.ceil(box[2] / stride) + 1, x1 + 1, MASK_SIZE);
-  const y2 = clamp(Math.ceil(box[3] / stride) + 1, y1 + 1, MASK_SIZE);
+  const x1 = clamp(Math.floor(box[0] / stride) - MASK_CONTEXT_CELLS, 0, MASK_SIZE - 1);
+  const y1 = clamp(Math.floor(box[1] / stride) - MASK_CONTEXT_CELLS, 0, MASK_SIZE - 1);
+  const x2 = clamp(Math.ceil(box[2] / stride) + 1 + MASK_CONTEXT_CELLS, x1 + 1, MASK_SIZE);
+  const y2 = clamp(Math.ceil(box[3] / stride) + 1 + MASK_CONTEXT_CELLS, y1 + 1, MASK_SIZE);
   const width = x2 - x1;
   const height = y2 - y1;
   const mask = new Uint8Array(width * height);
+  const probabilities = new Float32Array(width * height);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       let value = 0;
+      const maskIndex = y * width + x;
       const protoIndex = (y1 + y) * MASK_SIZE + x1 + x;
       for (let channel = 0; channel < MASK_CHANNELS; channel++) value += coefficients[channel] * proto[channel * protoPlane + protoIndex];
-      mask[y * width + x] = sigmoid(value) > 0.5 ? 1 : 0;
+      const probability = sigmoid(value);
+      probabilities[maskIndex] = probability;
+      mask[maskIndex] = probability >= maskThreshold ? 1 : 0;
     }
   }
-  const contour = simplify(largestContour(marchingSquares(mask, width, height, x1, y1)));
+  const cleanedMask = keepLargestMaskComponent(mask, width, height);
+  // La máscara puede tocar el borde del crop y marching squares solo recorre
+  // celdas interiores: el contorno quedaría abierto y closePath() lo cerraría
+  // con una recta (el corte diagonal). Rodear con una celda vacía garantiza
+  // un bucle cerrado siguiendo el borde.
+  const paddedWidth = width + 2;
+  const paddedHeight = height + 2;
+  const paddedProbabilities = new Float32Array(paddedWidth * paddedHeight).fill(maskThreshold - 1);
+  const paddedMask = new Uint8Array(paddedWidth * paddedHeight);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      paddedProbabilities[(y + 1) * paddedWidth + x + 1] = probabilities[y * width + x];
+      paddedMask[(y + 1) * paddedWidth + x + 1] = cleanedMask[y * width + x];
+    }
+  }
+  const contour = simplify(largestContour(marchingSquares(paddedProbabilities, paddedWidth, paddedHeight, x1 - 1, y1 - 1, maskThreshold, paddedMask)));
   return contour.map(([x, y]) => modelPointToImage(x * stride, y * stride, meta));
 }
 
-function decodeDetections(outputs, meta, threshold, classes) {
+function decodeDetections(outputs, meta, threshold, classes, maskThreshold = 0.58) {
   const rows = outputs.output0?.data || outputs[0]?.data;
   const proto = outputs.output1?.data || outputs[1]?.data;
   if (!rows || !proto) throw new Error("El modelo ONNX no devolvió las salidas esperadas.");
@@ -167,7 +233,7 @@ function decodeDetections(outputs, meta, threshold, classes) {
     const bottom = Math.max(first[1], second[1]);
     const box = [x, y, Math.max(1, right - x), Math.max(1, bottom - y)];
     const coefficients = rows.slice(offset + 6, offset + OUTPUT_ROW_SIZE);
-    const polygon = decodePolygon(proto, coefficients, rawBox, meta);
+    const polygon = decodePolygon(proto, coefficients, rawBox, meta, maskThreshold);
     detections.push({ class: className, score, box, polygon });
   }
   return detections;
@@ -206,12 +272,12 @@ export function createWebDetector() {
     get runtime() { return runtime; },
     get modelUrl() { return modelUrl; },
     isAvailable() { return Boolean(globalThis.navigator?.gpu || globalThis.WebAssembly); },
-    async detect(image, { threshold = 0.35, classes = [] } = {}) {
+    async detect(image, { threshold = 0.35, classes = [], maskThreshold = 0.58 } = {}) {
       const { ort, session } = await loadSession();
       const meta = preprocess(image);
       const input = new ort.Tensor("float32", meta.data, [1, 3, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE]);
       const outputs = await session.run({ [session.inputNames[0]]: input });
-      return { runtime, detections: decodeDetections(outputs, meta, threshold, classes) };
+      return { runtime, detections: decodeDetections(outputs, meta, threshold, classes, clamp(maskThreshold, 0.45, 0.9)) };
     },
   };
 }

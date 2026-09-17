@@ -10,7 +10,7 @@ const TRANSLATIONS = {
     "canvas.noDetections": "Sin detecciones", "canvas.preview": "VISTA PREVIA EN VIVO // EDITOR DE MÁSCARAS", "canvas.auto": "Auto", "canvas.manual": "Manual",
     "layers.title": "LAYERS", "layers.none": "Ninguna", "layers.stack": "LAYER STACK", "layers.empty": "Analiza una imagen para crear capas", "layers.noDetections": "No hay capas detectadas", "layers.layer": "Capa", "layers.add": "Añadir capa", "layers.delete": "Eliminar", "layers.manual": "Manual", "layers.auto": "Máscara automática", "layers.show": "Mostrar capa", "layers.hide": "Ocultar capa", "layers.selected": "{index} seleccionada",
     "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Estilo de la selección", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LÍNEAS", "censor.glowWhite": "BLANCO GLOW", "censor.pixelateOption": "Píxeles", "censor.blurOption": "Desenfoque", "censor.linesOption": "Múltiples líneas negras", "censor.glowWhiteOption": "Blanco resplandeciente",
-    "controls.optionsTitle": "OPTIONS", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; si no hay capas, el primer clic crea una automáticamente. Con el derecho borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.",
+    "controls.optionsTitle": "OPTIONS", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; si no hay capas, el primer clic crea una automáticamente. Con el derecho borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.", "controls.maskThreshold": "Precisión del contorno", "controls.maskThresholdHelp": "Sube este valor para ajustar el borde. Reanaliza la imagen para aplicar el cambio.", "controls.maskInset": "Ajuste interior", "controls.maskInsetHelp": "Reduce ligeramente el borde de las máscaras automáticas sin cambiar la caja.",
     "classes.title": "Partes a censurar", "classes.help": "Activa o desactiva las partes detectables antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
     "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE", "actions.save": "GUARDAR",
     "notice.noImages": "No encontré imágenes compatibles en esa carpeta.", "notice.folderUnsupported": "Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.", "notice.saveAtLeast": "Aprueba al menos una imagen antes de guardar aprobadas.", "notice.reviewComplete": "Ya no quedan imágenes por aprobar. ¿Quieres guardar ahora las imágenes aprobadas?", "notice.saveLater": "Las imágenes aprobadas quedaron listas. Puedes guardarlas con «Guardar aprobadas».", "notice.savedOne": "1 imagen guardada.", "notice.savedMany": "{count} imágenes guardadas.", "notice.analyzing": "Analizando carpeta localmente…", "notice.analyzingImage": "Analizando imagen localmente…", "notice.analysisDone": "Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.", "notice.analysisImageDone": "Análisis terminado. Ajusta la zona y guarda la imagen cuando esté lista.", "notice.detectorUnavailable": "Detector automático no disponible: {message} Puedes seguir dibujando zonas manuales.",
@@ -27,7 +27,7 @@ const TRANSLATIONS = {
     "canvas.noDetections": "No detections", "canvas.preview": "LIVE PREVIEW // MASK EDITOR", "canvas.auto": "Auto", "canvas.manual": "Manual",
     "layers.title": "LAYERS", "layers.none": "None", "layers.stack": "LAYER STACK", "layers.empty": "Analyze an image to create layers", "layers.noDetections": "No layers detected", "layers.layer": "Layer", "layers.add": "Add layer", "layers.delete": "Delete", "layers.manual": "Manual", "layers.auto": "Automatic mask", "layers.show": "Show layer", "layers.hide": "Hide layer", "layers.selected": "{index} selected",
     "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Selection style", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LINES", "censor.glowWhite": "WHITE GLOW", "censor.pixelateOption": "Pixels", "censor.blurOption": "Blur", "censor.linesOption": "Multiple black lines", "censor.glowWhiteOption": "Glowing white",
-    "controls.optionsTitle": "OPTIONS", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; if there are no layers, the first click creates one automatically. Right click erases inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Lower the threshold to find more areas; raise it to reduce false positives.",
+    "controls.optionsTitle": "OPTIONS", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; if there are no layers, the first click creates one automatically. Right click erases inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Lower the threshold to find more areas; raise it to reduce false positives.", "controls.maskThreshold": "Contour precision", "controls.maskThresholdHelp": "Raise this value to tighten the edge. Re-analyze the image to apply it.", "controls.maskInset": "Inner adjustment", "controls.maskInsetHelp": "Slightly reduces automatic mask edges without changing the box.",
     "classes.title": "Parts to censor", "classes.help": "Enable or disable detectable parts before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
     "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE", "actions.save": "SAVE",
     "notice.noImages": "No compatible images were found in that folder.", "notice.folderUnsupported": "Your browser cannot choose folders. Use a recent version of Chrome or Edge.", "notice.saveAtLeast": "Approve at least one image before saving approved files.", "notice.reviewComplete": "There are no more images to approve. Do you want to save the approved images now?", "notice.saveLater": "The approved images are ready. You can save them with “Save approved”.", "notice.savedOne": "1 image saved.", "notice.savedMany": "{count} images saved.", "notice.analyzing": "Analyzing folder locally…", "notice.analyzingImage": "Analyzing image locally…", "notice.analysisDone": "Analysis complete. Review each image, adjust the areas and approve only the correct ones.", "notice.analysisImageDone": "Analysis complete. Adjust the area and save the image when ready.", "notice.detectorUnavailable": "Automatic detector unavailable: {message} You can continue drawing manual areas.",
@@ -44,7 +44,7 @@ const TRANSLATIONS = {
     "canvas.noDetections": "検出なし", "canvas.preview": "ライブプレビュー // マスクエディター", "canvas.auto": "自動", "canvas.manual": "手動",
     "layers.title": "レイヤー", "layers.none": "なし", "layers.stack": "レイヤー", "layers.empty": "画像を解析してレイヤーを作成", "layers.noDetections": "レイヤー未検出", "layers.layer": "レイヤー", "layers.add": "レイヤー追加", "layers.delete": "削除", "layers.manual": "手動", "layers.auto": "自動マスク", "layers.show": "レイヤーを表示", "layers.hide": "レイヤーを隠す", "layers.selected": "{index} 件を選択",
     "censor.title": "検閲", "censor.type": "検閲タイプ", "censor.style": "選択範囲のスタイル", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "ライン", "censor.glowWhite": "白い光", "censor.pixelateOption": "ピクセル", "censor.blurOption": "ぼかし", "censor.linesOption": "複数の黒い線", "censor.glowWhiteOption": "光る白",
-    "controls.optionsTitle": "オプション", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加します。レイヤーがない場合、最初のクリックで自動作成します。右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "下げると多く検出し、上げると誤検出を減らします。",
+    "controls.optionsTitle": "オプション", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加します。レイヤーがない場合、最初のクリックで自動作成します。右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "下げると多く検出し、上げると誤検出を減らします。", "controls.maskThreshold": "輪郭の精度", "controls.maskThresholdHelp": "値を上げると輪郭が引き締まります。適用するには画像を再解析してください。", "controls.maskInset": "内側調整", "controls.maskInsetHelp": "自動マスクの端だけを少し内側へ調整します。",
     "classes.title": "検閲する部位", "classes.help": "フォルダーを解析する前に検出する部位を切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
     "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認", "actions.save": "保存",
     "notice.noImages": "対応する画像が見つかりません。", "notice.folderUnsupported": "このブラウザーではフォルダーを選択できません。新しい Chrome または Edge を使用してください。", "notice.saveAtLeast": "保存する前に画像を1枚以上承認してください。", "notice.reviewComplete": "承認する画像はもうありません。承認済みの画像を保存しますか？", "notice.saveLater": "承認済みの画像を保存できます。「承認済みを保存」を押してください。", "notice.savedOne": "1枚を保存しました。", "notice.savedMany": "{count}枚を保存しました。", "notice.analyzing": "フォルダーをローカル解析中…", "notice.analyzingImage": "画像をローカル解析中…", "notice.analysisDone": "解析完了。各画像を確認し、必要なら調整して承認してください。", "notice.analysisImageDone": "解析完了。範囲を調整して、準備ができたら画像を保存してください。", "notice.detectorUnavailable": "自動検出が利用できません: {message} 手動で範囲を描けます。",
@@ -61,7 +61,7 @@ const TRANSLATIONS = {
     "canvas.noDetections": "没有检测结果", "canvas.preview": "实时预览 // 遮挡编辑器", "canvas.auto": "自动", "canvas.manual": "手动",
     "layers.title": "图层", "layers.none": "无", "layers.stack": "图层堆栈", "layers.empty": "分析图片以创建图层", "layers.noDetections": "未检测到图层", "layers.layer": "图层", "layers.add": "添加图层", "layers.delete": "删除", "layers.manual": "手动", "layers.auto": "自动蒙版", "layers.show": "显示图层", "layers.hide": "隐藏图层", "layers.selected": "已选择第 {index} 个",
     "censor.title": "审查", "censor.type": "遮挡类型", "censor.style": "选区样式", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "黑线", "censor.glowWhite": "白色光晕", "censor.pixelateOption": "像素化", "censor.blurOption": "模糊", "censor.linesOption": "多条黑线", "censor.glowWhiteOption": "发光白色",
-    "controls.optionsTitle": "选项", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡；如果没有图层，第一次点击会自动创建。右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "降低阈值可发现更多区域，提高阈值可减少误报。",
+    "controls.optionsTitle": "选项", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡；如果没有图层，第一次点击会自动创建。右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "降低阈值可发现更多区域，提高阈值可减少误报。", "controls.maskThreshold": "轮廓精度", "controls.maskThresholdHelp": "提高此值可收紧边缘。请重新分析图片后应用。", "controls.maskInset": "内部调整", "controls.maskInsetHelp": "在不改变方框的情况下，略微收紧自动蒙版边缘。",
     "classes.title": "要遮挡的部位", "classes.help": "分析文件夹前启用或停用要检测的部位。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
     "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准", "actions.save": "保存",
     "notice.noImages": "文件夹中没有兼容的图片。", "notice.folderUnsupported": "你的浏览器不支持选择文件夹。请使用新版 Chrome 或 Edge。", "notice.saveAtLeast": "请先批准至少一张图片再保存。", "notice.reviewComplete": "已经没有需要批准的图片了。现在要保存已批准的图片吗？", "notice.saveLater": "已批准的图片已经准备好。你可以点击“保存已批准”进行保存。", "notice.savedOne": "已保存 1 张图片。", "notice.savedMany": "已保存 {count} 张图片。", "notice.analyzing": "正在本地分析文件夹…", "notice.analyzingImage": "正在本地分析图片…", "notice.analysisDone": "分析完成。请检查每张图片，调整区域后再批准。", "notice.analysisImageDone": "分析完成。请调整区域，准备好后保存图片。", "notice.detectorUnavailable": "自动检测不可用：{message} 你仍可手动绘制区域。",
@@ -316,6 +316,70 @@ function layerName(box, index) {
   return `${t("layers.layer")} ${index + 1}`;
 }
 
+function detectedPartName(box) {
+  const className = String(box.class || "").trim();
+  if (!className) return "";
+  const key = `class.${className}`;
+  const translated = t(key);
+  return translated === key ? className.replace(/\b\w/g, (character) => character.toUpperCase()) : translated;
+}
+
+function layerVisibilityIcon(hidden) {
+  return hidden
+    ? `<svg class="layer-eye-icon is-hidden" viewBox="0 0 32 24" aria-hidden="true"><path d="M3 12c3.6-5.8 8-8.7 13-8.7 2.4 0 4.7.6 6.8 1.8M29 12c-3.6 5.8-8 8.7-13 8.7-2.4 0-4.7-.6-6.8-1.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3 29 21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="12" r="3.2" fill="currentColor" opacity=".55"/></svg>`
+    : `<svg class="layer-eye-icon is-visible" viewBox="0 0 32 24" aria-hidden="true"><path d="M2.5 12C6.2 6.1 10.7 3.1 16 3.1S25.8 6.1 29.5 12C25.8 17.9 21.3 20.9 16 20.9S6.2 17.9 2.5 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="12" r="4" fill="currentColor"/><circle cx="14.5" cy="10.5" r="1.2" fill="#180d2d" opacity=".8"/></svg>`;
+}
+
+function layerThumbnailSignature(box, index) {
+  return [index, box.x, box.y, box.w, box.h, box.mode, box.visible, box.padding, box.maskInset, box.manualBlank, box.brushEdits?.length || 0].join("|");
+}
+
+function paintLayerThumbnail(target, image, box) {
+  const size = 84;
+  const imageWidth = image.naturalWidth || image.width;
+  const imageHeight = image.naturalHeight || image.height;
+  const boxWidth = Math.max(1, Number(box.w) || 1);
+  const boxHeight = Math.max(1, Number(box.h) || 1);
+  const side = Math.max(1, Math.round(Math.min(imageWidth, imageHeight, Math.max(boxWidth, boxHeight) * 1.35)));
+  const centerX = (Number(box.x) || 0) + boxWidth / 2;
+  const centerY = (Number(box.y) || 0) + boxHeight / 2;
+  const cropX = clamp(centerX - side / 2, 0, Math.max(0, imageWidth - side));
+  const cropY = clamp(centerY - side / 2, 0, Math.max(0, imageHeight - side));
+  const crop = document.createElement("canvas");
+  crop.width = side;
+  crop.height = side;
+  Object.defineProperties(crop, { naturalWidth: { value: side }, naturalHeight: { value: side } });
+  crop.getContext("2d").drawImage(image, cropX, cropY, side, side, 0, 0, side, side);
+  const translatePoint = ([x, y]) => [x - cropX, y - cropY];
+  const localBox = {
+    ...box,
+    x: (Number(box.x) || 0) - cropX,
+    y: (Number(box.y) || 0) - cropY,
+    base: box.base ? { ...box.base, x: box.base.x - cropX, y: box.base.y - cropY } : undefined,
+    polygon: (box.polygon || []).map(translatePoint),
+    basePolygon: (box.basePolygon || []).map(translatePoint),
+    brushEdits: (box.brushEdits || []).map((edit) => ({ ...edit, x: edit.x - cropX, y: edit.y - cropY })),
+  };
+  const context = target.getContext("2d");
+  context.clearRect(0, 0, size, size);
+  context.imageSmoothingEnabled = true;
+  context.drawImage(crop, 0, 0, size, size);
+  if (box.visible !== false) context.drawImage(createCensoredLayer(crop, localBox, size, size), 0, 0);
+}
+
+function renderLayerThumbnails(item) {
+  if (!item?.image) return;
+  document.querySelectorAll("[data-layer-thumb]").forEach((target) => {
+    const index = Number(target.dataset.layerThumb);
+    const box = item.detections[index];
+    if (!box) return;
+    const signature = layerThumbnailSignature(box, index);
+    if (target.dataset.signature === signature) return;
+    paintLayerThumbnail(target, item.image, box);
+    target.dataset.signature = signature;
+  });
+}
+
 function renderLayers() {
   const list = $("layer-list");
   const item = currentFile();
@@ -329,10 +393,11 @@ function renderLayers() {
     const mode = ["pixelate", "blur", "lines", "black", "glow-white", "white"].includes(box.mode) ? box.mode : "pixelate";
     return `
       <div class="layer-row">
-      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}"><span class="layer-mini-thumb mode-${mode}"></span><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${t(box.source === "manual" ? "layers.manual" : "layers.auto")}</small></span></button>
-      <button class="layer-visibility ${box.visible === false ? "off" : ""}" data-layer-visibility="${index}" title="${t(box.visible === false ? "layers.show" : "layers.hide")}">${box.visible === false ? "○" : "◉"}</button>
+      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}"><canvas class="layer-mini-thumb mode-${mode}" width="84" height="84" data-layer-thumb="${index}" aria-hidden="true"></canvas><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${t(box.source === "manual" ? "layers.manual" : "layers.auto")}</small>${box.source === "manual" ? "" : `<em class="layer-part">${escapeHtml(detectedPartName(box))}</em>`}</span></button>
+      <button class="layer-visibility ${box.visible === false ? "off" : ""}" data-layer-visibility="${index}" title="${escapeHtml(t(box.visible === false ? "layers.show" : "layers.hide"))}" aria-label="${escapeHtml(t(box.visible === false ? "layers.show" : "layers.hide"))}" aria-pressed="${box.visible !== false}">${layerVisibilityIcon(box.visible === false)}</button>
     </div>`;
   }).join("");
+  renderLayerThumbnails(item);
   list.querySelectorAll("[data-layer-select]").forEach((button) => button.addEventListener("click", () => {
     state.selected = Number(button.dataset.layerSelect);
     state.brush = null;
@@ -508,6 +573,7 @@ function draw() {
   if (!item?.image) return;
   // Keep the layer stack recoverable if the component shell re-renders it.
   ensureLayerList(item);
+  renderLayerThumbnails(item);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
   item.detections.forEach((box, index) => { if (box.visible !== false) drawDetection(box, index === state.selected); });
@@ -541,25 +607,31 @@ function drawDetection(box, selected) {
   ctx.restore();
 }
 
-function clipPolygon(target, polygon) {
+function tracePolygon(target, polygon) {
   target.beginPath();
   polygon.forEach(([x, y], index) => index ? target.lineTo(x, y) : target.moveTo(x, y));
   target.closePath();
+}
+
+function clipPolygon(target, polygon) {
+  tracePolygon(target, polygon);
   target.clip();
 }
 
 function strokePolygon(target, polygon) {
-  target.beginPath();
-  polygon.forEach(([x, y], index) => index ? target.lineTo(x, y) : target.moveTo(x, y));
-  target.closePath();
+  tracePolygon(target, polygon);
   target.stroke();
 }
 
 function renderPolygon(box) {
-  if (!box.polygon?.length || !box.basePolygon?.length || !box.base) return box.polygon || [];
-  const scaleX = box.w / Math.max(1, box.base.w);
-  const scaleY = box.h / Math.max(1, box.base.h);
-  return box.basePolygon.map(([x, y]) => [box.x + (x - box.base.x) * scaleX, box.y + (y - box.base.y) * scaleY]);
+  let polygon;
+  if (!box.polygon?.length || !box.basePolygon?.length || !box.base) polygon = box.polygon || [];
+  else {
+    const scaleX = box.w / Math.max(1, box.base.w);
+    const scaleY = box.h / Math.max(1, box.base.h);
+    polygon = box.basePolygon.map(([x, y]) => [box.x + (x - box.base.x) * scaleX, box.y + (y - box.base.y) * scaleY]);
+  }
+  return polygon;
 }
 
 function drawSquareBar(target, x1, y1, x2, y2, thickness) {
@@ -687,9 +759,7 @@ function createMaskCanvas(box, width, height, scale, offsetX = 0, offsetY = 0) {
   const paintMaskShape = (target) => {
     target.fillStyle = "#fff";
     if (polygon.length >= 3) {
-      target.beginPath();
-      polygon.forEach(([pointX, pointY], index) => index ? target.lineTo(pointX, pointY) : target.moveTo(pointX, pointY));
-      target.closePath();
+      tracePolygon(target, polygon);
       target.fill();
     } else {
       const [boxX, boxY] = local(box.x, box.y);
@@ -914,6 +984,13 @@ document.querySelectorAll("[data-style-button]").forEach((button) => button.addE
 $("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value)); });
 $("brush-size").addEventListener("input", (event) => { $("brush-size-value").textContent = `${event.target.value} px`; });
 $("threshold").addEventListener("input", (event) => { $("threshold-value").textContent = `${event.target.value}%`; });
+$("mask-threshold").addEventListener("input", (event) => { $("mask-threshold-value").textContent = `${event.target.value}%`; });
+$("mask-inset").addEventListener("input", (event) => {
+  const value = Number(event.target.value);
+  $("mask-inset-value").textContent = `${value} px`;
+  currentFile()?.detections.filter((box) => box.source === "auto").forEach((box) => { box.maskInset = value; });
+  draw();
+});
 function updateSelected(key, value) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; if (key === "padding") applyPadding(box); draw(); }
 function applyPadding(box) { if (box.manualBlank) return; const p = Number(box.padding || 0); if (!box.base) box.base = { x: box.x, y: box.y, w: box.w, h: box.h }; box.x = Math.max(0, box.base.x - p); box.y = Math.max(0, box.base.y - p); box.w = box.base.w + p * 2; box.h = box.base.h + p * 2; }
 
@@ -1054,12 +1131,13 @@ async function detectFile(item) {
   const dataUrl = await blobToDataUrl(blob);
   try {
     const threshold = Number($("threshold").value) / 100;
+    const maskThreshold = Number($("mask-threshold").value) / 100;
     const classes = selectedClasses();
     let result;
     const webDetector = window.__censorStationWebDetector;
     if (webDetector?.isAvailable()) {
       try {
-        result = { ok: true, detections: (await webDetector.detect(item.image, { threshold, classes })).detections };
+        result = { ok: true, detections: (await webDetector.detect(item.image, { threshold, classes, maskThreshold })).detections };
       } catch (webError) {
         console.warn("Browser detector unavailable; falling back to the local server.", webError);
       }
@@ -1073,7 +1151,7 @@ async function detectFile(item) {
       x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3],
       base: { x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3] },
       polygon: detection.polygon || [], basePolygon: detection.polygon || [],
-      mode: "pixelate", padding: Number($("padding").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
+      mode: "pixelate", padding: Number($("padding").value), maskInset: Number($("mask-inset").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
     }));
   } catch (error) {
     if (!item.analyzed) setNotice(t("notice.detectorUnavailable", { message: error.message }), "error");

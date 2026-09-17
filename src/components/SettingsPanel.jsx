@@ -30,6 +30,12 @@ export function SettingsPanel() {
       <div className="field-row"><label className="field-label" htmlFor="threshold" data-i18n="controls.threshold">Umbral automático</label><output id="threshold-value">35%</output></div>
       <input id="threshold" type="range" min="10" max="90" value="35" />
       <p className="help" data-i18n="controls.thresholdHelp">Baja el umbral para encontrar más zonas; súbelo para reducir falsos positivos.</p>
+      <div className="field-row"><label className="field-label" htmlFor="mask-threshold" data-i18n="controls.maskThreshold">Precisión del contorno</label><output id="mask-threshold-value">58%</output></div>
+      <input id="mask-threshold" type="range" min="45" max="90" value="58" />
+      <p className="help" data-i18n="controls.maskThresholdHelp">Sube este valor para ajustar el borde. Reanaliza la imagen para aplicar el cambio.</p>
+      <div className="field-row"><label className="field-label" htmlFor="mask-inset" data-i18n="controls.maskInset">Ajuste interior</label><output id="mask-inset-value">1 px</output></div>
+      <input id="mask-inset" type="range" min="0" max="4" step="1" value="1" />
+      <p className="help" data-i18n="controls.maskInsetHelp">Reduce ligeramente el borde de las máscaras automáticas sin cambiar la caja.</p>
       <div className="divider parts-divider" />
       <section className="censor-parts">
         <label className="field-label" data-i18n="classes.title">Partes a censurar</label>
