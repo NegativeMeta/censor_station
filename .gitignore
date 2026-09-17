@@ -3,6 +3,7 @@ dist/
 .venv/
 models/*.onnx
 models/*.pt
+public/models/*.onnx
 weights/
 tools/__pycache__/
 .codex-remote-attachments/

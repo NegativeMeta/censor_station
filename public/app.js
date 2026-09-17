@@ -170,7 +170,7 @@ function updateSingleModeUi() {
   $("save-all").hidden = single;
   $("save-single").hidden = !single;
   $("save-single").disabled = !single || !item;
-  $("choose-output").disabled = single || !state.inputHandle;
+  $("choose-output").disabled = single || !state.inputHandle || !writableFolder(state.inputHandle);
   if (single && item) {
     $("input-name").textContent = item.name;
     $("output-name").textContent = t("toolbar.singleHint");
@@ -360,9 +360,34 @@ async function folderRequest(payload) {
   return result;
 }
 
+function fileListFolder(input) {
+  return new Promise((resolve, reject) => {
+    input.value = "";
+    input.onchange = () => {
+      const files = [...(input.files || [])].filter((file) => mimeFromName(file.name));
+      input.onchange = null;
+      if (!files.length) {
+        reject(new DOMException("Cancelled", "AbortError"));
+        return;
+      }
+      const firstPath = files[0].webkitRelativePath || files[0].name;
+      const name = firstPath.split("/")[0] || "Selected folder";
+      resolve({
+        name,
+        canWrite: false,
+        async *values() {
+          for (const file of files) yield { kind: "file", name: file.name, async getFile() { return file; } };
+        },
+      });
+    };
+    input.click();
+  });
+}
+
 function localFolderHandle(id, name, subfolder = "") {
   return {
     name,
+    canWrite: true,
     async *values() {
       const result = await folderRequest({ action: "list", id });
       for (const filename of result.files) {
@@ -395,10 +420,17 @@ function localFolderHandle(id, name, subfolder = "") {
 
 async function pickFolder() {
   if (window.showDirectoryPicker) return window.showDirectoryPicker({ mode: "readwrite" });
-  const result = await folderRequest({ action: "pick" });
-  if (result.cancelled) throw new DOMException("Cancelled", "AbortError");
-  return localFolderHandle(result.id, result.name);
+  try {
+    const result = await folderRequest({ action: "pick" });
+    if (result.cancelled) throw new DOMException("Cancelled", "AbortError");
+    return localFolderHandle(result.id, result.name);
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    return fileListFolder($("folder-input"));
+  }
 }
+
+function writableFolder(handle) { return Boolean(handle && handle.canWrite !== false); }
 
 const folderLoadingText = {
   es: ["Cargando carpeta…", "imágenes cargadas"],
@@ -463,9 +495,19 @@ function fitCanvas(item) {
   canvas.dataset.scale = String(ratio);
 }
 
+function ensureLayerList(item) {
+  const list = $("layer-list");
+  const expected = item?.detections?.length || 0;
+  if (!list || !expected) return;
+  const actual = list.querySelectorAll(".layer-row").length;
+  if (list.classList.contains("empty-state") || actual !== expected) renderLayers();
+}
+
 function draw() {
   const item = currentFile();
   if (!item?.image) return;
+  // Keep the layer stack recoverable if the component shell re-renders it.
+  ensureLayerList(item);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
   item.detections.forEach((box, index) => { if (box.visible !== false) drawDetection(box, index === state.selected); });
@@ -917,7 +959,7 @@ $("choose-input").addEventListener("click", async () => {
     state.selected = -1;
     state.files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
     $("input-name").textContent = state.inputHandle.name;
-    $("choose-output").disabled = false;
+    $("choose-output").disabled = !writableFolder(state.inputHandle);
     $("detect-all").disabled = !state.files.length;
     $("save-all").disabled = !state.files.length;
     clearNotice(); updateSingleModeUi(); renderQueue();
@@ -936,7 +978,16 @@ async function saveApprovedItems() {
   const approved = state.files.filter((file) => file.status === "approved");
   if (!approved.length) { setNotice(t("notice.saveAtLeast")); return false; }
   try {
-    for (const item of approved) await saveItem(item);
+    if (!writableFolder(state.outputHandle) && !writableFolder(state.inputHandle) && approved.length > 1) {
+      const archive = window.__censorStationArchive;
+      if (!archive?.createZip) throw new Error("El empaquetador ZIP no está disponible.");
+      const outputs = [];
+      for (const item of approved) outputs.push(await createCensoredOutput(item));
+      const zip = await archive.createZip(outputs);
+      downloadBlob(zip, "censor-station-censored.zip");
+    } else {
+      for (const item of approved) await saveItem(item);
+    }
     setNotice(approved.length === 1 ? t("notice.savedOne") : t("notice.savedMany", { count: approved.length }));
     return true;
   } catch (error) {
@@ -1002,9 +1053,22 @@ async function detectFile(item) {
   const blob = await new Promise((resolve) => canvasToBlob(item.image, resolve));
   const dataUrl = await blobToDataUrl(blob);
   try {
-    const response = await fetch("/api/detect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ dataUrl, mime: blob.type, threshold: Number($("threshold").value) / 100, classes: selectedClasses() }) });
-    const result = await response.json();
-    if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
+    const threshold = Number($("threshold").value) / 100;
+    const classes = selectedClasses();
+    let result;
+    const webDetector = window.__censorStationWebDetector;
+    if (webDetector?.isAvailable()) {
+      try {
+        result = { ok: true, detections: (await webDetector.detect(item.image, { threshold, classes })).detections };
+      } catch (webError) {
+        console.warn("Browser detector unavailable; falling back to the local server.", webError);
+      }
+    }
+    if (!result) {
+      const response = await fetch("/api/detect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ dataUrl, mime: blob.type, threshold, classes }) });
+      result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
+    }
     item.detections = result.detections.map((detection) => ({
       x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3],
       base: { x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3] },
@@ -1021,21 +1085,24 @@ function canvasToBlob(image, callback) { const temporary = document.createElemen
 function blobToDataUrl(blob) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(blob); }); }
 function dataUrlToBlob(dataUrl) { const match = /^data:([^;]+);base64,(.+)$/s.exec(dataUrl || ""); if (!match) throw new Error("El optimizador devolvió una imagen inválida."); const binary = atob(match[2]); const bytes = new Uint8Array(binary.length); for (let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index); return new Blob([bytes], { type: match[1] }); }
 
-async function saveItem(item) {
+async function createCensoredOutput(item) {
   await loadImage(item);
   const output = document.createElement("canvas"); output.width = item.image.naturalWidth; output.height = item.image.naturalHeight; const outputCtx = output.getContext("2d"); outputCtx.drawImage(item.image, 0, 0);
   for (const box of item.detections) if (box.visible !== false) renderSavedBox(outputCtx, item.image, box);
   const blob = await new Promise((resolve) => output.toBlob(resolve, mimeFromName(item.name) || "image/jpeg", .95));
   const name = `${item.name.replace(/(\.[^.]+)?$/, "")}_censored${item.name.match(/\.[^.]+$/)?.[0] || ".jpg"}`;
-  if (state.outputHandle || state.inputHandle) {
+  return { blob, name };
+}
+
+async function saveItem(item) {
+  const { blob, name } = await createCensoredOutput(item);
+  if (writableFolder(state.outputHandle) || writableFolder(state.inputHandle)) {
     const directory = state.outputHandle || await state.inputHandle.getDirectoryHandle("censored", { create: true });
     const handle = await directory.getFileHandle(name, { create: true });
     const writable = await handle.createWritable();
     await writable.write(blob);
     await writable.close();
-  } else {
-    const url = URL.createObjectURL(blob); const link = document.createElement("a"); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 5000);
-  }
+  } else downloadBlob(blob, name);
 }
 
 function createCensoredLayer(image, box, width, height) {
@@ -1129,6 +1196,64 @@ function drawOptimizerCanvas(target, image) {
   target.hidden = false;
 }
 
+function canvasBlob(canvas, mime, quality) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error(`El navegador no puede codificar ${mime}.`)), mime, quality);
+  });
+}
+
+function optimizerOutputDetails(item, requestedFormat, lossless) {
+  const sourceExtension = item.name.split(".").pop().toLowerCase();
+  const sourceFormat = sourceExtension === "jpg" || sourceExtension === "jpeg" ? "jpeg" : ["png", "webp"].includes(sourceExtension) ? sourceExtension : "webp";
+  const format = lossless ? "png" : requestedFormat === "original" ? sourceFormat : requestedFormat;
+  return format === "png" ? { format, mime: "image/png", extension: ".png" }
+    : format === "jpeg" ? { format, mime: "image/jpeg", extension: ".jpg" }
+      : { format: "webp", mime: "image/webp", extension: ".webp" };
+}
+
+async function optimizeInBrowser(item) {
+  const image = await loadOptimizerImage(item);
+  const output = document.createElement("canvas");
+  output.width = image.naturalWidth;
+  output.height = image.naturalHeight;
+  const context = output.getContext("2d");
+  const details = optimizerOutputDetails(item, $("optimizer-format").value, $("optimizer-lossless").checked);
+  const sourceMime = item.file.type || mimeFromName(item.name);
+  if (details.format === "jpeg" && ["image/png", "image/gif", "image/webp"].includes(sourceMime)) {
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, output.width, output.height);
+  }
+  context.drawImage(image, 0, 0);
+  const quality = Math.min(95, Math.max(1, Number($("optimizer-quality").value))) / 100;
+  let blob = await canvasBlob(output, details.mime, details.format === "png" ? undefined : quality);
+  let mime = details.mime;
+  let extension = details.extension;
+  if ($("optimizer-lossless").checked && details.format === "png" && sourceMime === "image/png" && blob.size >= item.file.size) {
+    blob = item.file;
+    mime = "image/png";
+    extension = ".png";
+  }
+  return { blob, mime, extension };
+}
+
+async function optimizeWithServer(item) {
+  const sourceDataUrl = await blobToDataUrl(item.file);
+  const response = await fetch("/api/optimize", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      dataUrl: sourceDataUrl,
+      mime: item.file.type || mimeFromName(item.name),
+      format: $("optimizer-format").value,
+      quality: Number($("optimizer-quality").value),
+      lossless: $("optimizer-lossless").checked,
+    }),
+  });
+  const result = await response.json();
+  if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "El optimizador no está disponible.");
+  return { blob: dataUrlToBlob(result.dataUrl), mime: result.mime, extension: result.extension };
+}
+
 async function refreshOptimizerPreview() {
   const item = optimizerCurrentFile();
   if (!item) { updateOptimizerStats(); return; }
@@ -1137,21 +1262,14 @@ async function refreshOptimizerPreview() {
   drawOptimizerCanvas(optimizerOriginalCanvas, image);
   $("optimizer-empty-preview").hidden = true;
   try {
-    const sourceDataUrl = await blobToDataUrl(item.file);
-    const response = await fetch("/api/optimize", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        dataUrl: sourceDataUrl,
-        mime: item.file.type || mimeFromName(item.name),
-        format: $("optimizer-format").value,
-        quality: Number($("optimizer-quality").value),
-        lossless: $("optimizer-lossless").checked,
-      }),
-    });
-    const result = await response.json();
-    if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Pillow no está disponible.");
-    const blob = dataUrlToBlob(result.dataUrl);
+    let result;
+    try {
+      result = await optimizeInBrowser(item);
+    } catch (browserError) {
+      console.warn("Browser optimizer unavailable; falling back to the local server.", browserError);
+      result = await optimizeWithServer(item);
+    }
+    const blob = result.blob;
     if (token !== state.optimizer.previewToken) return;
     item.optimizedBlob = blob;
     item.optimizedSize = blob.size;
@@ -1251,7 +1369,7 @@ async function saveOptimizerFile(item) {
     await refreshOptimizerPreview();
   }
   const name = optimizerFileName(item);
-  if (state.optimizer.outputHandle || state.optimizer.inputHandle) {
+  if (writableFolder(state.optimizer.outputHandle) || writableFolder(state.optimizer.inputHandle)) {
     const directory = state.optimizer.outputHandle || await state.optimizer.inputHandle.getDirectoryHandle("optimized", { create: true });
     const handle = await directory.getFileHandle(name, { create: true });
     const writable = await handle.createWritable();
@@ -1267,6 +1385,27 @@ async function saveOptimizerFile(item) {
   }
 }
 
+function downloadBlob(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+async function saveOptimizerCollection() {
+  const files = state.optimizer.files;
+  if (writableFolder(state.optimizer.outputHandle) || writableFolder(state.optimizer.inputHandle) || files.length === 1) {
+    for (const item of files) await saveOptimizerFile(item);
+    return;
+  }
+  const archive = window.__censorStationArchive;
+  if (!archive?.createZip) throw new Error("El empaquetador ZIP no está disponible.");
+  const zip = await archive.createZip(files.map((item) => ({ name: optimizerFileName(item), blob: item.optimizedBlob })));
+  downloadBlob(zip, "censor-station-optimized.zip");
+}
+
 $("optimizer-format").addEventListener("change", () => { invalidateOptimizerResults(); syncOptimizerControls(); refreshOptimizerPreview(); });
 $("optimizer-quality").addEventListener("input", () => { invalidateOptimizerResults(); syncOptimizerControls(); refreshOptimizerPreview(); });
 $("optimizer-lossless").addEventListener("change", () => { invalidateOptimizerResults(); syncOptimizerControls(); refreshOptimizerPreview(); });
@@ -1280,7 +1419,7 @@ $("optimizer-choose-input").addEventListener("click", async () => {
     state.optimizer.files = files.map(makeOptimizerFile);
     state.optimizer.current = -1;
     $("optimizer-input-name").textContent = state.optimizer.inputHandle.name;
-    $("optimizer-choose-output").disabled = !state.optimizer.files.length;
+    $("optimizer-choose-output").disabled = !state.optimizer.files.length || !writableFolder(state.optimizer.inputHandle);
     clearOptimizerNotice();
     renderOptimizerQueue();
     syncOptimizerControls();
@@ -1294,7 +1433,7 @@ $("optimizer-save-all").addEventListener("click", async () => {
   if (!state.optimizer.files.length) return;
   try {
     if (state.optimizer.files.some((item) => !item.optimizedBlob)) await optimizeAll();
-    for (const item of state.optimizer.files) await saveOptimizerFile(item);
+    await saveOptimizerCollection();
     setOptimizerNotice(state.optimizer.files.length === 1 ? t("optimizer.savedOne") : t("optimizer.savedMany", { count: state.optimizer.files.length }));
   } catch (error) { setOptimizerNotice(error.message, "error"); }
 });

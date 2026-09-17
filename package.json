@@ -10,11 +10,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "preview": "vite preview",
     "prestart": "npm run build",
     "start": "node server.mjs",
     "check": "node --check server.mjs && node --check public/app.js && npm run build"
   },
   "dependencies": {
+    "fflate": "^0.8.3",
+    "onnxruntime-web": "^1.30.0",
     "preact": "^10.29.8"
   },
   "devDependencies": {

@@ -24,7 +24,7 @@ Automatic detection uses the `nsfw-anime-xl-x1280.pt` checkpoint published by [0
 
 Credit: 01miku. The local checkpoint matches the published file by SHA-256. The model card lists an MIT license, while the embedded Ultralytics checkpoint metadata lists AGPL-3.0; review the upstream terms before redistributing the weights.
 
-## Run
+## Run the desktop version
 
 On Windows:
 
@@ -40,6 +40,40 @@ npm start
 ```
 
 Open `http://127.0.0.1:4173` in your browser.
+
+## Web version
+
+The same interface can run as a static web app. The browser detector uses the
+ONNX export of the model with WebGPU when available and falls back to WebAssembly.
+Image optimization also runs in the browser; when folder writing is unavailable,
+multiple optimized files are downloaded as a ZIP.
+Folder selection uses the File System Access API when available and a browser
+file-list fallback otherwise. Browsers without folder write permissions use ZIP
+downloads instead of modifying the originals.
+
+On Windows, you can also double-click `start_censor_station_web.bat`. It installs
+dependencies when needed, builds the web version, and keeps the preview server
+open at `http://127.0.0.1:4174`.
+For local development, export the model into `public/models/`:
+
+```powershell
+python -m pip install -r requirements-web-export.txt
+python -m tools.python.export_web_model --output public/models
+npm run build
+```
+
+The ONNX file is intentionally ignored because it is large. The default web
+build loads the versioned export from the public [Hugging Face model repository](https://huggingface.co/negativemeta/censor-station-web-model).
+You can override it with `VITE_WEB_MODEL_URL` during the Vite build to use a
+same-origin copy or another CDN. The desktop version remains available as the
+full local fallback for folder-based processing and Python-powered optimization.
+
+To compare the browser-oriented export with the Python checkpoint on the
+included test asset:
+
+```powershell
+python -m tools.python.validate_web_model
+```
 
 ## Privacy
 
