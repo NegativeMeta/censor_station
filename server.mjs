@@ -48,6 +48,15 @@ async function detect(request, response) {
   }
 }
 
+function unloadModel(request, response) {
+  try {
+    detectorWorker.stop();
+    sendJson(response, 200, { ok: true, message: "Modelo descargado de memoria. Se recargará solo al analizar." });
+  } catch (error) {
+    sendJson(response, 500, { ok: false, message: error instanceof Error ? error.message : "No se pudo descargar el modelo." });
+  }
+}
+
 async function optimize(request, response) {
   try {
     const payload = await readJsonBody(request);
@@ -112,6 +121,7 @@ const server = http.createServer(async (request, response) => {
       return;
     }
     if (request.method === "POST" && request.url === "/api/detect") return detect(request, response);
+    if (request.method === "POST" && request.url === "/api/model/unload") return unloadModel(request, response);
     if (request.method === "POST" && request.url === "/api/optimize") return optimize(request, response);
     if (request.method === "GET") return serveStatic(request, response);
     response.writeHead(405);

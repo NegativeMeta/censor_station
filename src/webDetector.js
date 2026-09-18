@@ -272,6 +272,11 @@ export function createWebDetector() {
     get runtime() { return runtime; },
     get modelUrl() { return modelUrl; },
     isAvailable() { return Boolean(globalThis.navigator?.gpu || globalThis.WebAssembly); },
+    isLoaded() { return Boolean(sessionPromise); },
+    unload() {
+      sessionPromise = null;
+      runtime = "unavailable";
+    },
     async detect(image, { threshold = 0.35, classes = [], maskThreshold = 0.58 } = {}) {
       const { ort, session } = await loadSession();
       const meta = preprocess(image);
