@@ -17,7 +17,7 @@ export function App() {
         <Toolbar />
         <section id="notice" className="notice hidden" />
         <div className="workspace"><QueuePanel /><EditorPanel /><SettingsPanel /></div>
-        <footer className="footer"><span data-i18n="footer.local">Censor Station 0.1 · procesamiento local</span><span data-i18n="footer.instructions">Izquierdo pinta · derecho borra · arrastra el borde para mover · esquinas para ajustar</span></footer>
+        <footer className="footer"><span data-i18n="footer.local">Censor Station 0.1 · procesamiento local</span><span className="footer-motto" data-i18n="footer.motto">Let's censor until the world is free and this tool becomes useless!</span><span data-i18n="footer.instructions">Izquierdo pinta · derecho borra</span></footer>
       </section>
       <OptimizerPanel />
     </main>
