@@ -49,8 +49,20 @@ if errorlevel 1 (
 )
 
 echo.
-echo [Censor Station] Web preview available at:
-echo http://127.0.0.1:%WEB_PORT%
+echo         /\_/\
+echo       .'     '.
+echo      /  /\ /\  \       C E N S O R   S T A T I O N
+echo     ^|  / o   o\  ^|
+echo     ^|  ^|  ._. ^|  ^|      Let's censor until the world is free
+echo     ^|  ^|      ^|  ^|      and this tool is no longer needed.
+echo     ^| /'-----'\ ^|
+echo      / /^| ^>o^< ^|\ \      WEB SERVER ON {127.0.0.1:%WEB_PORT%}
+echo     (_/ ^|_____^| \_)
+echo         /_____\          http://127.0.0.1:%WEB_PORT%
+echo          ^| ^| ^|
+echo          ^|_^|_^|
+echo.
+echo [Censor Station] Booting up... LET'S CENSOR!
 echo Keep this window open while using Censor Station.
 echo Press Ctrl+C to stop the web server.
 echo.
