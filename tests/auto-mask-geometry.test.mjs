@@ -24,8 +24,10 @@ vm.createContext(sandbox);
 vm.runInContext([
   functionSource("renderPolygon"),
   functionSource("polygonBounds"),
+  functionSource("paintBounds"),
   "globalThis.renderPolygon = renderPolygon;",
   "globalThis.polygonBounds = polygonBounds;",
+  "globalThis.paintBounds = paintBounds;",
 ].join("\n"), sandbox);
 
 const originalPolygon = [[10, 10], [70, 10], [70, 70], [42, 42], [10, 70]];
@@ -44,5 +46,15 @@ assert.deepEqual(
   JSON.parse(JSON.stringify(sandbox.polygonBounds(originalPolygon))),
   { x: 10, y: 10, w: 60, h: 60 },
   "Full layers derive their working rect from the polygon bounds."
+);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(sandbox.paintBounds({ polygon: [], brushEdits: [{ mode: "add", x: 100, y: 100, radius: 10 }] }))),
+  { x: 90, y: 90, w: 20, h: 20 },
+  "Brush-only layers size their pattern to the painted stroke, not the whole image."
+);
+assert.equal(
+  sandbox.paintBounds({ polygon: [], brushEdits: [] }),
+  null,
+  "Empty layers have no pattern rect."
 );
 assert.equal(source.includes("quadraticCurveTo"), false, "Mask contours must not be rounded with Bézier curves.");

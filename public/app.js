@@ -623,6 +623,20 @@ function polygonBounds(polygon) {
   return { x: x1, y: y1, w: Math.max(1, x2 - x1), h: Math.max(1, y2 - y1) };
 }
 
+function paintBounds(box) {
+  const base = polygonBounds(box.polygon);
+  let x1 = base ? base.x : Infinity, y1 = base ? base.y : Infinity;
+  let x2 = base ? base.x + base.w : -Infinity, y2 = base ? base.y + base.h : -Infinity;
+  for (const edit of box.brushEdits || []) {
+    if (edit.mode === "erase") continue;
+    const radius = edit.radius || 0;
+    x1 = Math.min(x1, edit.x - radius); y1 = Math.min(y1, edit.y - radius);
+    x2 = Math.max(x2, edit.x + radius); y2 = Math.max(y2, edit.y + radius);
+  }
+  if (!Number.isFinite(x1)) return null;
+  return { x: x1, y: y1, w: Math.max(1, x2 - x1), h: Math.max(1, y2 - y1) };
+}
+
 function drawSquareBar(target, x1, y1, x2, y2, thickness) {
   const length = Math.max(1, Math.hypot(x2 - x1, y2 - y1));
   const normalX = -(y2 - y1) / length * thickness / 2;
@@ -692,25 +706,36 @@ function createEffectLayer(image, box, width, height) {
   const effectCtx = effect.getContext("2d");
   const scaleX = width / Math.max(1, image.naturalWidth);
   const scaleY = height / Math.max(1, image.naturalHeight);
-  const bounds = polygonBounds(box.polygon) || { x: 0, y: 0, w: image.naturalWidth, h: image.naturalHeight };
-  const boxX = bounds.x * scaleX;
-  const boxY = bounds.y * scaleY;
-  const boxW = bounds.w * scaleX;
-  const boxH = bounds.h * scaleY;
+  const bounds = paintBounds(box);
+  if ((box.mode === "lines" || box.mode === "black") && !bounds) return effect;
+  const safe = bounds || { x: 0, y: 0, w: image.naturalWidth, h: image.naturalHeight };
+  const boxY = safe.y * scaleY;
+  const boxH = safe.h * scaleY;
 
   if (box.mode === "lines" || box.mode === "black") {
     effectCtx.globalAlpha = 1;
     effectCtx.fillStyle = "#000000";
     const lineCount = box.mode === "lines" ? advancedValue(box, "lineCount", 6) : 1;
-    const thickness = Math.max(3, boxH * (box.mode === "lines" ? advancedValue(box, "lineThickness", 8) / 100 : .14));
-    const firstY = boxY + boxH * (lineCount === 1 ? .5 : .12);
-    const spacing = lineCount === 1 ? 0 : boxH * .76 / (lineCount - 1);
+    const thickness = Math.max(2, boxH * (box.mode === "lines" ? advancedValue(box, "lineThickness", 8) / 100 : .14));
     const angle = (box.mode === "lines" ? advancedValue(box, "lineAngle", -10) : -10) * Math.PI / 180;
-    const halfLength = boxW * .44;
-    for (let index = 0; index < lineCount; index++) {
-      const y = firstY + spacing * index;
-      drawSquareBar(effectCtx, boxX + boxW / 2 - Math.cos(angle) * halfLength, y - Math.sin(angle) * halfLength, boxX + boxW / 2 + Math.cos(angle) * halfLength, y + Math.sin(angle) * halfLength, thickness);
+    const paintBar = (y) => {
+      const halfLength = width / 2 + thickness;
+      drawSquareBar(effectCtx, width / 2 - Math.cos(angle) * halfLength, y - Math.sin(angle) * halfLength, width / 2 + Math.cos(angle) * halfLength, y + Math.sin(angle) * halfLength, thickness);
+    };
+    if (lineCount === 1) {
+      paintBar(boxY + boxH * .5);
+      return effect;
     }
+    // Tile the same rhythm beyond the painted bounds so brush additions reveal lines too.
+    const pad = Number(box.padding || 0);
+    const topY = safe.y - pad, bottomY = safe.y + safe.h + pad;
+    const spacing = boxH * .76 / (lineCount - 1);
+    const firstY = boxY + boxH * .12;
+    // Untouched layers keep the exact legacy bars; only edited/extended masks tile further.
+    const extended = pad > 0 || (box.brushEdits || []).some((edit) => edit.mode !== "erase");
+    const firstIndex = extended ? Math.ceil((topY * scaleY - firstY) / spacing) : 0;
+    const lastIndex = extended ? Math.floor((bottomY * scaleY - firstY) / spacing) : lineCount - 1;
+    for (let index = firstIndex; index <= lastIndex; index++) paintBar(firstY + spacing * index);
     return effect;
   }
 
