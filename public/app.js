@@ -94,7 +94,6 @@ const state = {
   inputHandle: null,
   outputHandle: null,
   selected: -1,
-  drag: null,
   brush: null,
   analysis: { active: false, current: 0, completed: 0, total: 0, stepFraction: 0, timer: null },
   optimizer: { files: [], current: -1, inputHandle: null, outputHandle: null, previewToken: 0 },
@@ -346,18 +345,17 @@ function layerVisibilityIcon(hidden) {
 }
 
 function layerThumbnailSignature(box, index) {
-  return [index, box.x, box.y, box.w, box.h, box.mode, box.visible, box.padding, box.maskInset, box.manualBlank, box.brushEdits?.length || 0].join("|");
+  return [index, box.mode, box.visible, box.padding, box.maskInset, box.manualBlank, box.brushEdits?.length || 0, box.polygon?.length || 0].join("|");
 }
 
 function paintLayerThumbnail(target, image, box) {
   const size = 84;
   const imageWidth = image.naturalWidth || image.width;
   const imageHeight = image.naturalHeight || image.height;
-  const boxWidth = Math.max(1, Number(box.w) || 1);
-  const boxHeight = Math.max(1, Number(box.h) || 1);
-  const side = Math.max(1, Math.round(Math.min(imageWidth, imageHeight, Math.max(boxWidth, boxHeight) * 1.35)));
-  const centerX = (Number(box.x) || 0) + boxWidth / 2;
-  const centerY = (Number(box.y) || 0) + boxHeight / 2;
+  const bounds = polygonBounds(box.polygon) || { x: 0, y: 0, w: imageWidth, h: imageHeight };
+  const side = Math.max(1, Math.round(Math.min(imageWidth, imageHeight, Math.max(bounds.w, bounds.h) * 1.35)));
+  const centerX = bounds.x + bounds.w / 2;
+  const centerY = bounds.y + bounds.h / 2;
   const cropX = clamp(centerX - side / 2, 0, Math.max(0, imageWidth - side));
   const cropY = clamp(centerY - side / 2, 0, Math.max(0, imageHeight - side));
   const crop = document.createElement("canvas");
@@ -368,11 +366,7 @@ function paintLayerThumbnail(target, image, box) {
   const translatePoint = ([x, y]) => [x - cropX, y - cropY];
   const localBox = {
     ...box,
-    x: (Number(box.x) || 0) - cropX,
-    y: (Number(box.y) || 0) - cropY,
-    base: box.base ? { ...box.base, x: box.base.x - cropX, y: box.base.y - cropY } : undefined,
     polygon: (box.polygon || []).map(translatePoint),
-    basePolygon: (box.basePolygon || []).map(translatePoint),
     brushEdits: (box.brushEdits || []).map((edit) => ({ ...edit, x: edit.x - cropX, y: edit.y - cropY })),
   };
   const context = target.getContext("2d");
@@ -591,7 +585,7 @@ function draw() {
   renderLayerThumbnails(item);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
-  item.detections.forEach((box, index) => { if (box.visible !== false) drawDetection(box, index === state.selected); });
+  item.detections.forEach((box) => { if (box.visible !== false) drawDetection(box); });
   $("detection-summary").textContent = item.detections.length === 1
     ? t("canvas.summaryOne", { status: item.status || t("status.pending") })
     : item.detections.length
@@ -599,27 +593,11 @@ function draw() {
       : t("canvas.manualHint");
 }
 
-function drawDetection(box, selected) {
-  const scale = Number(canvas.dataset.scale || 1);
-  const x = box.x * scale, y = box.y * scale, w = box.w * scale, h = box.h * scale;
-  const polygon = renderPolygon(box).map(([pointX, pointY]) => [pointX * scale, pointY * scale]);
+function drawDetection(box) {
   const effect = createCensoredLayer(currentFile().image, box, canvas.width, canvas.height);
   ctx.globalAlpha = 1;
   ctx.drawImage(effect, 0, 0);
   ctx.globalAlpha = 1;
-  if (box.manualBlank) return;
-  ctx.save();
-  ctx.strokeStyle = selected ? "#42d6bc" : box.source === "manual" ? "#42d6bc" : "#73a6ff";
-  ctx.lineWidth = selected ? 2 : 1;
-  ctx.setLineDash(selected ? [] : [5, 4]);
-  if (polygon.length >= 3) strokePolygon(ctx, polygon);
-  else ctx.strokeRect(x, y, w, h);
-  if (selected) {
-    ctx.setLineDash([]);
-    ctx.fillStyle = "#42d6bc";
-    [[x, y], [x + w, y], [x, y + h], [x + w, y + h]].forEach(([cx, cy]) => ctx.fillRect(cx - 4, cy - 4, 8, 8));
-  }
-  ctx.restore();
 }
 
 function tracePolygon(target, polygon) {
@@ -628,25 +606,21 @@ function tracePolygon(target, polygon) {
   target.closePath();
 }
 
-function clipPolygon(target, polygon) {
-  tracePolygon(target, polygon);
-  target.clip();
-}
-
-function strokePolygon(target, polygon) {
-  tracePolygon(target, polygon);
-  target.stroke();
-}
-
 function renderPolygon(box) {
-  let polygon;
-  if (!box.polygon?.length || !box.basePolygon?.length || !box.base) polygon = box.polygon || [];
-  else {
-    const scaleX = box.w / Math.max(1, box.base.w);
-    const scaleY = box.h / Math.max(1, box.base.h);
-    polygon = box.basePolygon.map(([x, y]) => [box.x + (x - box.base.x) * scaleX, box.y + (y - box.base.y) * scaleY]);
+  return box.polygon || [];
+}
+
+function polygonBounds(polygon) {
+  if (!polygon?.length) return null;
+  let x1 = Infinity, y1 = Infinity, x2 = -Infinity, y2 = -Infinity;
+  for (const [x, y] of polygon) {
+    if (x < x1) x1 = x;
+    if (y < y1) y1 = y;
+    if (x > x2) x2 = x;
+    if (y > y2) y2 = y;
   }
-  return polygon;
+  if (!Number.isFinite(x1)) return null;
+  return { x: x1, y: y1, w: Math.max(1, x2 - x1), h: Math.max(1, y2 - y1) };
 }
 
 function drawSquareBar(target, x1, y1, x2, y2, thickness) {
@@ -718,10 +692,11 @@ function createEffectLayer(image, box, width, height) {
   const effectCtx = effect.getContext("2d");
   const scaleX = width / Math.max(1, image.naturalWidth);
   const scaleY = height / Math.max(1, image.naturalHeight);
-  const boxX = box.x * scaleX;
-  const boxY = box.y * scaleY;
-  const boxW = box.w * scaleX;
-  const boxH = box.h * scaleY;
+  const bounds = polygonBounds(box.polygon) || { x: 0, y: 0, w: image.naturalWidth, h: image.naturalHeight };
+  const boxX = bounds.x * scaleX;
+  const boxY = bounds.y * scaleY;
+  const boxW = bounds.w * scaleX;
+  const boxH = bounds.h * scaleY;
 
   if (box.mode === "lines" || box.mode === "black") {
     effectCtx.globalAlpha = 1;
@@ -772,14 +747,16 @@ function createMaskCanvas(box, width, height, scale, offsetX = 0, offsetY = 0) {
   const local = (pointX, pointY) => [pointX * scale - offsetX, pointY * scale - offsetY];
   const polygon = renderPolygon(box).map(([pointX, pointY]) => local(pointX, pointY));
   const paintMaskShape = (target) => {
+    if (polygon.length < 3) return;
     target.fillStyle = "#fff";
-    if (polygon.length >= 3) {
-      tracePolygon(target, polygon);
-      target.fill();
-    } else {
-      const [boxX, boxY] = local(box.x, box.y);
-      target.fillRect(boxX, boxY, box.w * scale, box.h * scale);
+    tracePolygon(target, polygon);
+    const inset = Number(box.padding || 0) * scale;
+    if (inset > 0) {
+      target.lineJoin = "round";
+      target.lineWidth = inset * 2;
+      target.stroke();
     }
+    target.fill();
   };
   if (!box.manualBlank) {
     paintMaskShape(maskCtx);
@@ -797,71 +774,30 @@ function createMaskCanvas(box, width, height, scale, offsetX = 0, offsetY = 0) {
   return mask;
 }
 
-function hitTest(event) {
-  const rect = canvas.getBoundingClientRect();
-  const scale = Number(canvas.dataset.scale || 1);
-  const x = (event.clientX - rect.left) / scale;
-  const y = (event.clientY - rect.top) / scale;
-  for (let i = state.files[state.current]?.detections.length - 1; i >= 0; i--) {
-    const box = currentFile().detections[i];
-    if (box.visible === false) continue;
-    if (x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h) return { index: i, x, y };
-  }
-  return { index: -1, x, y };
-}
-
 canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
 function createManualLayer(item) {
-  const scale = Number(canvas.dataset.scale || 1);
-  item.detections.push({ x: 0, y: 0, w: canvas.width / scale, h: canvas.height / scale, mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", brushEdits: [], visible: true, manualBlank: true });
+  item.detections.push({ mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", polygon: [], brushEdits: [], visible: true, manualBlank: true });
   state.selected = item.detections.length - 1;
 }
 
 canvas.addEventListener("pointerdown", (event) => {
   const item = currentFile();
   if (!item?.image) return;
-  if (event.button === 0 && item.detections.length === 0) {
+  if (event.button !== 0 && event.button !== 2) return;
+  if (item.detections.length === 0) {
     createManualLayer(item);
     renderLayers();
     syncControls();
   }
-  const hit = hitTest(event);
-  const selectedBox = item.detections[state.selected];
-  if (event.button === 2 && selectedBox) {
-    state.drag = null;
-    state.brush = { mode: "erase", boxIndex: state.selected, last: null, pointerId: event.pointerId };
-    canvas.setPointerCapture(event.pointerId);
-    event.preventDefault();
-    brushAt(hit.x, hit.y);
-    syncControls();
-    return;
-  }
-  if (event.button === 0 && selectedBox && !selectedBox.manualBlank && hit.index === state.selected && isNearEdge(hit.x, hit.y, selectedBox)) {
-    state.drag = { startX: hit.x, startY: hit.y, original: { ...selectedBox }, corner: nearestCorner(hit.x, hit.y, selectedBox) };
-    canvas.setPointerCapture(event.pointerId);
-    return;
-  }
-  if (event.button === 0 && selectedBox) {
-    state.drag = null;
-    state.brush = { mode: "add", boxIndex: state.selected, last: null, pointerId: event.pointerId };
-    canvas.setPointerCapture(event.pointerId);
-    event.preventDefault();
-    brushAt(hit.x, hit.y);
-    syncControls();
-    return;
-  }
-  if (event.button !== 0) return;
-  if (hit.index < 0) {
-    state.selected = -1;
-    syncControls(); draw();
-    return;
-  }
-  state.selected = hit.index;
-  const box = currentFile().detections[hit.index];
-  state.drag = { startX: hit.x, startY: hit.y, original: { ...box }, corner: nearestCorner(hit.x, hit.y, box) };
+  if (state.selected < 0 || !item.detections[state.selected]) state.selected = item.detections.length - 1;
+  const rect = canvas.getBoundingClientRect();
+  const scale = Number(canvas.dataset.scale || 1);
+  state.brush = { mode: event.button === 2 ? "erase" : "add", boxIndex: state.selected, last: null, pointerId: event.pointerId };
   canvas.setPointerCapture(event.pointerId);
-  renderLayers(); syncControls(); draw();
+  event.preventDefault();
+  brushAt((event.clientX - rect.left) / scale, (event.clientY - rect.top) / scale);
+  syncControls();
 });
 
 canvas.addEventListener("pointermove", (event) => {
@@ -872,21 +808,10 @@ canvas.addEventListener("pointermove", (event) => {
     event.preventDefault();
     return;
   }
-  if (!state.drag || state.selected < 0) return;
-  const hit = hitTest(event);
-  const box = currentFile().detections[state.selected];
-  const origin = state.drag.original;
-  const dx = hit.x - state.drag.startX, dy = hit.y - state.drag.startY;
-  if (state.drag.corner) resizeBox(box, origin, state.drag.corner, dx, dy);
-  else { box.x = clamp(origin.x + dx, 0, canvas.width / Number(canvas.dataset.scale)); box.y = clamp(origin.y + dy, 0, canvas.height / Number(canvas.dataset.scale)); }
-  draw();
 });
 
-canvas.addEventListener("pointerup", () => { state.drag = null; state.brush = null; });
-canvas.addEventListener("pointercancel", () => { state.drag = null; state.brush = null; });
-
-function pointInsideBox(x, y, box) { return x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h; }
-function isNearEdge(x, y, box) { const edge = 14; return Math.abs(x - box.x) < edge || Math.abs(x - (box.x + box.w)) < edge || Math.abs(y - box.y) < edge || Math.abs(y - (box.y + box.h)) < edge; }
+canvas.addEventListener("pointerup", () => { state.brush = null; });
+canvas.addEventListener("pointercancel", () => { state.brush = null; });
 function brushRadius() { return Math.max(2, Number($("brush-size").value || 24)) / Number(canvas.dataset.scale || 1); }
 function brushAt(x, y) { brushLine(x, y, true); }
 function brushLine(x, y, first = false) {
@@ -907,20 +832,6 @@ function brushLine(x, y, first = false) {
   }
   state.brush.last = point;
   draw();
-}
-
-function nearestCorner(x, y, box) {
-  const threshold = 18;
-  const points = { nw: [box.x, box.y], ne: [box.x + box.w, box.y], sw: [box.x, box.y + box.h], se: [box.x + box.w, box.y + box.h] };
-  return Object.entries(points).find(([, [cx, cy]]) => Math.abs(x - cx) < threshold && Math.abs(y - cy) < threshold)?.[0] || null;
-}
-
-function resizeBox(box, original, corner, dx, dy) {
-  const min = 10;
-  if (corner.includes("n")) { box.y = Math.max(0, original.y + dy); box.h = Math.max(min, original.h - dy); }
-  if (corner.includes("s")) box.h = Math.max(min, original.h + dy);
-  if (corner.includes("w")) { box.x = Math.max(0, original.x + dx); box.w = Math.max(min, original.w - dx); }
-  if (corner.includes("e")) box.w = Math.max(min, original.w + dx);
 }
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
@@ -1006,8 +917,7 @@ $("mask-inset").addEventListener("input", (event) => {
   currentFile()?.detections.filter((box) => box.source === "auto").forEach((box) => { box.maskInset = value; });
   draw();
 });
-function updateSelected(key, value) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; if (key === "padding") applyPadding(box); draw(); }
-function applyPadding(box) { if (box.manualBlank) return; const p = Number(box.padding || 0); if (!box.base) box.base = { x: box.x, y: box.y, w: box.w, h: box.h }; box.x = Math.max(0, box.base.x - p); box.y = Math.max(0, box.base.y - p); box.w = box.base.w + p * 2; box.h = box.base.h + p * 2; }
+function updateSelected(key, value) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; draw(); }
 
 $("add-box").addEventListener("click", () => {
   const item = currentFile(); if (!item) return;
@@ -1029,7 +939,6 @@ $("single-image-input").addEventListener("change", async (event) => {
   }
   state.files.push(makeFile(file));
   state.selected = -1;
-  state.drag = null;
   state.brush = null;
   clearNotice();
   updateSingleModeUi();
@@ -1181,9 +1090,7 @@ async function detectFile(item) {
       if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
     }
     item.detections = result.detections.map((detection) => ({
-      x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3],
-      base: { x: detection.box[0], y: detection.box[1], w: detection.box[2], h: detection.box[3] },
-      polygon: detection.polygon || [], basePolygon: detection.polygon || [],
+      polygon: detection.polygon || [],
       mode: "pixelate", padding: Number($("padding").value), maskInset: Number($("mask-inset").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
     }));
   } catch (error) {

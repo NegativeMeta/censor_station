@@ -23,25 +23,26 @@ const sandbox = {};
 vm.createContext(sandbox);
 vm.runInContext([
   functionSource("renderPolygon"),
+  functionSource("polygonBounds"),
   "globalThis.renderPolygon = renderPolygon;",
+  "globalThis.polygonBounds = polygonBounds;",
 ].join("\n"), sandbox);
 
 const originalPolygon = [[10, 10], [70, 10], [70, 70], [42, 42], [10, 70]];
 const box = {
   source: "auto",
   maskInset: 4,
-  x: 0,
-  y: 0,
-  w: 80,
-  h: 80,
-  base: { x: 0, y: 0, w: 80, h: 80 },
   polygon: originalPolygon,
-  basePolygon: originalPolygon,
 };
 
 assert.deepEqual(
   JSON.parse(JSON.stringify(sandbox.renderPolygon(box))),
   originalPolygon,
   "Automatic masks must retain the detector contour: no geometric inset pre-transform."
+);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(sandbox.polygonBounds(originalPolygon))),
+  { x: 10, y: 10, w: 60, h: 60 },
+  "Full layers derive their working rect from the polygon bounds."
 );
 assert.equal(source.includes("quadraticCurveTo"), false, "Mask contours must not be rounded with Bézier curves.");
