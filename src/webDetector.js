@@ -268,14 +268,26 @@ export function createWebDetector() {
     return sessionPromise;
   }
 
+  async function unloadSession() {
+    const pending = sessionPromise;
+    sessionPromise = null;
+    runtime = "unavailable";
+    if (!pending) return;
+    try {
+      const { session } = await pending;
+      await session.release?.();
+    } catch {
+      // The session never finished loading or was already released.
+    }
+  }
+
   return {
     get runtime() { return runtime; },
     get modelUrl() { return modelUrl; },
     isAvailable() { return Boolean(globalThis.navigator?.gpu || globalThis.WebAssembly); },
     isLoaded() { return Boolean(sessionPromise); },
     unload() {
-      sessionPromise = null;
-      runtime = "unavailable";
+      return unloadSession();
     },
     async detect(image, { threshold = 0.35, classes = [], maskThreshold = 0.58 } = {}) {
       const { ort, session } = await loadSession();
