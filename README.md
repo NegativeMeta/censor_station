@@ -7,6 +7,8 @@ Local desktop-style web app for reviewing images, detecting sensitive areas, app
 ## Features
 
 - Automatic and manual censorship.
+- GIF support: every frame queues as an image; analysis fills detections and
+  the final GIF keeps original timing, loop count, and untouched frames.
 - Pixelate, blur, black-line, and white-glow modes.
 - Image-by-image review before saving.
 - Local optimization with PNG, WebP, and JPEG.
@@ -78,3 +80,22 @@ python -m tools.python.validate_web_model
 ## Privacy
 
 Processing runs locally. Original images are never overwritten.
+
+## GIF censorship
+
+GIFs are expanded into full-canvas frames on load; every frame queues as a
+pending image (labeled `name · f3` with a `GIF 3/24` status) and the Analyze
+buttons fill in detections like still images. Approve the frames you want
+censored and the app reassembles the animation with the original per-frame
+delays, loop count, and untouched frames preserved. GIFs are capped at 300
+frames per file.
+
+- Desktop: extraction runs on the server with Pillow. Assembly uses the
+  `gifski` CLI binary (AGPL-3.0+, https://gif.ski) when it is installed and
+  the frame delays are uniform (`--fps` only supports one rate), otherwise
+  Pillow preserves the exact timing. Install it with `brew install gifski`,
+  `cargo install gifski`, or your system package manager.
+- Web: decoding uses `gifuct-js` and encoding uses `gifenc` (both MIT, pure
+  JS, bundled with the app). When the desktop server is reachable it is
+  preferred for extraction and assembly; otherwise the browser pipeline
+  takes over automatically.

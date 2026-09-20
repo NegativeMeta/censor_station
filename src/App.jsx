@@ -28,5 +28,11 @@ export function App() {
       <div className="analysis-progress-track" aria-hidden="true"><div className="analysis-progress-bar" /></div>
       <p id="folder-loading-count" role="status" aria-live="polite" />
     </dialog>
+    <dialog id="gif-limit-dialog" className="folder-loading gif-limit-dialog" aria-labelledby="gif-limit-title">
+      <div className="folder-loading-brand">✦ CENSOR STATION ✦</div>
+      <h2 id="gif-limit-title">GIF demasiado largo</h2>
+      <p id="gif-limit-body" />
+      <form method="dialog"><button id="gif-limit-dismiss" className="button primary" value="ok">Entendido</button></form>
+    </dialog>
   </>;
 }

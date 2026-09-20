@@ -38,13 +38,23 @@ export function createPythonWorker({ projectRoot, moduleName, label }) {
         const line = state.buffer.slice(0, newline).trim();
         state.buffer = state.buffer.slice(newline + 1);
         if (!line) continue;
-        const request = state.pending.shift();
+        const request = state.pending[0];
         if (!request) continue;
         try {
           const result = JSON.parse(line);
-          if (!result.ok) request.reject(new Error(result.error || `${label} devolvió un error.`));
-          else request.resolve(result);
+          if (!result.ok) {
+            state.pending.shift();
+            request.reject(new Error(result.error || `${label} devolvió un error.`));
+          } else if (result.progress === true && request.onProgress) {
+            // Progress lines keep the request at the head of the queue so the
+            // final response still resolves the same caller.
+            try { request.onProgress(result); } catch { /* progress must never break the stream */ }
+          } else {
+            state.pending.shift();
+            request.resolve(result);
+          }
         } catch {
+          state.pending.shift();
           request.reject(new Error(`${label} devolvió una respuesta inválida.`));
         }
       }
@@ -63,10 +73,10 @@ export function createPythonWorker({ projectRoot, moduleName, label }) {
   }
 
   return {
-    request(payload) {
+    request(payload, { onProgress } = {}) {
       const child = ensure();
       return new Promise((resolve, reject) => {
-        state.pending.push({ resolve, reject });
+        state.pending.push({ resolve, reject, onProgress });
         try {
           child.stdin.write(`${JSON.stringify(payload)}\n`);
         } catch (error) {

@@ -11,7 +11,9 @@ export function Toolbar() {
     <div className="toolbar-status-strip" aria-hidden="true"><span className="status-online">▮ ONLINE</span><span data-i18n="status.ready">STATUS: READY</span><span id="item-count">ITEMS: 0</span><span data-i18n="status.review">MODE: REVIEW</span></div>
     <div className="toolbar-actions">
       <button id="detect-all" className="button secondary" data-i18n-title="toolbar.analyze" disabled><span className="button-icon icon-radar" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.analyze">-----</span></button>
+      <button id="detect-single" className="button secondary" data-i18n-title="toolbar.analyzeImage" disabled hidden><span className="button-icon icon-radar" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.analyzeImage">-----</span></button>
       <button id="unload-model" className="button secondary" data-i18n-title="toolbar.unloadModel" disabled><span className="button-icon icon-reject" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.unloadModel">-----</span></button>
+      <button id="approve-all" className="button secondary" data-i18n-title="actions.approveAll" disabled><span className="button-icon icon-approve" aria-hidden="true" /><span className="button-label" data-i18n="actions.approveAll">-----</span></button>
       <button id="save-all" className="button accent" data-i18n-title="toolbar.saveApproved" disabled><span className="button-icon icon-floppy" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.saveApproved">-----</span></button>
       <button id="save-single" className="button accent" data-i18n-title="toolbar.saveImage" hidden disabled><span className="button-icon icon-floppy" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.saveImage">-----</span></button>
     </div>

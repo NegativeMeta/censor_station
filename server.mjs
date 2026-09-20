@@ -11,8 +11,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, "dist");
 const publicDir = existsSync(distDir) ? distDir : path.join(__dirname, "public");
 const port = Number(process.env.PORT || 4173);
+import crypto from "node:crypto";
+import os from "node:os";
 const detectorWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.detector_worker", label: "Anime NSFW" });
 const optimizerWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.optimizer_worker", label: "Pillow" });
+const gifWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.gif_worker", label: "GIF" });
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -88,6 +91,103 @@ async function optimize(request, response) {
   }
 }
 
+async function gifExtract(request, response) {
+  try {
+    const payload = await readJsonBody(request);
+    const { data } = decodeDataUrl(payload.dataUrl);
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autocensor-gif-"));
+    try {
+      const imagePath = path.join(tempDir, `${crypto.randomUUID()}.gif`);
+      const framesDir = path.join(tempDir, "frames");
+      await fs.writeFile(imagePath, data);
+      const result = await gifWorker.request({ action: "extract", imagePath, framesDir, maxFrames: payload.maxFrames });
+      const frames = [];
+      for (const frame of result.frames || []) {
+        const bytes = await fs.readFile(path.join(framesDir, frame.file));
+        frames.push({ ...frame, dataUrl: `data:image/png;base64,${bytes.toString("base64")}` });
+      }
+      sendJson(response, 200, { ok: true, width: result.width, height: result.height, loop: result.loop, frameCount: result.frameCount, frames });
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  } catch (error) {
+    sendJson(response, 501, {
+      ok: false,
+      code: "GIF_UNAVAILABLE",
+      message: error instanceof Error ? error.message : "Error desconocido al extraer el GIF.",
+      hint: "Instala Pillow con: python -m pip install -r requirements.txt",
+    });
+  }
+}
+
+/** SSE variant: streams {"done","total"} lines while Pillow extracts frames. */
+async function gifExtractStream(request, response) {
+  const payload = await readJsonBody(request);
+  const { data } = decodeDataUrl(payload.dataUrl);
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autocensor-gif-"));
+  response.writeHead(200, { "content-type": "text/event-stream; charset=utf-8", "cache-control": "no-store", connection: "keep-alive" });
+  const send = (event) => response.write(`data: ${JSON.stringify(event)}\n\n`);
+  try {
+    const imagePath = path.join(tempDir, `${crypto.randomUUID()}.gif`);
+    const framesDir = path.join(tempDir, "frames");
+    await fs.writeFile(imagePath, data);
+    const result = await gifWorker.request(
+      { action: "extract", imagePath, framesDir, maxFrames: payload.maxFrames, progress: true },
+      { onProgress: (event) => send({ done: event.done, total: event.total }) },
+    );
+    const frames = [];
+    const list = result.frames || [];
+    for (let index = 0; index < list.length; index++) {
+      const bytes = await fs.readFile(path.join(framesDir, list[index].file));
+      frames.push({ ...list[index], dataUrl: `data:image/png;base64,${bytes.toString("base64")}` });
+      if (index % 10 === 0 || index === list.length - 1) send({ done: result.frameCount, total: result.frameCount, sending: index + 1 });
+    }
+    send({ finished: true, width: result.width, height: result.height, loop: result.loop, frameCount: result.frameCount, frames });
+  } catch (error) {
+    send({ finished: true, ok: false, code: "GIF_UNAVAILABLE", message: error instanceof Error ? error.message : "Error desconocido al extraer el GIF." });
+  } finally {
+    await fs.rm(tempDir, { recursive: true, force: true });
+    response.end();
+  }
+}
+
+async function gifAssemble(request, response) {
+  try {
+    const payload = await readJsonBody(request);
+    const metas = Array.isArray(payload.frames) ? payload.frames : [];
+    if (!metas.length) throw new Error("Sin frames para ensamblar el GIF.");
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autocensor-gif-"));
+    try {
+      const framesDir = path.join(tempDir, "frames");
+      await fs.mkdir(framesDir, { recursive: true });
+      for (const frame of metas) {
+        const { data } = decodeDataUrl(frame.dataUrl);
+        await fs.writeFile(path.join(framesDir, path.basename(String(frame.file || `${frame.index}.png`))), data);
+      }
+      const outputPath = path.join(tempDir, `${crypto.randomUUID()}.gif`);
+      const result = await gifWorker.request({
+        action: "assemble",
+        framesDir,
+        outputPath,
+        loop: payload.loop,
+        quality: payload.quality,
+        frames: metas.map((frame) => ({ index: frame.index, delay: frame.delay, file: path.basename(String(frame.file || `${frame.index}.png`)) })),
+      });
+      const bytes = await fs.readFile(outputPath);
+      sendJson(response, 200, { ok: true, encoder: result.encoder, frames: result.frames, loop: result.loop, dataUrl: `data:image/gif;base64,${bytes.toString("base64")}`, size: bytes.length });
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  } catch (error) {
+    sendJson(response, 501, {
+      ok: false,
+      code: "GIF_UNAVAILABLE",
+      message: error instanceof Error ? error.message : "Error desconocido al ensamblar el GIF.",
+      hint: "Instala Pillow con: python -m pip install -r requirements.txt",
+    });
+  }
+}
+
 async function serveStatic(request, response) {
   const url = new URL(request.url, "http://localhost");
   const relative = decodeURIComponent(url.pathname === "/" ? "/index.html" : url.pathname);
@@ -123,6 +223,9 @@ const server = http.createServer(async (request, response) => {
     if (request.method === "POST" && request.url === "/api/detect") return detect(request, response);
     if (request.method === "POST" && request.url === "/api/model/unload") return unloadModel(request, response);
     if (request.method === "POST" && request.url === "/api/optimize") return optimize(request, response);
+    if (request.method === "POST" && request.url === "/api/gif/extract") return gifExtract(request, response);
+    if (request.method === "POST" && request.url === "/api/gif/extract-stream") return gifExtractStream(request, response);
+    if (request.method === "POST" && request.url === "/api/gif/assemble") return gifAssemble(request, response);
     if (request.method === "GET") return serveStatic(request, response);
     response.writeHead(405);
     response.end("Method not allowed");
@@ -144,6 +247,7 @@ server.on("error", (error) => {
 process.once("exit", () => {
   detectorWorker.stop();
   optimizerWorker.stop();
+  gifWorker.stop();
 });
 
 server.listen(port, "127.0.0.1", () => {

@@ -1,6 +1,7 @@
 import { render } from "preact";
 import { App } from "./App.jsx";
 import { createZip } from "./browserArchive.js";
+import { decodeGif, encodeGif, isAnimatedGifBlob } from "./browserGif.js";
 import { createWebDetector } from "./webDetector.js";
 
 render(<App />, document.getElementById("app"));
@@ -9,6 +10,7 @@ render(<App />, document.getElementById("app"));
 // detector from the bundled application so desktop and web share the same UI.
 window.__censorStationWebDetector = createWebDetector();
 window.__censorStationArchive = { createZip };
+window.__censorStationGif = { decodeGif, encodeGif, isAnimatedGifBlob };
 
 // The controller stays isolated while the UI is migrated component by component.
 // It is loaded only after Preact has created every DOM target it manages.

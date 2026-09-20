@@ -32,6 +32,16 @@ if defined SERVER_PID (
     exit /b 0
 )
 
+if not exist "node_modules" (
+    echo [Censor Station] Installing JavaScript dependencies...
+    call npm.cmd install
+    if errorlevel 1 (
+        echo [Censor Station] Dependency installation failed.
+        call :wait_for_key
+        exit /b 1
+    )
+)
+
 if not exist ".venv\Scripts\python.exe" (
     echo [Censor Station] Local Python environment not found. Automatic detection may be unavailable.
     echo Set it up with:
@@ -49,7 +59,7 @@ if not exist "models\nsfw-anime-xl-x1280.pt" (
 echo [Censor Station] Booting up... LET'S CENSOR!
 echo Keep this window open while using Censor Station.
 echo Press Ctrl+C to stop the server.
-npm.cmd run start -- --open-browser
+call npm.cmd run start -- --open-browser
 set "SERVER_EXIT=%ERRORLEVEL%"
 echo.
 echo [Censor Station] SERVER OFF - exit code %SERVER_EXIT%.

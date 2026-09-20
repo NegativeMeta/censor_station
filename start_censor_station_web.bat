@@ -67,7 +67,7 @@ echo Keep this window open while using Censor Station.
 echo Press Ctrl+C to stop the web server.
 echo.
 
-npm.cmd run preview -- --host 127.0.0.1 --port %WEB_PORT%
+call npm.cmd run preview -- --host 127.0.0.1 --port %WEB_PORT%
 set "WEB_EXIT=%ERRORLEVEL%"
 echo.
 echo [Censor Station] WEB SERVER OFF - exit code %WEB_EXIT%.
