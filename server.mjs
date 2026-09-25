@@ -16,6 +16,7 @@ import os from "node:os";
 const detectorWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.detector_worker", label: "Anime NSFW" });
 const optimizerWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.optimizer_worker", label: "Pillow" });
 const gifWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.gif_worker", label: "GIF" });
+const MAX_GIF_ASSEMBLY_REQUEST_BYTES = 256 * 1024 * 1024;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -37,7 +38,7 @@ async function detect(request, response) {
     const { mime, data } = decodeDataUrl(payload.dataUrl);
     const result = await withTemporaryImage({ data, mime, prefix: "autocensor-" }, async ({ imagePath }) => detectorWorker.request({
       imagePath,
-      threshold: clamp(payload.threshold, 0.01, 0.99, 0.35),
+      threshold: clamp(payload.threshold, 0.01, 0.99, 0.85),
       classes: Array.isArray(payload.classes) ? payload.classes : [],
     }));
     sendJson(response, 200, { ok: true, detections: result.detections || [] });
@@ -153,7 +154,7 @@ async function gifExtractStream(request, response) {
 
 async function gifAssemble(request, response) {
   try {
-    const payload = await readJsonBody(request);
+    const payload = await readJsonBody(request, MAX_GIF_ASSEMBLY_REQUEST_BYTES);
     const metas = Array.isArray(payload.frames) ? payload.frames : [];
     if (!metas.length) throw new Error("Sin frames para ensamblar el GIF.");
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "autocensor-gif-"));
@@ -199,7 +200,10 @@ async function serveStatic(request, response) {
   }
   try {
     const file = await fs.readFile(requested);
-    response.writeHead(200, { "content-type": mimeTypes[path.extname(requested)] || "application/octet-stream" });
+    // Dev note: no-store on purpose. The UI is served from the same mutable
+    // working tree the user edits; any caching here serves stale JS/CSS and
+    // produces "I restarted and nothing changed" ghost bugs.
+    response.writeHead(200, { "content-type": mimeTypes[path.extname(requested)] || "application/octet-stream", "cache-control": "no-store" });
     response.end(file);
   } catch {
     response.writeHead(404);

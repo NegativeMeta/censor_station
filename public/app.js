@@ -12,7 +12,7 @@ const TRANSLATIONS = {
     "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Estilo de la selección", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LÍNEAS", "censor.glowWhite": "BLANCO GLOW", "censor.pixelateOption": "Píxeles", "censor.blurOption": "Desenfoque", "censor.linesOption": "Múltiples líneas negras", "censor.glowWhiteOption": "Blanco resplandeciente",
     "controls.optionsTitle": "OPTIONS", "controls.padding": "Margen de seguridad", "controls.brushSize": "Tamaño del pincel", "controls.brushHelp": "Con el botón izquierdo pintas censura; si no hay capas, el primer clic crea una automáticamente. Con el derecho borras dentro de la zona seleccionada.", "controls.threshold": "Umbral automático", "controls.thresholdHelp": "¿Se le escapa alguna zona? Baja el umbral. ¿Marca de más? Súbelo.", "controls.maskThreshold": "Precisión del contorno", "controls.maskThresholdHelp": "Ciñe el borde al cuerpo subiendo el valor. Reanaliza para aplicarlo.", "controls.maskInset": "Ajuste interior", "controls.maskInsetHelp": "Recorta un poco el borde de las máscaras automáticas.",
     "classes.title": "Partes a censurar", "classes.help": "Activa o desactiva las partes detectables antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
-    "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE", "actions.approveAll": "APROBAR TODO", "actions.save": "GUARDAR", "save.saving": "Guardando…", "save.imagesSaved": "imágenes guardadas",
+    "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE", "actions.approveAll": "APROBAR TODO", "actions.save": "GUARDAR", "layers.recheckHint": "Ctrl + clic para sumar a la re-revisión", "recheck.help": "Selecciona capas con Ctrl + clic y vuelve a detectarlas solo a ellas con el umbral actual (deslizador Umbral automático).", "recheck.run": "Re-revisar selección", "recheck.runOne": "Re-revisar 1 capa", "recheck.running": "Re-revisando {count} capas al {threshold}%…", "recheck.done": "{count} capas actualizadas.", "recheck.doneMissing": "{updated} actualizadas, {missing} sin coincidencia.", "save.saving": "Guardando…", "save.imagesSaved": "imágenes guardadas", "global.title": "Ajustes globales", "global.enable": "Aplicar a toda la cola", "global.help": "Actívalo y estos valores se aplican a todas las capas de todas las imágenes de la cola. Cambiar aquí reescribe cada capa; el pincel y las zonas dibujadas no se tocan.", "global.style": "Estilo para todas", "global.applied": "Ajustes globales aplicados a {count} capas.", "global.empty": "No hay capas en la cola. Analiza primero.", "global.previewing": "Vista previa en la imagen actual · {total} imágenes en cola.", "global.propagating": "Aplicando a la cola… {done}/{total} imágenes.",
         "notice.noImages": "No encontré imágenes compatibles en esa carpeta.", "notice.folderUnsupported": "Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.", "notice.saveAtLeast": "Aprueba al menos una imagen antes de guardar aprobadas.", "notice.reviewComplete": "Ya no quedan imágenes por aprobar. ¿Quieres guardar ahora las imágenes aprobadas?", "notice.saveLater": "Las imágenes aprobadas quedaron listas. Puedes guardarlas con «Guardar aprobadas».", "notice.savedOne": "1 imagen guardada.", "notice.savedMany": "{count} imágenes guardadas.", "notice.analyzing": "Analizando carpeta localmente…", "notice.analyzingImage": "Analizando imagen localmente…", "notice.analysisDone": "Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.", "notice.analysisImageDone": "Análisis terminado. Ajusta la zona y guarda la imagen cuando esté lista.", "notice.detectorUnavailable": "Detector automático no disponible: {message} Puedes seguir dibujando zonas manuales.", "notice.modelUnloaded": "Modelo descargado de memoria. Se recargará solo al analizar.", "notice.modelUnloadServerDown": "Sesión del navegador liberada. El servidor no respondió: arranca el backend para liberar su memoria también.", "notice.gifTooManyFrames": "«{name}» tiene {count} frames y el límite es {limit}. No se puede procesar ese GIF.", "dialog.gifLimitTitle": "GIF demasiado largo", "dialog.gifLimitBody": "«{name}» tiene {count} frames y el límite es {limit}. Reduce el GIF o divídelo en partes para censurarlo.", "dialog.dismiss": "Entendido", "gif.expanding": "Extrayendo frames del GIF…", "gif.framesLoaded": "frames cargados", "notice.gifReady": "GIF cargado: {count} frames en cola. Pulsa «Analizar» para detectar zonas.", "toolbar.analyzeGif": "Analizar frames",
     "status.approved": "Aprobada", "status.rejected": "Saltada", "status.pending": "Pendiente", "status.noLayers": "Sin capas", "status.detectedOne": "1 capa detectada", "status.detectedMany": "{count} capas detectadas", "canvas.summaryOne": "1 capa · {status}", "canvas.summaryMany": "{count} capas · {status}", "canvas.manualHint": "Sin capas detectadas · haz clic para crear una capa", "progress.none": "Sin carpeta", "progress.one": "1 aprobada", "progress.many": "{count} aprobadas", "progress.detail": "{count} de {total} aprobadas", "progress.analyzing": "Analizando {current} de {total}", "footer.local": "Censor Station 0.1 · procesamiento local", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Izquierdo pinta · derecho borra"
   },
@@ -29,7 +29,7 @@ const TRANSLATIONS = {
     "censor.title": "CENSOR", "censor.type": "CENSOR TYPE", "censor.style": "Selection style", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "LINES", "censor.glowWhite": "WHITE GLOW", "censor.pixelateOption": "Pixels", "censor.blurOption": "Blur", "censor.linesOption": "Multiple black lines", "censor.glowWhiteOption": "Glowing white",
     "controls.optionsTitle": "OPTIONS", "controls.padding": "Safety margin", "controls.brushSize": "Brush size", "controls.brushHelp": "Left click paints censorship; if there are no layers, the first click creates one automatically. Right click erases inside the selected area.", "controls.threshold": "Automatic threshold", "controls.thresholdHelp": "Missing a spot? Lower it. Marking too much? Raise it.", "controls.maskThreshold": "Contour precision", "controls.maskThresholdHelp": "Hug the edge tighter by raising it. Re-analyze to apply.", "controls.maskInset": "Inner adjustment", "controls.maskInsetHelp": "Trims automatic mask edges just a little.",
     "classes.title": "Parts to censor", "classes.help": "Enable or disable detectable parts before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
-    "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE", "actions.approveAll": "APPROVE ALL", "actions.save": "SAVE", "save.saving": "Saving…", "save.imagesSaved": "images saved",
+    "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE", "actions.approveAll": "APPROVE ALL", "actions.save": "SAVE", "layers.recheckHint": "Ctrl + click to add to re-check", "recheck.help": "Select layers with Ctrl + click and re-detect only them with the current threshold (Automatic threshold slider).", "recheck.run": "Re-check selection", "recheck.runOne": "Re-check 1 layer", "recheck.running": "Re-checking {count} layers at {threshold}%…", "recheck.done": "{count} layers updated.", "recheck.doneMissing": "{updated} updated, {missing} with no match.", "save.saving": "Saving…", "save.imagesSaved": "images saved", "global.title": "Global settings", "global.enable": "Apply to whole queue", "global.help": "Enable it and these values apply to every layer of every queued image. Changing here rewrites each layer; brush strokes and drawn areas stay untouched.", "global.style": "Style for all", "global.applied": "Global settings applied to {count} layers.", "global.empty": "No layers in the queue. Analyze first.", "global.previewing": "Previewing on the current image · {total} images queued.", "global.propagating": "Applying to the queue… {done}/{total} images.",
     "notice.noImages": "No compatible images were found in that folder.", "notice.folderUnsupported": "Your browser cannot choose folders. Use a recent version of Chrome or Edge.", "notice.saveAtLeast": "Approve at least one image before saving approved files.", "notice.reviewComplete": "There are no more images to approve. Do you want to save the approved images now?", "notice.saveLater": "The approved images are ready. You can save them with “Save approved”.", "notice.savedOne": "1 image saved.", "notice.savedMany": "{count} images saved.", "notice.analyzing": "Analyzing folder locally…", "notice.analyzingImage": "Analyzing image locally…", "notice.analysisDone": "Analysis complete. Review each image, adjust the areas and approve only the correct ones.", "notice.analysisImageDone": "Analysis complete. Adjust the area and save the image when ready.", "notice.detectorUnavailable": "Automatic detector unavailable: {message} You can continue drawing manual areas.", "notice.modelUnloaded": "Model unloaded from memory. It reloads automatically on analyze.",     "notice.modelUnloadServerDown": "Browser session released. The server did not respond: start the backend to free its memory too.", "notice.gifTooManyFrames": "“{name}” has {count} frames and the limit is {limit}. That GIF cannot be processed.", "dialog.gifLimitTitle": "GIF too long", "dialog.gifLimitBody": "“{name}” has {count} frames and the limit is {limit}. Trim the GIF or split it into parts to censor it.", "dialog.dismiss": "Got it", "gif.expanding": "Extracting GIF frames…", "gif.framesLoaded": "frames loaded", "notice.gifReady": "GIF loaded: {count} frames queued. Press “Analyze” to detect areas.", "toolbar.analyzeGif": "Analyze frames",
     "status.approved": "Approved", "status.rejected": "Skipped", "status.pending": "Pending", "status.noLayers": "No layers", "status.detectedOne": "1 layer detected", "status.detectedMany": "{count} layers detected", "canvas.summaryOne": "1 layer · {status}", "canvas.summaryMany": "{count} layers · {status}", "canvas.manualHint": "No layers detected · click to create a layer", "progress.none": "No folder", "progress.one": "1 approved", "progress.many": "{count} approved", "progress.detail": "{count} of {total} approved", "progress.analyzing": "Analyzing {current} of {total}", "footer.local": "Censor Station 0.1 · local processing", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Left click paints · right click erases"
   },
@@ -46,7 +46,7 @@ const TRANSLATIONS = {
     "censor.title": "検閲", "censor.type": "検閲タイプ", "censor.style": "選択範囲のスタイル", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "ライン", "censor.glowWhite": "白い光", "censor.pixelateOption": "ピクセル", "censor.blurOption": "ぼかし", "censor.linesOption": "複数の黒い線", "censor.glowWhiteOption": "光る白",
     "controls.optionsTitle": "オプション", "controls.padding": "安全マージン", "controls.brushSize": "ブラシサイズ", "controls.brushHelp": "左クリックで検閲を追加します。レイヤーがない場合、最初のクリックで自動作成します。右クリックで選択範囲から削除します。", "controls.threshold": "自動しきい値", "controls.thresholdHelp": "見つからない部分がある？下げてみて。検出しすぎ？上げてみて。", "controls.maskThreshold": "輪郭の精度", "controls.maskThresholdHelp": "値を上げると輪郭が体にぴったりします。再解析で適用されます。", "controls.maskInset": "内側調整", "controls.maskInsetHelp": "自動マスクの端を少しだけ内側にします。",
     "classes.title": "検閲する部位", "classes.help": "フォルダーを解析する前に検出する部位を切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
-    "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認", "actions.approveAll": "すべて承認", "actions.save": "保存", "save.saving": "保存中…", "save.imagesSaved": "枚保存済み",
+    "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認", "actions.approveAll": "すべて承認", "actions.save": "保存", "layers.recheckHint": "Ctrl + クリックで再チェックに追加", "recheck.help": "Ctrl + クリックでレイヤーを選択し、現在のしきい値（自動しきい値スライダー）でそれだけを再検出します。", "recheck.run": "選択を再チェック", "recheck.runOne": "1レイヤーを再チェック", "recheck.running": "{count}レイヤーを{threshold}%で再チェック中…", "recheck.done": "{count}レイヤーを更新しました。", "recheck.doneMissing": "{updated}件更新、{missing}件は一致なし。", "save.saving": "保存中…", "save.imagesSaved": "枚保存済み", "global.title": "全体設定", "global.enable": "キュー全体に適用", "global.help": "有効にすると、ここでの値がキューの全画像・全レイヤーに適用されます。ブラシや描画範囲は変更されません。", "global.style": "全体のスタイル", "global.applied": "{count}レイヤーに全体設定を適用しました。", "global.empty": "キューにレイヤーがありません。先に解析してください。", "global.previewing": "現在の画像でプレビュー中 · キューに{total}枚。", "global.propagating": "キューに適用中… {done}/{total}枚。",
     "notice.noImages": "対応する画像が見つかりません。", "notice.folderUnsupported": "このブラウザーではフォルダーを選択できません。新しい Chrome または Edge を使用してください。", "notice.saveAtLeast": "保存する前に画像を1枚以上承認してください。", "notice.reviewComplete": "承認する画像はもうありません。承認済みの画像を保存しますか？", "notice.saveLater": "承認済みの画像を保存できます。「承認済みを保存」を押してください。", "notice.savedOne": "1枚を保存しました。", "notice.savedMany": "{count}枚を保存しました。", "notice.analyzing": "フォルダーをローカル解析中…", "notice.analyzingImage": "画像をローカル解析中…", "notice.analysisDone": "解析完了。各画像を確認し、必要なら調整して承認してください。", "notice.analysisImageDone": "解析完了。範囲を調整して、準備ができたら画像を保存してください。", "notice.detectorUnavailable": "自動検出が利用できません: {message} 手動で範囲を描けます。", "notice.modelUnloaded": "モデルをメモリから解放しました。解析時に自動で再読み込みします。",     "notice.modelUnloadServerDown": "ブラウザーのセッションを解放しました。サーバーが応答しません: バックエンドを起動してください。", "notice.gifTooManyFrames": "「{name}」は{count}フレームあり、上限は{limit}です。このGIFは処理できません。", "dialog.gifLimitTitle": "GIFが長すぎます", "dialog.gifLimitBody": "「{name}」は{count}フレームあり、上限は{limit}です。短くするか分割して検閲してください。", "dialog.dismiss": "了解", "gif.expanding": "GIFのフレームを展開中…", "gif.framesLoaded": "フレーム展開済み", "notice.gifReady": "GIFを読み込みました:{count}フレームをキューに追加しました。「解析」を押して検出してください。", "toolbar.analyzeGif": "フレームを解析",
     "status.approved": "承認済み", "status.rejected": "スキップ", "status.pending": "保留", "status.noLayers": "レイヤーなし", "status.detectedOne": "1レイヤーを検出", "status.detectedMany": "{count}レイヤーを検出", "canvas.summaryOne": "1レイヤー · {status}", "canvas.summaryMany": "{count}レイヤー · {status}", "canvas.manualHint": "レイヤー未検出 · クリックでレイヤーを作成", "progress.none": "フォルダーなし", "progress.one": "1件承認", "progress.many": "{count}件承認", "progress.detail": "{count} / {total} 件承認", "progress.analyzing": "{current} / {total} 件を解析中", "footer.local": "Censor Station 0.1 · ローカル処理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左クリックで追加 · 右クリックで削除"
   },
@@ -63,17 +63,64 @@ const TRANSLATIONS = {
     "censor.title": "审查", "censor.type": "遮挡类型", "censor.style": "选区样式", "censor.pixelate": "PIXELATE", "censor.blur": "BLUR", "censor.lines": "黑线", "censor.glowWhite": "白色光晕", "censor.pixelateOption": "像素化", "censor.blurOption": "模糊", "censor.linesOption": "多条黑线", "censor.glowWhiteOption": "发光白色",
     "controls.optionsTitle": "选项", "controls.padding": "安全边距", "controls.brushSize": "画笔大小", "controls.brushHelp": "左键绘制遮挡；如果没有图层，第一次点击会自动创建。右键在选区内擦除。", "controls.threshold": "自动阈值", "controls.thresholdHelp": "有漏掉的区域？调低。误报太多？调高。", "controls.maskThreshold": "轮廓精度", "controls.maskThresholdHelp": "调高可使轮廓更贴合。重新分析后生效。", "controls.maskInset": "内部调整", "controls.maskInsetHelp": "轻微收缩自动蒙版的边缘。",
     "classes.title": "要遮挡的部位", "classes.help": "分析文件夹前启用或停用要检测的部位。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
-    "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准", "actions.approveAll": "全部批准", "actions.save": "保存", "save.saving": "正在保存…", "save.imagesSaved": "张图片已保存",
+    "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准", "actions.approveAll": "全部批准", "actions.save": "保存", "layers.recheckHint": "按住 Ctrl 并点击加入重新检查", "recheck.help": "按住 Ctrl 并点击选择图层，仅用当前阈值（自动阈值滑块）重新检测它们。", "recheck.run": "重新检查所选", "recheck.runOne": "重新检查 1 个图层", "recheck.running": "正在以 {threshold}% 重新检查 {count} 个图层…", "recheck.done": "已更新 {count} 个图层。", "recheck.doneMissing": "已更新 {updated} 个，{missing} 个无匹配。", "save.saving": "正在保存…", "save.imagesSaved": "张图片已保存", "global.title": "全局设置", "global.enable": "应用于整个队列", "global.help": "启用后，这些值将应用于队列中所有图片的所有图层。画笔和已绘制区域不受影响。", "global.style": "全部样式", "global.applied": "全局设置已应用于 {count} 个图层。", "global.empty": "队列中没有图层。请先分析。", "global.previewing": "正在当前图片上预览 · 队列共 {total} 张。", "global.propagating": "正在应用于队列… {done}/{total} 张。",
     "notice.noImages": "文件夹中没有兼容的图片。", "notice.folderUnsupported": "你的浏览器不支持选择文件夹。请使用新版 Chrome 或 Edge。", "notice.saveAtLeast": "请先批准至少一张图片再保存。", "notice.reviewComplete": "已经没有需要批准的图片了。现在要保存已批准的图片吗？", "notice.saveLater": "已批准的图片已经准备好。你可以点击“保存已批准”进行保存。", "notice.savedOne": "已保存 1 张图片。", "notice.savedMany": "已保存 {count} 张图片。", "notice.analyzing": "正在本地分析文件夹…", "notice.analyzingImage": "正在本地分析图片…", "notice.analysisDone": "分析完成。请检查每张图片，调整区域后再批准。", "notice.analysisImageDone": "分析完成。请调整区域，准备好后保存图片。", "notice.detectorUnavailable": "自动检测不可用：{message} 你仍可手动绘制区域。", "notice.modelUnloaded": "模型已从内存释放。分析时会自动重新加载。",     "notice.modelUnloadServerDown": "已释放浏览器会话。服务器无响应：请启动后端以释放其内存。", "notice.gifTooManyFrames": "“{name}”有 {count} 帧，上限为 {limit}。无法处理该 GIF。", "dialog.gifLimitTitle": "GIF 过长", "dialog.gifLimitBody": "“{name}”有 {count} 帧，上限为 {limit}。请裁剪或拆分后再进行遮挡。", "dialog.dismiss": "知道了", "gif.expanding": "正在提取 GIF 帧…", "gif.framesLoaded": "帧已加载", "notice.gifReady": "GIF 已加载：队列中有 {count} 帧。点击“分析”检测区域。", "toolbar.analyzeGif": "分析帧",
     "status.approved": "已批准", "status.rejected": "已跳过", "status.pending": "待处理", "status.noLayers": "无图层", "status.detectedOne": "检测到 1 个图层", "status.detectedMany": "检测到 {count} 个图层", "canvas.summaryOne": "1 个图层 · {status}", "canvas.summaryMany": "{count} 个图层 · {status}", "canvas.manualHint": "未检测到图层 · 点击创建图层", "progress.none": "未选择文件夹", "progress.one": "已批准 1 张", "progress.many": "已批准 {count} 张", "progress.detail": "已批准 {count} / {total} 张", "progress.analyzing": "正在分析 {current} / {total}", "footer.local": "Censor Station 0.1 · 本地处理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左键绘制 · 右键擦除"
   }
+};
+
+const ADDITIONAL_TRANSLATIONS = {
+  es: {
+    "queue.analyzingSelection": "Analizando {count} imágenes seleccionadas…",
+    "queue.selectionAnalysisDone": "Análisis terminado: {count} imágenes seleccionadas.",
+    "queue.analysisPartial": "{updated} imágenes analizadas; {failed} fallaron.",
+    "analysis.cancel": "Cancelar",
+    "analysis.cancelling": "Deteniendo…",
+    "analysis.cancelTitle": "Se detendrá al terminar la imagen en curso.",
+    "analysis.cancelPending": "Se detendrá al terminar la imagen en curso.",
+    "analysis.cancelled": "Análisis cancelado tras {completed} imágenes. Se conservaron los resultados ya completados.",
+    "analysis.cancelledCurrent": "Terminó la imagen en curso; no se analizarán más imágenes.",
+  },
+  en: {
+    "queue.analyzingSelection": "Analyzing {count} selected images…",
+    "queue.selectionAnalysisDone": "Analysis complete: {count} selected images.",
+    "queue.analysisPartial": "{updated} images analyzed; {failed} failed.",
+    "analysis.cancel": "Cancel",
+    "analysis.cancelling": "Stopping…",
+    "analysis.cancelTitle": "Stops after the image currently being analyzed.",
+    "analysis.cancelPending": "Analysis will stop after the current image finishes.",
+    "analysis.cancelled": "Analysis stopped after {completed} images. Completed results were kept.",
+    "analysis.cancelledCurrent": "The current image finished; no more images were analyzed.",
+  },
+  ja: {
+    "queue.analyzingSelection": "選択した {count} 枚の画像を解析中…",
+    "queue.selectionAnalysisDone": "解析完了: 選択した {count} 枚。",
+    "queue.analysisPartial": "{updated} 枚を解析、{failed} 枚失敗。",
+    "analysis.cancel": "キャンセル",
+    "analysis.cancelling": "停止中…",
+    "analysis.cancelTitle": "現在の画像の解析後に停止します。",
+    "analysis.cancelPending": "現在の画像の解析後に停止します。",
+    "analysis.cancelled": "{completed} 枚の解析後に停止しました。完了済みの結果は保持されています。",
+    "analysis.cancelledCurrent": "現在の画像が完了しました。以降の画像は解析しません。",
+  },
+  zh: {
+    "queue.analyzingSelection": "正在分析所选的 {count} 张图片…",
+    "queue.selectionAnalysisDone": "分析完成：所选的 {count} 张图片。",
+    "queue.analysisPartial": "已分析 {updated} 张图片；{failed} 张失败。",
+    "analysis.cancel": "取消",
+    "analysis.cancelling": "正在停止…",
+    "analysis.cancelTitle": "当前图片分析完成后停止。",
+    "analysis.cancelPending": "当前图片分析完成后将停止。",
+    "analysis.cancelled": "已在分析 {completed} 张图片后停止。已完成的结果已保留。",
+    "analysis.cancelledCurrent": "当前图片已完成；后续图片未分析。",
+  },
 };
 
 let currentLanguage = localStorage.getItem("censor-station-language") || "es";
 if (!TRANSLATIONS[currentLanguage]) currentLanguage = "es";
 
 function t(key, values = {}) {
-  let text = TRANSLATIONS[currentLanguage][key] || TRANSLATIONS.es[key] || key;
+  let text = TRANSLATIONS[currentLanguage][key] || ADDITIONAL_TRANSLATIONS[currentLanguage]?.[key] || TRANSLATIONS.es[key] || ADDITIONAL_TRANSLATIONS.es[key] || key;
   return Object.entries(values).reduce((result, [name, value]) => result.replaceAll(`{${name}}`, String(value)), text);
 }
 
@@ -98,6 +145,26 @@ const state = {
   analysis: { active: false, current: 0, completed: 0, total: 0, stepFraction: 0, timer: null },
   optimizer: { files: [], current: -1, inputHandle: null, outputHandle: null, previewToken: 0 },
   gifs: new Map(),
+  global: {
+    enabled: false,
+    mode: "pixelate",
+    padding: 8,
+    pixelFrequency: 100,
+    pixelShape: "square",
+    pixelIrregularity: 0,
+    blurRadius: 10,
+    blurPasses: 1,
+    lineCount: 6,
+    lineThickness: 8,
+    lineAngle: -10,
+    glowRadius: 20,
+    glowStrength: 100,
+    // Staged propagation: the current image previews instantly, the rest of
+    // the queue follows in idle-time chunks so the UI never freezes.
+    job: 0,
+    queue: [],
+  },
+  queueSelection: new Set(),
 };
 
 const GIF_FRAME_CAP = 300;
@@ -310,7 +377,12 @@ function updateSingleModeUi() {
 function renderAnalysisProgress() {
   const progress = state.analysis;
   const panel = $("analysis-progress");
-  if (!progress.active) { panel.hidden = true; return; }
+  const cancelButton = $("cancel-analysis");
+  if (!progress.active) {
+    panel.hidden = true;
+    if (cancelButton) cancelButton.hidden = true;
+    return;
+  }
   const total = Math.max(1, progress.total);
   const progressUnits = Math.min(total, progress.completed + (progress.completed < total ? progress.stepFraction : 0));
   const percent = Math.round(Math.min(1, progressUnits / total) * 100);
@@ -318,14 +390,45 @@ function renderAnalysisProgress() {
   $("analysis-progress-value").textContent = `${percent}%`;
   $("analysis-progress-bar").style.width = `${percent}%`;
   $("analysis-progress-track").setAttribute("aria-valuenow", String(percent));
+  if (cancelButton) {
+    cancelButton.hidden = false;
+    cancelButton.disabled = progress.cancelRequested;
+    cancelButton.textContent = t(progress.cancelRequested ? "analysis.cancelling" : "analysis.cancel");
+    cancelButton.title = t("analysis.cancelTitle");
+  }
   panel.hidden = false;
+}
+
+function requestAnalysisCancel() {
+  if (!state.analysis.active || state.analysis.cancelRequested) return;
+  state.analysis.cancelRequested = true;
+  renderAnalysisProgress();
+  setNotice(t("analysis.cancelPending"));
 }
 
 function startAnalysisProgress(total) {
   if (state.analysis.timer) clearInterval(state.analysis.timer);
-  state.analysis = { active: true, current: 1, completed: 0, total, stepFraction: 0, timer: null };
+  state.analysis = { active: true, cancelRequested: false, current: 1, completed: 0, total, stepFraction: 0, timer: null };
   startAnalysisStep(1, 0);
 }
+
+function ensureAnalysisCancelButton() {
+  if ($("cancel-analysis")) return;
+  const progressValue = $("analysis-progress-value");
+  if (!progressValue) return;
+  const button = document.createElement("button");
+  button.type = "button";
+  button.id = "cancel-analysis";
+  button.className = "button ghost-danger analysis-cancel";
+  button.dataset.i18n = "analysis.cancel";
+  button.dataset.i18nTitle = "analysis.cancelTitle";
+  button.hidden = true;
+  button.textContent = t("analysis.cancel");
+  progressValue.before(button);
+}
+
+ensureAnalysisCancelButton();
+$("cancel-analysis").addEventListener("click", requestAnalysisCancel);
 
 let analysisEtaMs = 0;
 
@@ -451,11 +554,42 @@ function renderQueue() {
   }
   list.className = "queue-list";
   list.innerHTML = state.files.map((file, index) => `
-    <div class="queue-item ${index === state.current ? "active" : ""}" data-index="${index}">
+    <div class="queue-item ${index === state.current ? "active" : ""} ${state.queueSelection.has(index) ? "selected-for-analysis" : ""}" data-index="${index}" role="button" tabindex="0" aria-pressed="${state.queueSelection.has(index)}">
       <img class="queue-thumb" src="${file.url}" alt="" />
       <div><div class="queue-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</div><div class="queue-status ${file.status || (file.analyzed ? "detected" : "")}">${fileStatus(file)}</div></div>
     </div>`).join("");
-  list.querySelectorAll(".queue-item").forEach((item) => item.addEventListener("click", () => showFile(Number(item.dataset.index))));
+  list.querySelectorAll(".queue-item").forEach((item) => {
+    const select = (event) => selectQueueItem(Number(item.dataset.index), event);
+    item.addEventListener("click", select);
+    item.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      select(event);
+    });
+  });
+}
+
+function selectQueueItem(index, event = {}) {
+  if (state.analysis.active || !state.files[index]) return;
+  if (event.ctrlKey || event.metaKey) {
+    if (state.queueSelection.has(index)) state.queueSelection.delete(index);
+    else state.queueSelection.add(index);
+  } else {
+    state.queueSelection.clear();
+    state.queueSelection.add(index);
+  }
+  showFile(index);
+}
+
+function queueAnalysisTargets() {
+  const selected = [...state.queueSelection]
+    .filter((index) => state.files[index])
+    .sort((first, second) => first - second);
+  return selected.length > 1 ? selected : state.files.map((_, index) => index);
+}
+
+function removeLegacyQueueSelectionUi() {
+  document.querySelectorAll(".queue-selection-help, .queue-selection-controls, .recheck-section").forEach((element) => element.remove());
 }
 
 function escapeHtml(value) { return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char])); }
@@ -536,18 +670,21 @@ function renderLayers() {
     const mode = ["pixelate", "blur", "lines", "black", "glow-white", "white"].includes(box.mode) ? box.mode : "pixelate";
     return `
       <div class="layer-row">
-      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}"><canvas class="layer-mini-thumb mode-${mode}" width="84" height="84" data-layer-thumb="${index}" aria-hidden="true"></canvas><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${t(box.source === "manual" ? "layers.manual" : "layers.auto")}</small>${box.source === "manual" ? "" : `<em class="layer-part">${escapeHtml(detectedPartName(box))}</em>`}</span></button>
+      <button class="layer-select ${index === state.selected ? "active" : ""}" data-layer-select="${index}" aria-label="${escapeHtml(layerName(box, index))}" aria-pressed="${index === state.selected}"><canvas class="layer-mini-thumb mode-${mode}" width="84" height="84" data-layer-thumb="${index}" aria-hidden="true"></canvas><span class="layer-copy"><strong>${escapeHtml(layerName(box, index))}</strong><small>${t(box.source === "manual" ? "layers.manual" : "layers.auto")}</small>${box.source === "manual" ? "" : `<em class="layer-part">${escapeHtml(detectedPartName(box))}</em>`}</span></button>
       <button class="layer-visibility ${box.visible === false ? "off" : ""}" data-layer-visibility="${index}" title="${escapeHtml(t(box.visible === false ? "layers.show" : "layers.hide"))}" aria-label="${escapeHtml(t(box.visible === false ? "layers.show" : "layers.hide"))}" aria-pressed="${box.visible !== false}">${layerVisibilityIcon(box.visible === false)}</button>
     </div>`;
   }).join("");
   renderLayerThumbnails(item);
-  list.querySelectorAll("[data-layer-select]").forEach((button) => button.addEventListener("click", () => {
-    state.selected = Number(button.dataset.layerSelect);
-    state.brush = null;
-    renderLayers();
-    syncControls();
-    draw();
-  }));
+  list.querySelectorAll("[data-layer-select]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.layerSelect);
+      state.selected = index;
+      state.brush = null;
+      renderLayers();
+      syncControls();
+      draw();
+    });
+  });
   list.querySelectorAll("[data-layer-visibility]").forEach((button) => button.addEventListener("click", (event) => {
     event.stopPropagation();
     const box = item.detections[Number(button.dataset.layerVisibility)];
@@ -1097,34 +1234,56 @@ function brushLine(x, y, first = false) {
 
 function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
-function advancedRange(box, key, label, min, max, fallback, suffix = "") {
-  const value = advancedValue(box, key, fallback);
-  return `<label class="advanced-setting"><span class="field-row"><span class="field-label">${escapeHtml(label)}</span><output>${value}${suffix}</output></span><input type="range" data-advanced-key="${key}" min="${min}" max="${max}" value="${value}" /></label>`;
-}
-
 function renderAdvancedSettings(box) {
   const panel = $("style-advanced");
   if (!box) { panel.hidden = true; panel.innerHTML = ""; return; }
-  const title = advancedCopy(box.mode);
+  panel.hidden = false;
+  panel.innerHTML = advancedFieldsFor(box.mode, box);
+}
+
+function advancedFieldsFor(mode, values) {
+  const title = advancedCopy(mode);
+  const range = (key, labelKey, min, max, fallback, suffix = "") => {
+    const value = advancedValue(values, key, fallback);
+    return `<label class="advanced-setting"><span class="field-row"><span class="field-label">${escapeHtml(advancedCopy(labelKey))}</span><output>${value}${suffix}</output></span><input type="range" data-advanced-key="${key}" min="${min}" max="${max}" value="${value}" /></label>`;
+  };
   let fields = "";
-  if (box.mode === "pixelate") {
-    const shape = box.pixelShape || "square";
-    fields = advancedRange(box, "pixelFrequency", advancedCopy("frequency"), 10, 200, 100)
+  if (mode === "pixelate") {
+    const shape = values?.pixelShape || "square";
+    fields = range("pixelFrequency", "frequency", 10, 200, 100)
       + `<label class="advanced-setting"><span class="field-row"><span class="field-label">${advancedCopy("shape")}</span></span><select data-advanced-key="pixelShape"><option value="square" ${shape === "square" ? "selected" : ""}>${advancedCopy("square")}</option><option value="circle" ${shape === "circle" ? "selected" : ""}>${advancedCopy("circle")}</option><option value="diamond" ${shape === "diamond" ? "selected" : ""}>${advancedCopy("diamond")}</option></select></label>`
-      + advancedRange(box, "pixelIrregularity", advancedCopy("irregularity"), 0, 100, 0, "%");
-  } else if (box.mode === "blur") {
-    fields = advancedRange(box, "blurRadius", advancedCopy("radius"), 1, 50, 10, " px")
-      + advancedRange(box, "blurPasses", advancedCopy("passes"), 1, 3, 1, "×");
-  } else if (box.mode === "lines") {
-    fields = advancedRange(box, "lineCount", advancedCopy("count"), 1, 12, 6)
-      + advancedRange(box, "lineThickness", advancedCopy("thickness"), 2, 25, 8, "%")
-      + advancedRange(box, "lineAngle", advancedCopy("angle"), -45, 45, -10, "°");
-  } else if (box.mode === "glow-white") {
-    fields = advancedRange(box, "glowRadius", advancedCopy("haloSize"), 2, 50, 20, " px")
-      + advancedRange(box, "glowStrength", advancedCopy("haloStrength"), 10, 100, 100, "%");
+      + range("pixelIrregularity", "irregularity", 0, 100, 0, "%");
+  } else if (mode === "blur") {
+    fields = range("blurRadius", "radius", 1, 50, 10, " px")
+      + range("blurPasses", "passes", 1, 3, 1, "×");
+  } else if (mode === "lines") {
+    fields = range("lineCount", "count", 1, 12, 6)
+      + range("lineThickness", "thickness", 2, 25, 8, "%")
+      + range("lineAngle", "angle", -45, 45, -10, "°");
+  } else if (mode === "glow-white") {
+    fields = range("glowRadius", "haloSize", 2, 50, 20, " px")
+      + range("glowStrength", "haloStrength", 10, 100, 100, "%");
   }
-  panel.hidden = !fields;
-  panel.innerHTML = fields ? `<div class="style-advanced-heading">✦ ${escapeHtml(title)}</div>${fields}` : "";
+  return fields ? `<div class="style-advanced-heading">✦ ${escapeHtml(title)}</div>${fields}` : "";
+}
+
+function advancedSuffix(key) {
+  return key === "pixelIrregularity" || key === "lineThickness" || key === "glowStrength" ? "%"
+    : key === "blurRadius" || key === "glowRadius" ? " px"
+    : key === "blurPasses" ? "×"
+    : key === "lineAngle" ? "°" : "";
+}
+
+function renderGlobalAdvancedSettings() {
+  const panel = $("global-advanced");
+  if (!panel) return;
+  const enabled = state.global.enabled;
+  const hasLayers = state.files.some((file) => file.detections?.length);
+  const fields = advancedFieldsFor(state.global.mode, state.global);
+  panel.hidden = !enabled || !hasLayers || !fields;
+  panel.innerHTML = enabled && fields
+    ? fields.replaceAll('data-advanced-key="', 'data-global-advanced-key="')
+    : "";
 }
 
 $("style-advanced").addEventListener("input", (event) => {
@@ -1134,19 +1293,31 @@ $("style-advanced").addEventListener("input", (event) => {
   const value = input instanceof HTMLSelectElement ? input.value : Number(input.value);
   box[input.dataset.advancedKey] = value;
   const output = input.closest(".advanced-setting")?.querySelector("output");
-  if (output) output.textContent = `${value}${input.dataset.advancedKey === "pixelIrregularity" || input.dataset.advancedKey === "lineThickness" || input.dataset.advancedKey === "glowStrength" ? "%" : input.dataset.advancedKey === "blurRadius" || input.dataset.advancedKey === "glowRadius" ? " px" : input.dataset.advancedKey === "blurPasses" ? "×" : input.dataset.advancedKey === "lineAngle" ? "°" : ""}`;
+  if (output) output.textContent = `${value}${advancedSuffix(input.dataset.advancedKey)}`;
   draw();
+});
+
+$("global-advanced").addEventListener("input", (event) => {
+  const input = event.target.closest("[data-global-advanced-key]");
+  if (!input) return;
+  const key = input.dataset.globalAdvancedKey;
+  state.global[key] = input instanceof HTMLSelectElement ? input.value : Number(input.value);
+  const output = input.closest(".advanced-setting")?.querySelector("output");
+  if (output) output.textContent = `${state.global[key]}${advancedSuffix(key)}`;
+  stageGlobalApply();
 });
 
 function syncControls() {
   const box = currentFile()?.detections[state.selected];
   const enabled = Boolean(box);
+  const hasLayers = state.files.some((file) => file.detections?.length);
   $("add-box").disabled = !currentFile();
   $("style-select").disabled = !enabled;
   $("padding").disabled = !enabled || Boolean(box?.manualBlank);
   $("brush-size").disabled = !enabled;
   $("delete-box").disabled = !enabled;
   $("selected-badge").textContent = enabled ? t("layers.selected", { index: state.selected + 1 }) : t("layers.none");
+  syncGlobalControls(hasLayers);
   document.querySelectorAll("[data-style-button]").forEach((button) => {
     button.disabled = !enabled;
     button.classList.toggle("active", enabled && button.dataset.styleButton === box.mode);
@@ -1160,6 +1331,25 @@ function syncControls() {
   renderAdvancedSettings(box);
 }
 
+function syncGlobalControls(hasLayers) {
+  const toggle = $("global-enabled");
+  const enabled = Boolean(toggle?.checked);
+  state.global.enabled = enabled;
+  const hint = $("global-hint");
+  if (hint) hint.style.opacity = enabled ? "1" : ".55";
+  document.querySelectorAll("[data-global-style-button]").forEach((button) => {
+    button.disabled = !enabled || !hasLayers;
+    button.classList.toggle("active", enabled && hasLayers && button.dataset.globalStyleButton === state.global.mode);
+  });
+  const padding = $("global-padding");
+  if (padding) {
+    padding.disabled = !enabled || !hasLayers;
+    padding.value = state.global.padding;
+    $("global-padding-value").textContent = `${padding.value} px`;
+  }
+  renderGlobalAdvancedSettings();
+}
+
 $("style-select").addEventListener("change", (event) => updateSelected("mode", event.target.value));
 document.querySelectorAll("[data-style-button]").forEach((button) => button.addEventListener("click", () => {
   if (!currentFile()?.detections[state.selected]) return;
@@ -1169,6 +1359,28 @@ document.querySelectorAll("[data-style-button]").forEach((button) => button.addE
   syncControls();
 }));
 $("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value)); });
+$("global-enabled").addEventListener("change", (event) => {
+  state.global.enabled = event.target.checked;
+  if (state.global.enabled) {
+    stageGlobalApply();
+  } else {
+    // Disabling stops any in-flight propagation; already-restyled layers keep
+    // their values (no destructive rollback).
+    state.global.job += 1;
+    state.global.queue = [];
+  }
+  syncControls();
+});
+$("global-padding").addEventListener("input", (event) => {
+  state.global.padding = Number(event.target.value);
+  $("global-padding-value").textContent = `${event.target.value} px`;
+  stageGlobalApply();
+});
+document.querySelectorAll("[data-global-style-button]").forEach((button) => button.addEventListener("click", () => {
+  state.global.mode = button.dataset.globalStyleButton;
+  stageGlobalApply();
+  syncControls();
+}));
 $("brush-size").addEventListener("input", (event) => { $("brush-size-value").textContent = `${event.target.value} px`; });
 $("threshold").addEventListener("input", (event) => { $("threshold-value").textContent = `${event.target.value}%`; });
 $("mask-threshold").addEventListener("input", (event) => { $("mask-threshold-value").textContent = `${event.target.value}%`; });
@@ -1180,12 +1392,114 @@ $("mask-inset").addEventListener("input", (event) => {
 });
 function updateSelected(key, value) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; draw(); }
 
+/** Rewrite style-related fields on every layer of every queued image.
+ *  Geometry (polygon, brushEdits, manualBlank, visible) is never touched,
+ *  so hand-drawn work survives a global restyle. */
+function applyGlobalToAllLayers() {
+  let count = 0;
+  for (const file of state.files) {
+    for (const box of file.detections || []) {
+      applyGlobalToBox(box);
+      count += 1;
+    }
+  }
+  return count;
+}
+
+function applyGlobalToBox(box) {
+  box.mode = state.global.mode;
+  box.padding = state.global.padding;
+  box.pixelFrequency = state.global.pixelFrequency;
+  box.pixelShape = state.global.pixelShape;
+  box.pixelIrregularity = state.global.pixelIrregularity;
+  box.blurRadius = state.global.blurRadius;
+  box.blurPasses = state.global.blurPasses;
+  box.lineCount = state.global.lineCount;
+  box.lineThickness = state.global.lineThickness;
+  box.lineAngle = state.global.lineAngle;
+  box.glowRadius = state.global.glowRadius;
+  box.glowStrength = state.global.glowStrength;
+}
+
+function refreshAfterGlobalApply(count) {
+  renderLayers();
+  syncControls();
+  draw();
+  renderQueue();
+  setNotice(count ? t("global.applied", { count }) : t("global.empty"));
+}
+
+/** Staged propagation: preview on the current image now, rest over time.
+ *
+ *  Moving a global slider rewrites only the visible image synchronously so
+ *  the preview feels instant. Remaining queue entries are restyled in small
+ *  idle-time chunks (or ~60ms timer slices where idle callbacks are
+ *  unavailable). Each new global edit cancels the previous job and restarts
+ *  from the current values, so rapid slider drags never pile up work. */
+function stageGlobalApply() {
+  const job = ++state.global.job;
+  const current = currentFile();
+  if (current?.detections?.length) {
+    for (const box of current.detections) applyGlobalToBox(box);
+    renderLayers();
+    syncControls();
+    draw();
+  }
+  const rest = state.files.filter((file) => file !== current && file.detections?.length);
+  state.global.queue = rest;
+  if (!rest.length) {
+    setNotice(current?.detections?.length ? t("global.previewing", { total: state.files.length }) : t("global.empty"));
+    renderQueue();
+    return;
+  }
+  setNotice(t("global.propagating", { done: 0, total: rest.length }));
+  scheduleGlobalChunk(job);
+}
+
+function scheduleGlobalChunk(job) {
+  const pump = (deadline) => {
+    if (job !== state.global.job) return;
+    const start = performance.now();
+    const budget = typeof deadline?.timeRemaining === "function" ? Math.max(1, deadline.timeRemaining()) : 8;
+    let processed = 0;
+    while (state.global.queue.length && (processed === 0 || performance.now() - start < budget)) {
+      const file = state.global.queue.shift();
+      for (const box of file.detections || []) applyGlobalToBox(box);
+      processed += 1;
+    }
+    const remaining = state.global.queue.length;
+    const total = state.files.filter((file) => file.detections?.length).length;
+    if (remaining) {
+      setNotice(t("global.propagating", { done: total - remaining, total }));
+      if (typeof requestIdleCallback === "function") requestIdleCallback(pump, { timeout: 120 });
+      else setTimeout(() => pump(), 60);
+    } else if (job === state.global.job) {
+      renderLayers();
+      syncControls();
+      draw();
+      renderQueue();
+      setNotice(t("global.applied", { count: total }));
+    }
+  };
+  if (typeof requestIdleCallback === "function") requestIdleCallback(pump, { timeout: 120 });
+  else setTimeout(() => pump(), 60);
+}
+
 $("add-box").addEventListener("click", () => {
   const item = currentFile(); if (!item) return;
   createManualLayer(item); renderLayers(); draw(); syncControls();
 });
 
-$("delete-box").addEventListener("click", () => { const item = currentFile(); if (!item || state.selected < 0) return; item.detections.splice(state.selected, 1); state.selected = Math.min(state.selected, item.detections.length - 1); renderLayers(); draw(); syncControls(); renderQueue(); });
+$("delete-box").addEventListener("click", () => {
+  const item = currentFile();
+  if (!item || state.selected < 0) return;
+  item.detections.splice(state.selected, 1);
+  state.selected = Math.min(state.selected, item.detections.length - 1);
+  renderLayers();
+  draw();
+  syncControls();
+  renderQueue();
+});
 
 $("choose-single").addEventListener("click", () => $("single-image-input").click());
 $("single-image-input").addEventListener("change", async (event) => {
@@ -1202,6 +1516,7 @@ $("single-image-input").addEventListener("change", async (event) => {
     try {
       const items = await withGifExpandingNotice(file.name, (count) => expandGifIntake([file], { onFrameCount: count, onFrameTotal: count }));
       if (items.length) {
+        state.queueSelection.clear();
         state.files.push(...items);
         state.selected = -1;
         state.brush = null;
@@ -1216,6 +1531,7 @@ $("single-image-input").addEventListener("change", async (event) => {
       if (error?.name !== "AbortError") setNotice(error.message, "error");
     }
   } else {
+    state.queueSelection.clear();
     state.files.push(makeFile(file));
   }
   state.selected = -1;
@@ -1236,6 +1552,7 @@ $("choose-input").addEventListener("click", async () => {
     state.singleMode = false;
     state.files.forEach((item) => URL.revokeObjectURL(item.url));
     state.gifs.clear();
+    state.queueSelection.clear();
     const gifFiles = files.filter(isGifFile);
     const stillFiles = files.filter((file) => !isGifFile(file));
     state.files = stillFiles.map(makeFile);
@@ -1364,20 +1681,18 @@ async function assembleGif(record) {
     }
   }
   let result = null;
-  if (record.source === "server") {
-    try {
-      const response = await fetch("/api/gif/assemble", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ loop: record.loop, quality: 90, frames }),
-      });
-      result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.message || "GIF assembly failed.");
-      result = { blob: dataUrlToBlob(result.dataUrl), encoder: result.encoder };
-    } catch (serverError) {
-      console.warn("Desktop GIF assembly unavailable; using the browser encoder.", serverError);
-      result = null;
-    }
+  try {
+    const response = await fetch("/api/gif/assemble", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ loop: record.loop, quality: 90, frames }),
+    });
+    result = await response.json();
+    if (!response.ok || !result.ok) throw new Error(result.message || "GIF assembly failed.");
+    result = { blob: dataUrlToBlob(result.dataUrl), encoder: result.encoder };
+  } catch (serverError) {
+    console.warn("Server GIF assembly unavailable; using the browser encoder.", serverError);
+    result = null;
   }
   if (!result) {
     const tools = gifTools();
@@ -1510,7 +1825,7 @@ async function detectCurrent() {
     syncControls();
     draw();
     renderQueue();
-    setNotice(t("notice.analysisImageDone"));
+    setNotice(state.analysis.cancelRequested ? t("analysis.cancelledCurrent") : t("notice.analysisImageDone"));
   } catch (error) {
     setNotice(error.message, "error");
   } finally {
@@ -1521,29 +1836,54 @@ async function detectCurrent() {
 
 async function detectAll() {
   if (!state.files.length || state.analysis.active) return;
-  const total = state.files.length;
+  const selectedCount = [...state.queueSelection].filter((index) => state.files[index]).length;
+  const useSelection = selectedCount > 1;
+  const targets = queueAnalysisTargets();
+  const total = targets.length;
   startAnalysisProgress(total);
   updateSingleModeUi();
-  setNotice(t(state.singleMode ? "notice.analyzingImage" : "notice.analyzing"));
+  setNotice(t(useSelection ? "queue.analyzingSelection" : state.singleMode ? "notice.analyzingImage" : "notice.analyzing", { count: total }));
+  const failures = [];
+  let cancelled = false;
   try {
     let done = 0;
-    for (let i = 0; i < state.files.length; i++) {
+    for (const index of targets) {
+      const item = state.files[index];
       startAnalysisStep(done + 1, done);
-      await detectFile(state.files[i]);
-      done += 1;
-      // Unanalyzed GIF frames keep their placeholder until detection lands,
-      // so the queue visibly fills in as each one is processed.
-      if (state.files[i].kind === "gif-frame" && !state.files[i].detections.length) {
-        renderQueue();
+      try {
+        await detectFile(item, { throwOnError: true });
+      } catch (error) {
+        failures.push({ item, error });
       }
-      if (state.current === i && state.selected < 0 && state.files[i].detections.length) state.selected = 0;
-      if (state.current === i) { renderLayers(); syncControls(); draw(); }
+      done += 1;
+      if (state.current === index) {
+        state.selected = item.detections.length
+          ? Math.min(Math.max(state.selected, 0), item.detections.length - 1)
+          : -1;
+        renderLayers();
+        syncControls();
+        draw();
+      }
       renderQueue();
       updateAnalysisProgress(done, done);
+      if (state.analysis.cancelRequested && done < total) {
+        cancelled = true;
+        break;
+      }
     }
-    for (const record of state.gifs.values()) record.analyzed = true;
+    for (const [gifId, record] of state.gifs) {
+      const frames = state.files.filter((item) => item.kind === "gif-frame" && item.gifId === gifId);
+      record.analyzed = frames.length > 0 && frames.every((frame) => frame.analyzed);
+    }
     if (state.files.length && state.current < 0) await showFile(0);
-    setNotice(t(state.singleMode ? "notice.analysisImageDone" : "notice.analysisDone"));
+    for (const { item, error } of failures) console.warn(`Could not analyze ${item.name}.`, error);
+    setNotice(cancelled
+      ? t("analysis.cancelled", { completed: done })
+      : failures.length
+      ? t("queue.analysisPartial", { updated: total - failures.length, failed: failures.length })
+      : useSelection
+        ? t("queue.selectionAnalysisDone", { count: total })
+        : t(state.singleMode ? "notice.analysisImageDone" : "notice.analysisDone"));
   } catch (error) {
     setNotice(error.message, "error");
   } finally {
@@ -1552,37 +1892,47 @@ async function detectAll() {
   }
 }
 
-async function detectFile(item) {
-  await loadImage(item);
-  const blob = await new Promise((resolve) => canvasToBlob(item.image, resolve));
+/** Raw detector call shared by full analysis and selected-queue analysis.
+ *  Returns normalized detection objects without touching queue state. */
+async function fetchDetections(image, { threshold, maskThreshold, classes } = {}) {
+  const blob = await new Promise((resolve) => canvasToBlob(image, resolve));
   const dataUrl = await blobToDataUrl(blob);
+  let result;
+  const webDetector = window.__censorStationWebDetector;
+  if (webDetector?.isAvailable()) {
+    try {
+      result = { ok: true, detections: (await webDetector.detect(image, { threshold, classes, maskThreshold })).detections };
+    } catch (webError) {
+      console.warn("Browser detector unavailable; falling back to the local server.", webError);
+    }
+  }
+  if (!result) {
+    const response = await fetch("/api/detect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ dataUrl, mime: blob.type, threshold, classes }) });
+    result = await response.json();
+    if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
+  }
+  return (result.detections || []).map((detection) => ({
+    polygon: detection.polygon || [],
+    mode: "pixelate", padding: Number($("padding").value), maskInset: Number($("mask-inset").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
+  }));
+}
+
+async function detectFile(item, { throwOnError = false } = {}) {
+  await loadImage(item);
   try {
-    const threshold = Number($("threshold").value) / 100;
-    const maskThreshold = Number($("mask-threshold").value) / 100;
-    const classes = selectedClasses();
-    let result;
-    const webDetector = window.__censorStationWebDetector;
-    if (webDetector?.isAvailable()) {
-      try {
-        result = { ok: true, detections: (await webDetector.detect(item.image, { threshold, classes, maskThreshold })).detections };
-      } catch (webError) {
-        console.warn("Browser detector unavailable; falling back to the local server.", webError);
-      }
-    }
-    if (!result) {
-      const response = await fetch("/api/detect", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ dataUrl, mime: blob.type, threshold, classes }) });
-      result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
-    }
-    item.detections = result.detections.map((detection) => ({
-      polygon: detection.polygon || [],
-      mode: "pixelate", padding: Number($("padding").value), maskInset: Number($("mask-inset").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
-    }));
+    item.detections = await fetchDetections(item.image, {
+      threshold: Number($("threshold").value) / 100,
+      maskThreshold: Number($("mask-threshold").value) / 100,
+      classes: selectedClasses(),
+    });
   } catch (error) {
+    if (throwOnError) throw error;
     if (!item.analyzed) setNotice(t("notice.detectorUnavailable", { message: error.message }), "error");
   }
   item.analyzed = true;
 }
+
+removeLegacyQueueSelectionUi();
 
 function canvasToBlob(image, callback) { const temporary = document.createElement("canvas"); temporary.width = image.naturalWidth; temporary.height = image.naturalHeight; temporary.getContext("2d").drawImage(image, 0, 0); temporary.toBlob(callback, "image/jpeg", .93); }
 function blobToDataUrl(blob) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.readAsDataURL(blob); }); }
@@ -1947,5 +2297,9 @@ $("optimizer-save-all").addEventListener("click", async () => {
 });
 
 window.addEventListener("resize", () => { if (currentFile()?.image) { fitCanvas(currentFile()); draw(); } });
+if (Number($("threshold").value) === 35) {
+  $("threshold").value = "85";
+  $("threshold-value").textContent = "85%";
+}
 applyLanguage();
 syncControls();

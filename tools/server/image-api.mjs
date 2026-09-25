@@ -5,12 +5,12 @@ import { promises as fs } from "node:fs";
 
 const MAX_REQUEST_BYTES = 35 * 1024 * 1024;
 
-export async function readJsonBody(request) {
+export async function readJsonBody(request, maxBytes = MAX_REQUEST_BYTES) {
   const chunks = [];
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > MAX_REQUEST_BYTES) throw new Error("La imagen supera el límite de 35 MB.");
+    if (size > maxBytes) throw new Error(`La solicitud supera el límite de ${Math.ceil(maxBytes / (1024 * 1024))} MB.`);
     chunks.push(chunk);
   }
   return JSON.parse(Buffer.concat(chunks).toString("utf8"));

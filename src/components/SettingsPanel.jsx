@@ -6,6 +6,22 @@ export function SettingsPanel() {
       <div id="layer-list" className="layer-list empty-state" data-i18n="layers.empty">Analiza una imagen para crear capas.</div>
       <div className="selection-actions"><button id="add-box" className="button secondary" data-i18n-title="layers.add" disabled><span className="button-icon icon-plus" aria-hidden="true" /><span className="button-label" data-i18n="layers.add">Añadir capa</span></button><button id="delete-box" className="button ghost-danger" data-i18n-title="layers.delete" disabled><span className="button-icon icon-trash" aria-hidden="true" /><span className="button-label" data-i18n="layers.delete">Eliminar</span></button></div>
       <div className="wing-divider" aria-hidden="true"><span>♥</span></div>
+      <section className="global-settings">
+        <div className="settings-section-heading global-heading"><span className="eyebrow" data-i18n="global.title">Ajustes globales</span><strong>✦ // ✦</strong></div>
+        <label className="global-toggle"><input id="global-enabled" type="checkbox" /><span className="field-label" data-i18n="global.enable">Aplicar a toda la cola</span></label>
+        <p id="global-hint" className="help" data-i18n="global.help">Estos valores se aplican a todas las capas de todas las imágenes de la cola.</p>
+        <label className="field-label" data-i18n="global.style">Estilo para todas</label>
+        <div className="style-cards global-style-cards" role="group">
+          <button type="button" className="style-card style-pixel" data-global-style-button="pixelate" disabled><span className="style-icon button-icon icon-pixel" aria-hidden="true" /><strong data-i18n="censor.pixelate">PIXELATE</strong><b>+</b></button>
+          <button type="button" className="style-card style-blur" data-global-style-button="blur" disabled><span className="style-icon button-icon icon-blur" aria-hidden="true" /><strong data-i18n="censor.blur">BLUR</strong><b>+</b></button>
+          <button type="button" className="style-card style-lines" data-global-style-button="lines" disabled><span className="style-icon button-icon icon-lines" aria-hidden="true" /><strong data-i18n="censor.lines">LÍNEAS</strong><b>+</b></button>
+          <button type="button" className="style-card style-glow" data-global-style-button="glow-white" disabled><span className="style-icon button-icon icon-glow" aria-hidden="true" /><strong data-i18n="censor.glowWhite">BLANCO GLOW</strong><b>+</b></button>
+        </div>
+        <section id="global-advanced" className="style-advanced" hidden aria-live="polite" />
+        <div className="field-row"><label className="field-label" htmlFor="global-padding" data-i18n="controls.padding">Margen de seguridad</label><output id="global-padding-value">8 px</output></div>
+        <input id="global-padding" type="range" min="0" max="60" value="8" disabled />
+      </section>
+      <div className="wing-divider" aria-hidden="true"><span>♥</span></div>
       <div className="settings-section-heading censor-type-heading"><span className="eyebrow" data-i18n="censor.type">CENSOR TYPE</span><strong>✦ // ✦</strong></div>
       <label className="field-label" htmlFor="style-select" data-i18n="censor.style">Estilo de la selección</label>
       <div className="style-cards" role="group" data-i18n-aria-label="censor.style">
@@ -27,8 +43,8 @@ export function SettingsPanel() {
       <input id="brush-size" type="range" min="4" max="120" value="24" disabled />
       <p className="help" data-i18n="controls.brushHelp">Con el botón izquierdo pintas censura; con el derecho la borras dentro de la zona seleccionada.</p>
       <div className="divider" />
-      <div className="field-row"><label className="field-label" htmlFor="threshold" data-i18n="controls.threshold">Umbral automático</label><output id="threshold-value">35%</output></div>
-      <input id="threshold" type="range" min="10" max="90" value="35" />
+       <div className="field-row"><label className="field-label" htmlFor="threshold" data-i18n="controls.threshold">Umbral automático</label><output id="threshold-value">85%</output></div>
+       <input id="threshold" type="range" min="10" max="90" value="85" />
       <p className="help" data-i18n="controls.thresholdHelp">¿Se le escapa alguna zona? Baja el umbral. ¿Marca de más? Súbelo.</p>
       <div hidden>
       <div className="field-row"><label className="field-label" htmlFor="mask-threshold" data-i18n="controls.maskThreshold">Precisión del contorno</label><output id="mask-threshold-value">90%</output></div>

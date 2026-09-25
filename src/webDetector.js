@@ -289,7 +289,7 @@ export function createWebDetector() {
     unload() {
       return unloadSession();
     },
-    async detect(image, { threshold = 0.35, classes = [], maskThreshold = 0.58 } = {}) {
+    async detect(image, { threshold = 0.85, classes = [], maskThreshold = 0.58 } = {}) {
       const { ort, session } = await loadSession();
       const meta = preprocess(image);
       const input = new ort.Tensor("float32", meta.data, [1, 3, MODEL_INPUT_SIZE, MODEL_INPUT_SIZE]);

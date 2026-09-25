@@ -82,7 +82,9 @@ def _assemble_with_gifski(frame_files: list[Path], delays: list[int], loop: int,
     binary = gifski_binary()
     if not binary:
         raise RuntimeError("Gifski no está instalado.")
-    fps = max(1, min(100, round(1000 / max(1, delays[0]))))
+    # GIF delays are quantized to 10 ms. Use the animation's average frame
+    # duration so a 24 fps source (40/50 ms encoded delays) stays at 24 fps.
+    fps = max(1, min(100, round(1000 * len(delays) / sum(delays))))
     command = [
         binary, "-o", str(output_path),
         "--quality", str(quality),
