@@ -58,6 +58,7 @@ body::after { opacity: .025; }
 .queue-item.selected-for-analysis { box-shadow: inset 2px 0 #84e9f6; }
 .queue-item.active.selected-for-analysis { background: #291032; box-shadow: inset 2px 0 #84e9f6; }
 .queue-mascot { border-top: 2px solid #9c50a8; background: radial-gradient(ellipse at bottom, #43124466, transparent 70%), #100819; }
+.queue-mascot img { bottom: -8px; }
 .queue-mascot .mascot-eyes-open { animation: mascot-open 5s steps(1, end) infinite; }
 .queue-mascot .mascot-eyes-closed { opacity: 0; animation: mascot-blink 5s steps(1, end) infinite; }
 @keyframes mascot-open { 0%, 93%, 100% { opacity: 1; } 90% { opacity: 0; } }
