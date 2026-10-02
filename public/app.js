@@ -727,9 +727,7 @@ function detectedPartName(box) {
 }
 
 function layerVisibilityIcon(hidden) {
-  return hidden
-    ? `<svg class="layer-eye-icon is-hidden" viewBox="0 0 32 24" aria-hidden="true"><path d="M3 12c3.6-5.8 8-8.7 13-8.7 2.4 0 4.7.6 6.8 1.8M29 12c-3.6 5.8-8 8.7-13 8.7-2.4 0-4.7-.6-6.8-1.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3 3 29 21" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="16" cy="12" r="3.2" fill="currentColor" opacity=".55"/></svg>`
-    : `<svg class="layer-eye-icon is-visible" viewBox="0 0 32 24" aria-hidden="true"><path d="M2.5 12C6.2 6.1 10.7 3.1 16 3.1S25.8 6.1 29.5 12C25.8 17.9 21.3 20.9 16 20.9S6.2 17.9 2.5 12Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="16" cy="12" r="4" fill="currentColor"/><circle cx="14.5" cy="10.5" r="1.2" fill="#180d2d" opacity=".8"/></svg>`;
+  return `<svg class="layer-eye-icon ${hidden ? "is-hidden" : "is-visible"}" viewBox="0 0 32 24" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M10 4h12v2h4v2h3v3h2v2h-2v3h-3v2h-4v2H10v-2H6v-2H3v-3H1v-2h2V8h3V6h4zm1 3v2H7v2H5v2h2v2h4v2h10v-2h4v-2h2v-2h-2V9h-4V7z"/><path fill="currentColor" d="M13 8h6v2h2v4h-2v2h-6v-2h-2v-4h2z"/><path fill="#ffe7fc" d="M13 9h2v2h-2z"/>${hidden ? '<path fill="#100719" stroke="currentColor" stroke-width="2" d="M3 2h3v3h3v3h3v3h3v3h3v3h3v3h6v2h-9v-3h-3v-3h-3v-3H9v-3H6V7H3z"/>' : ""}</svg>`;
 }
 
 function layerThumbnailSignature(box, index) {

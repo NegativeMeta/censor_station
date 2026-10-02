@@ -24,8 +24,8 @@ export function SettingsPanel() {
         <progress id="tracking-progress" max="1" value="0" />
         <button id="tracking-cancel" className="button secondary" data-i18n="analysis.cancel">Cancel</button>
       </dialog>
-      <section className="global-settings">
-        <div className="settings-section-heading global-heading"><span className="eyebrow" data-i18n="global.title">Ajustes globales</span><strong>✦ // ✦</strong></div>
+      <details className="global-settings">
+        <summary className="settings-section-heading global-heading"><span className="eyebrow" data-i18n="global.title">Ajustes globales</span><strong>+</strong></summary>
         <label className="global-toggle"><input id="global-enabled" type="checkbox" /><span className="field-label" data-i18n="global.enable">Aplicar a toda la cola</span></label>
         <p id="global-hint" className="help" data-i18n="global.help">Estos valores se aplican a todas las capas de todas las imágenes de la cola.</p>
         <label className="field-label" data-i18n="global.style">Estilo para todas</label>
@@ -38,7 +38,7 @@ export function SettingsPanel() {
         <section id="global-advanced" className="style-advanced" hidden aria-live="polite" />
         <div className="field-row"><label className="field-label" htmlFor="global-padding" data-i18n="controls.padding">Margen de seguridad</label><output id="global-padding-value">8 px</output></div>
         <input id="global-padding" type="range" min="0" max="60" value="8" disabled />
-      </section>
+      </details>
       <div className="wing-divider" aria-hidden="true"><span>♥</span></div>
       <div className="settings-section-heading censor-type-heading"><span className="eyebrow" data-i18n="censor.type">CENSOR TYPE</span><strong>✦ // ✦</strong></div>
       <label className="field-label" htmlFor="style-select" data-i18n="censor.style">Estilo de la selección</label>

@@ -1,7 +1,7 @@
 export function Toolbar() {
   return <section className="toolbar card">
     <div className="folder-actions">
-      <button id="choose-single" className="button secondary" data-i18n-title="toolbar.chooseMedia"><span className="button-icon icon-folder" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.chooseMedia">Abrir imagen o MP4</span></button>
+      <button id="choose-single" className="button secondary" data-i18n-title="toolbar.chooseMedia"><span className="button-icon icon-image" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.chooseMedia">Abrir imagen o MP4</span></button>
       <button id="choose-input" className="button primary" data-i18n-title="toolbar.chooseInput"><span className="button-icon icon-folder" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.chooseInput">Abrir carpeta</span></button>
       <button id="choose-output" className="button secondary" data-i18n-title="toolbar.chooseOutput" disabled><span className="button-icon icon-folder-arrow" aria-hidden="true" /><span className="button-label" data-i18n="toolbar.chooseOutput">Carpeta de salida</span></button>
       <div className="folder-text"><strong id="input-name" data-i18n="toolbar.noFolder">Ninguna carpeta seleccionada</strong><span id="output-name" data-i18n="toolbar.outputHint">Se guardarán en la subcarpeta censored si no eliges salida</span></div>
