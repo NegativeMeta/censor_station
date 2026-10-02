@@ -7,6 +7,8 @@ Local desktop-style web app for reviewing images, detecting sensitive areas, app
 ## Features
 
 - Automatic and manual censorship.
+- Desktop frame tracking: propagate a painted or detected layer forward,
+  backward, or both ways through the same animation, with undo and cancellation.
 - GIF support: every frame queues as an image; analysis fills detections and
   the final GIF keeps original timing, loop count, and untouched frames.
 - Pixelate, blur, black-line, and white-glow modes.
@@ -82,6 +84,27 @@ python -m tools.python.validate_web_model
 Processing runs locally. Original images are never overwritten.
 
 ## GIF censorship
+
+### Desktop layer propagation
+
+Select any animation frame, paint a missing area or select an existing layer,
+then use **Frame tracking / Propagate layer** in the layers panel. Choose a frame
+range and forward, backward, or both directions. **Follow motion** uses Python
+OpenCV optical flow to translate, rotate, and scale the mask, including painted
+and erased brush strokes. **Fixed position** copies the same area unchanged.
+
+The source frame stays unchanged and existing layers in other frames are kept.
+Updated frames return to pending review. Tracking stops independently in each
+direction when matches become unreliable and marks the first failed frame in
+the queue. Correct that frame and propagate again over the remaining range.
+**Undo propagation** removes the layers added by the latest run for that animation;
+other layers stay intact. Cancellation keeps completed additions, which can be
+reviewed or undone. Re-running adds layers; undo a previous run if replacing it.
+
+Install Python dependencies with `python -m pip install -r requirements.txt`.
+This feature requires the desktop server and is hidden in the standalone web
+version. Optical flow works best on small movements with visible texture;
+occlusions and abrupt pose changes require manual corrections.
 
 GIFs are expanded into full-canvas frames on load; every frame queues as a
 pending image (labeled `name · f3` with a `GIF 3/24` status) and the Analyze

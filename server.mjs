@@ -16,6 +16,7 @@ import os from "node:os";
 const detectorWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.detector_worker", label: "Anime NSFW" });
 const optimizerWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.optimizer_worker", label: "Pillow" });
 const gifWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.gif_worker", label: "GIF" });
+const trackingWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.tracking", label: "Tracking" });
 const MAX_GIF_ASSEMBLY_REQUEST_BYTES = 256 * 1024 * 1024;
 
 const mimeTypes = {
@@ -49,6 +50,21 @@ async function detect(request, response) {
       message: error instanceof Error ? error.message : "Error desconocido en el detector.",
       hint: "Instala ultralytics y coloca models\\nsfw-anime-xl-x1280.pt; la revisión manual sigue disponible.",
     });
+  }
+}
+
+async function trackLayer(request, response) {
+  try {
+    const payload = await readJsonBody(request);
+    if (!payload.layer || !["motion", "fixed"].includes(payload.method)) throw new Error("Invalid tracking request.");
+    const previous = decodeDataUrl(payload.previous);
+    const following = decodeDataUrl(payload.following);
+    const result = await withTemporaryImage({ ...previous, prefix: "censor-track-" }, ({ imagePath: previousPath }) =>
+      withTemporaryImage({ ...following, prefix: "censor-track-" }, ({ imagePath: followingPath }) =>
+        trackingWorker.request({ previousPath, followingPath, layer: payload.layer, method: payload.method })));
+    sendJson(response, 200, { ...result, ok: true });
+  } catch (error) {
+    sendJson(response, 500, { ok: false, message: error instanceof Error ? error.message : "Tracking failed." });
   }
 }
 
@@ -225,6 +241,8 @@ const server = http.createServer(async (request, response) => {
       return;
     }
     if (request.method === "POST" && request.url === "/api/detect") return detect(request, response);
+    if (request.method === "GET" && request.url === "/api/tracking") return sendJson(response, 200, { ok: true });
+    if (request.method === "POST" && request.url === "/api/tracking") return trackLayer(request, response);
     if (request.method === "POST" && request.url === "/api/model/unload") return unloadModel(request, response);
     if (request.method === "POST" && request.url === "/api/optimize") return optimize(request, response);
     if (request.method === "POST" && request.url === "/api/gif/extract") return gifExtract(request, response);
@@ -252,6 +270,7 @@ process.once("exit", () => {
   detectorWorker.stop();
   optimizerWorker.stop();
   gifWorker.stop();
+  trackingWorker.stop();
 });
 
 server.listen(port, "127.0.0.1", () => {

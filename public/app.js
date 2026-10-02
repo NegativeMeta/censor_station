@@ -71,9 +71,13 @@ const TRANSLATIONS = {
 
 const ADDITIONAL_TRANSLATIONS = {
   es: {
+    "toolbar.chooseMedia": "Abrir imagen o MP4",
     "queue.analyzingSelection": "Analizando {count} imágenes seleccionadas…",
     "queue.selectionAnalysisDone": "Análisis terminado: {count} imágenes seleccionadas.",
     "queue.analysisPartial": "{updated} imágenes analizadas; {failed} fallaron.",
+    "video.expanding": "Extrayendo frames del MP4…",
+    "video.ready": "MP4 cargado: {count} frames en cola. El audio no se incluirá en el GIF. Pulsa «Analizar imágenes» para detectar zonas.",
+    "video.frameLimit": "El MP4 requiere {count} frames a 24 fps y supera el límite de {limit}.",
     "analysis.cancel": "Cancelar",
     "analysis.cancelling": "Deteniendo…",
     "analysis.cancelTitle": "Se detendrá al terminar la imagen en curso.",
@@ -82,9 +86,13 @@ const ADDITIONAL_TRANSLATIONS = {
     "analysis.cancelledCurrent": "Terminó la imagen en curso; no se analizarán más imágenes.",
   },
   en: {
+    "toolbar.chooseMedia": "Open image or MP4",
     "queue.analyzingSelection": "Analyzing {count} selected images…",
     "queue.selectionAnalysisDone": "Analysis complete: {count} selected images.",
     "queue.analysisPartial": "{updated} images analyzed; {failed} failed.",
+    "video.expanding": "Extracting MP4 frames…",
+    "video.ready": "MP4 loaded: {count} frames queued. MP4 audio is not included in the GIF. Press “Analyze images” to detect areas.",
+    "video.frameLimit": "The MP4 needs {count} frames at 24 FPS, exceeding the {limit}-frame limit.",
     "analysis.cancel": "Cancel",
     "analysis.cancelling": "Stopping…",
     "analysis.cancelTitle": "Stops after the image currently being analyzed.",
@@ -93,9 +101,13 @@ const ADDITIONAL_TRANSLATIONS = {
     "analysis.cancelledCurrent": "The current image finished; no more images were analyzed.",
   },
   ja: {
+    "toolbar.chooseMedia": "画像またはMP4を開く",
     "queue.analyzingSelection": "選択した {count} 枚の画像を解析中…",
     "queue.selectionAnalysisDone": "解析完了: 選択した {count} 枚。",
     "queue.analysisPartial": "{updated} 枚を解析、{failed} 枚失敗。",
+    "video.expanding": "MP4のフレームを抽出中…",
+    "video.ready": "MP4を読み込みました: {count} フレームをキューに追加しました。MP4の音声はGIFに含まれません。「画像を解析」を押してください。",
+    "video.frameLimit": "MP4は24 FPSで{count}フレーム必要で、上限{limit}を超えています。",
     "analysis.cancel": "キャンセル",
     "analysis.cancelling": "停止中…",
     "analysis.cancelTitle": "現在の画像の解析後に停止します。",
@@ -104,9 +116,13 @@ const ADDITIONAL_TRANSLATIONS = {
     "analysis.cancelledCurrent": "現在の画像が完了しました。以降の画像は解析しません。",
   },
   zh: {
+    "toolbar.chooseMedia": "打开图像或 MP4",
     "queue.analyzingSelection": "正在分析所选的 {count} 张图片…",
     "queue.selectionAnalysisDone": "分析完成：所选的 {count} 张图片。",
     "queue.analysisPartial": "已分析 {updated} 张图片；{failed} 张失败。",
+    "video.expanding": "正在提取 MP4 帧…",
+    "video.ready": "MP4 已加载：{count} 帧已加入队列。GIF 不会包含 MP4 音频。点击“分析图片”检测区域。",
+    "video.frameLimit": "MP4 以 24 FPS 需要 {count} 帧，超过 {limit} 帧上限。",
     "analysis.cancel": "取消",
     "analysis.cancelling": "正在停止…",
     "analysis.cancelTitle": "当前图片分析完成后停止。",
@@ -133,6 +149,17 @@ const CLASS_OPTIONS = [
   { value: "female face", labelKey: "class.femaleFace", visible: false, enabled: false },
   { value: "male face", labelKey: "class.maleFace", visible: false, enabled: false },
 ];
+
+const TRACKING_COPY = {
+  en: ["FRAME TRACKING", "Propagate the selected layer from this frame. Results need review.", "Direction", "Both directions", "Forward", "Backward", "Method", "Follow motion", "Fixed position", "First frame", "Last frame", "Propagate layer", "Undo propagation", "Processing {done}/{total} · frame {frame}", "Added {count} layers. Stopped at frames: {frames}. Review the results.", "Added {count} layers. Review the results.", "Propagation undone.", "Paint or select a nonempty area first.", "The range must include the current frame.", "Tracking failed: {message}", "Cancelled. {count} layers added; review or undo them.", "Tracking lost"],
+  es: ["SEGUIMIENTO", "Propaga la capa seleccionada desde este frame. Revisa los resultados.", "Dirección", "Ambas direcciones", "Adelante", "Atrás", "Método", "Seguir movimiento", "Posición fija", "Primer frame", "Último frame", "Propagar capa", "Deshacer propagación", "Procesando {done}/{total} · frame {frame}", "{count} capas añadidas. Se detuvo en los frames: {frames}. Revisa los resultados.", "{count} capas añadidas. Revisa los resultados.", "Propagación deshecha.", "Primero pinta o selecciona una zona con contenido.", "El rango debe incluir el frame actual.", "Falló el seguimiento: {message}", "Cancelado. {count} capas añadidas; revísalas o deshazlas.", "Seguimiento perdido"],
+  ja: ["フレーム追跡", "現在のフレームから選択レイヤーを伝播します。結果を確認してください。", "方向", "両方向", "前へ", "後ろへ", "方法", "動きを追跡", "固定位置", "開始フレーム", "終了フレーム", "レイヤーを伝播", "伝播を元に戻す", "処理中 {done}/{total} · フレーム {frame}", "{count}レイヤー追加。停止フレーム: {frames}。確認してください。", "{count}レイヤー追加。確認してください。", "伝播を元に戻しました。", "先に範囲を描画または選択してください。", "範囲には現在のフレームを含めてください。", "追跡失敗: {message}", "キャンセル。{count}レイヤー追加。確認するか元に戻してください。", "追跡が失われました"],
+  zh: ["帧追踪", "从当前帧传播所选图层。请检查结果。", "方向", "双向", "向前", "向后", "方法", "跟随运动", "固定位置", "起始帧", "结束帧", "传播图层", "撤销传播", "处理中 {done}/{total} · 帧 {frame}", "已添加 {count} 个图层。停止帧：{frames}。请检查结果。", "已添加 {count} 个图层。请检查结果。", "已撤销传播。", "请先绘制或选择非空区域。", "范围必须包含当前帧。", "追踪失败：{message}", "已取消。添加了 {count} 个图层；请检查或撤销。", "追踪丢失"],
+};
+const TRACKING_KEYS = ["title", "help", "direction", "both", "forward", "backward", "method", "motion", "fixed", "start", "end", "run", "undo", "progress", "stopped", "done", "undone", "empty", "range", "error", "cancelled", "lost"];
+for (const [language, copy] of Object.entries(TRACKING_COPY)) {
+  TRACKING_KEYS.forEach((key, index) => { TRANSLATIONS[language][`tracking.${key}`] = copy[index]; });
+}
 
 const state = {
   files: [],
@@ -165,9 +192,11 @@ const state = {
     queue: [],
   },
   queueSelection: new Set(),
+  tracking: { available: false, active: false, cancel: false, gifId: null, history: [] },
 };
 
 const GIF_FRAME_CAP = 300;
+const VIDEO_FRAME_RATE = 24;
 
 function gifTools() { return window.__censorStationGif || null; }
 
@@ -175,8 +204,23 @@ function isGifFile(file) {
   return file?.type === "image/gif" || /\.gif$/i.test(file?.name || "");
 }
 
+function isVideoFile(file) {
+  return file?.type === "video/mp4" || /\.mp4$/i.test(file?.name || "");
+}
+
+function videoFrameSchedule(duration, fps = VIDEO_FRAME_RATE) {
+  if (!Number.isFinite(duration) || duration <= 0) throw new Error("El MP4 no tiene una duración válida.");
+  const count = Math.ceil(duration * fps);
+  if (count > GIF_FRAME_CAP) throw new Error(t("video.frameLimit", { count, limit: GIF_FRAME_CAP }));
+  return Array.from({ length: count }, (_, index) => ({
+    index,
+    timestamp: index / fps,
+    delay: Math.round(1000 / fps),
+  }));
+}
+
 /** Every GIF frame enters the queue as a pending image; Analyze fills detections. */
-function makeGifFrameFile({ gifId, gifName, frame, detections }) {
+function makeGifFrameFile({ gifId, gifName, frame, detections, mediaType = "gif" }) {
   return {
     file: null,
     name: `${gifName.replace(/\.[^.]+$/, "")} · f${frame.index + 1}`,
@@ -186,6 +230,7 @@ function makeGifFrameFile({ gifId, gifName, frame, detections }) {
     analyzed: false,
     status: "",
     kind: "gif-frame",
+    mediaType,
     gifId,
     gifName,
     frameIndex: frame.index,
@@ -265,6 +310,79 @@ async function decodeGifFramesStream(dataUrl, onExtractProgress) {
     return null;
   }
   return { source: "server", width: finished.width, height: finished.height, loop: finished.loop, frameCount: finished.frameCount, frames: finished.frames };
+}
+
+function waitForVideoEvent(video, eventName, readyState) {
+  if (video.readyState >= readyState) return Promise.resolve();
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      video.removeEventListener(eventName, onReady);
+      video.removeEventListener("error", onError);
+    };
+    const onReady = () => { cleanup(); resolve(); };
+    const onError = () => { cleanup(); reject(new Error("El navegador no pudo decodificar el MP4.")); };
+    video.addEventListener(eventName, onReady, { once: true });
+    video.addEventListener("error", onError, { once: true });
+  });
+}
+
+async function seekVideoFrame(video, timestamp) {
+  if (video.readyState >= 2 && Math.abs(video.currentTime - timestamp) < 0.001) return;
+  await new Promise((resolve, reject) => {
+    const cleanup = () => {
+      video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("error", onError);
+    };
+    const onSeeked = () => { cleanup(); resolve(); };
+    const onError = () => { cleanup(); reject(new Error("No se pudo extraer un frame del MP4.")); };
+    video.addEventListener("seeked", onSeeked, { once: true });
+    video.addEventListener("error", onError, { once: true });
+    video.currentTime = timestamp;
+  });
+}
+
+async function decodeMp4Frames(file, { onExtractProgress } = {}) {
+  const objectUrl = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.preload = "auto";
+  video.muted = true;
+  video.playsInline = true;
+  try {
+    const metadataReady = waitForVideoEvent(video, "loadedmetadata", 1);
+    video.src = objectUrl;
+    video.load();
+    await metadataReady;
+
+    const schedule = videoFrameSchedule(video.duration);
+    onExtractProgress?.(0, schedule.length);
+    await waitForVideoEvent(video, "loadeddata", 2);
+
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    if (!width || !height) throw new Error("El MP4 no contiene frames de video decodificables.");
+    const canvasElement = document.createElement("canvas");
+    canvasElement.width = width;
+    canvasElement.height = height;
+    const context = canvasElement.getContext("2d");
+    const frames = [];
+
+    for (const point of schedule) {
+      if (point.timestamp > 0) await seekVideoFrame(video, point.timestamp);
+      context.drawImage(video, 0, 0, width, height);
+      const blob = await new Promise((resolve, reject) => {
+        canvasElement.toBlob((result) => result ? resolve(result) : reject(new Error("No se pudo guardar un frame del MP4.")), "image/png");
+      });
+      frames.push({ index: point.index, delay: point.delay, width, height, dataUrl: await blobToDataUrl(blob) });
+      onExtractProgress?.(point.index + 1, schedule.length);
+    }
+
+    return { source: "browser", mediaType: "video", width, height, loop: 0, frameCount: frames.length, frames };
+  } finally {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 const ADVANCED_STYLE_COPY = {
@@ -530,9 +648,11 @@ document.querySelectorAll("[data-app-tab]").forEach((button) => button.addEventL
 function fileStatus(file) {
   if (file.status === "approved") return t("status.approved");
   if (file.status === "rejected") return t("status.rejected");
+  if (file.trackingLost) return `${t("tracking.lost")} · f${file.frameIndex + 1}`;
   if (file.kind === "gif-frame") {
     const total = state.gifs.get(file.gifId)?.frameCount;
-    const label = `GIF ${file.frameIndex + 1}${Number.isFinite(total) ? `/${total}` : ""}`;
+    const prefix = file.mediaType === "video" ? "MP4" : "GIF";
+    const label = `${prefix} ${file.frameIndex + 1}${Number.isFinite(total) ? `/${total}` : ""}`;
     if (!file.analyzed) return `${label} · ${t("status.pending")}`;
     if (!file.detections.length) return `${label} · ${t("status.noLayers")}`;
     const base = file.detections.length === 1 ? t("status.detectedOne") : t("status.detectedMany", { count: file.detections.length });
@@ -705,11 +825,11 @@ async function folderRequest(payload) {
   return result;
 }
 
-function fileListFolder(input) {
+function fileListFolder(input, { includeVideo = false } = {}) {
   return new Promise((resolve, reject) => {
     input.value = "";
     input.onchange = () => {
-      const files = [...(input.files || [])].filter((file) => mimeFromName(file.name));
+      const files = [...(input.files || [])].filter((file) => mimeFromName(file.name) && (includeVideo || !isVideoFile(file)));
       input.onchange = null;
       if (!files.length) {
         reject(new DOMException("Cancelled", "AbortError"));
@@ -763,7 +883,7 @@ function localFolderHandle(id, name, subfolder = "") {
   };
 }
 
-async function pickFolder() {
+async function pickFolder({ includeVideo = false } = {}) {
   if (window.showDirectoryPicker) return window.showDirectoryPicker({ mode: "readwrite" });
   try {
     const result = await folderRequest({ action: "pick" });
@@ -771,7 +891,7 @@ async function pickFolder() {
     return localFolderHandle(result.id, result.name);
   } catch (error) {
     if (error.name === "AbortError") throw error;
-    return fileListFolder($("folder-input"));
+    return fileListFolder($("folder-input"), { includeVideo });
   }
 }
 
@@ -800,8 +920,8 @@ function updateGifLoading(count, total) {
 $("folder-loading").addEventListener("cancel", event => event.preventDefault());
 
 /** Keep the loading dialog informative while a GIF expands frame by frame. */
-async function withGifExpandingNotice(name, expand) {
-  await startFolderLoading(name, { title: t("gif.expanding") });
+async function withGifExpandingNotice(name, expand, title = t("gif.expanding")) {
+  await startFolderLoading(name, { title });
   // startFolderLoading leaves "0 images loaded" on the counter; replace it
   // immediately so the wait shows frames, not images. The total is unknown
   // until the decoder responds, so the count fills in as frames arrive.
@@ -823,24 +943,26 @@ function makeFile(file) {
 async function expandGifIntake(files, { onFrameCount, onFrameTotal } = {}) {
   const expanded = [];
   for (const file of files) {
-    if (!isGifFile(file)) {
+    const mediaType = isVideoFile(file) ? "video" : "gif";
+    if (!isGifFile(file) && mediaType !== "video") {
       expanded.push({ file, name: file.name, url: URL.createObjectURL(file), image: null, detections: [], analyzed: false, status: "" });
       continue;
     }
     try {
-      const decoded = await decodeGifFrames(file, await blobToDataUrl(file), {
-        onExtractProgress: (done, total) => {
-          // Live extraction progress: the total is known from the first tick,
-          // long before any frame reaches the queue.
-          onFrameTotal?.(total);
-          updateGifLoading(done, total);
-        },
-      });
+      const onExtractProgress = (done, total) => {
+        // Live extraction progress: the total is known before every frame is queued.
+        onFrameTotal?.(total);
+        updateGifLoading(done, total);
+      };
+      const decoded = mediaType === "video"
+        ? await decodeMp4Frames(file, { onExtractProgress })
+        : await decodeGifFrames(file, await blobToDataUrl(file), { onExtractProgress });
       onFrameTotal?.(decoded.frameCount);
       const gifId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
       const record = {
         id: gifId,
         name: file.name,
+        mediaType,
         source: decoded.source,
         width: decoded.width,
         height: decoded.height,
@@ -856,11 +978,11 @@ async function expandGifIntake(files, { onFrameCount, onFrameTotal } = {}) {
       };
       state.gifs.set(gifId, record);
       for (const meta of record.frames) {
-        expanded.push(makeGifFrameFile({ gifId, gifName: file.name, frame: meta, detections: [] }));
+        expanded.push(makeGifFrameFile({ gifId, gifName: file.name, frame: meta, detections: [], mediaType }));
         onFrameCount?.(expanded.length);
       }
     } catch (error) {
-      const limit = parseGifLimit(error, file);
+      const limit = mediaType === "gif" ? parseGifLimit(error, file) : null;
       if (limit) {
         showGifLimitDialog({ name: file.name, count: limit.count, limit: limit.limit });
         setNotice(t("notice.gifTooManyFrames", { name: file.name, count: limit.count, limit: limit.limit }), "error");
@@ -1217,6 +1339,7 @@ function brushLine(x, y, first = false) {
   const item = currentFile();
   const box = item?.detections[state.brush.boxIndex];
   if (!box) return;
+  delete item.trackingLost;
   if (!box.brushEdits) box.brushEdits = [];
   const maxX = item.image.naturalWidth, maxY = item.image.naturalHeight;
   const point = { x: clamp(x, 0, maxX), y: clamp(y, 0, maxY) };
@@ -1308,6 +1431,7 @@ $("global-advanced").addEventListener("input", (event) => {
 });
 
 function syncControls() {
+  syncTrackingControls();
   const box = currentFile()?.detections[state.selected];
   const enabled = Boolean(box);
   const hasLayers = state.files.some((file) => file.detections?.length);
@@ -1330,6 +1454,140 @@ function syncControls() {
   $("brush-size-value").textContent = `${$("brush-size").value} px`;
   renderAdvancedSettings(box);
 }
+
+function syncTrackingControls() {
+  const panel = $("tracking-controls");
+  if (!panel) return;
+  const item = currentFile();
+  state.tracking.history = state.tracking.history.filter((batch) => state.files.some((file) => file.gifId === batch.gifId));
+  const frames = state.files.filter((file) => file.kind === "gif-frame" && file.gifId === item?.gifId);
+  panel.hidden = !state.tracking.available || item?.kind !== "gif-frame" || frames.length < 2;
+  if (state.tracking.gifId !== item?.gifId) {
+    state.tracking.gifId = item?.gifId;
+    $("tracking-start").value = String((frames[0]?.frameIndex ?? 0) + 1);
+    $("tracking-end").value = String((frames.at(-1)?.frameIndex ?? 0) + 1);
+    $("tracking-summary").textContent = "";
+  }
+  const max = (frames.at(-1)?.frameIndex ?? 0) + 1;
+  $("tracking-start").max = $("tracking-end").max = String(max);
+  $("tracking-run").disabled = !item?.detections[state.selected] || state.tracking.active || state.analysis.active;
+  $("tracking-undo").disabled = state.tracking.active || !state.tracking.history.some((batch) => batch.gifId === item?.gifId);
+}
+
+async function propagateSelectedLayer() {
+  const item = currentFile();
+  const source = item?.detections[state.selected];
+  if (!source || item.kind !== "gif-frame" || state.tracking.active || state.analysis.active) return;
+  const image = await loadImage(item);
+  const mask = createMaskCanvas(source, image.naturalWidth, image.naturalHeight, 1);
+  if (!mask.getContext("2d").getImageData(0, 0, mask.width, mask.height).data.some((value, index) => index % 4 === 3 && value > 0)) {
+    setNotice(t("tracking.empty"), "error"); return;
+  }
+  const frames = state.files.filter((file) => file.kind === "gif-frame" && file.gifId === item.gifId).sort((a, b) => a.frameIndex - b.frameIndex);
+  const start = Number($("tracking-start").value) - 1;
+  const end = Number($("tracking-end").value) - 1;
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < frames[0].frameIndex || end > frames.at(-1).frameIndex || start > item.frameIndex || end < item.frameIndex) {
+    setNotice(t("tracking.range"), "error"); return;
+  }
+  const method = $("tracking-method").value;
+  const direction = $("tracking-direction").value;
+  const paths = [];
+  if (direction !== "backward") paths.push(frames.filter((frame) => frame.frameIndex > item.frameIndex && frame.frameIndex <= end));
+  if (direction !== "forward") paths.push(frames.filter((frame) => frame.frameIndex < item.frameIndex && frame.frameIndex >= start).reverse());
+  const total = paths.reduce((count, path) => count + path.length, 0);
+  if (!total) { setNotice(t("tracking.range"), "error"); return; }
+  const batch = { id: crypto.randomUUID(), gifId: item.gifId, added: [], stopped: [] };
+  const seed = structuredClone(source);
+  state.tracking.active = true;
+  state.tracking.cancel = false;
+  state.tracking.history.push(batch);
+  const dialog = $("tracking-dialog");
+  $("tracking-cancel").disabled = false;
+  $("tracking-progress").max = total;
+  $("tracking-progress").value = 0;
+  $("tracking-progress-text").textContent = t("tracking.progress", { done: 0, total, frame: item.frameIndex + 1 });
+  dialog.showModal();
+  syncTrackingControls();
+  let done = 0;
+  let failure = "";
+  try {
+    for (const path of paths) {
+      let previous = item;
+      let layer = structuredClone(seed);
+      for (const target of path) {
+        if (state.tracking.cancel) break;
+        $("tracking-progress-text").textContent = t("tracking.progress", { done, total, frame: target.frameIndex + 1 });
+        let result = { tracked: true, layer: structuredClone(layer), confidence: 1 };
+        if (method === "motion") {
+          const response = await fetch("/api/tracking", {
+            method: "POST", headers: { "content-type": "application/json" }, signal: AbortSignal.timeout(60000),
+            body: JSON.stringify({ previous: previous.url, following: target.url, layer, method }),
+          });
+          result = await response.json();
+          if (!response.ok || !result.ok) throw new Error(result.message || "Tracking unavailable");
+        }
+        if (state.tracking.cancel) break;
+        done += 1;
+        $("tracking-progress").value = done;
+        if (!result.tracked) {
+          target.trackingLost = batch.id;
+          target.status = "";
+          batch.stopped.push(target);
+          break;
+        }
+        layer = result.layer;
+        layer.trackingId = batch.id;
+        layer.trackingConfidence = result.confidence;
+        layer.trackingOrigin = item.frameIndex;
+        const added = structuredClone(layer);
+        target.detections.push(added);
+        target.status = "";
+        batch.added.push({ target, layer: added });
+        previous = target;
+        // Yield even in fixed-position mode so cancel and progress can render.
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      }
+      if (state.tracking.cancel) break;
+    }
+  } catch (error) {
+    failure = t("tracking.error", { message: error.message });
+  } finally {
+    state.tracking.active = false;
+    dialog.close();
+    if (!batch.added.length && !batch.stopped.length) state.tracking.history.pop();
+    const message = failure || t(state.tracking.cancel ? "tracking.cancelled" : batch.stopped.length ? "tracking.stopped" : "tracking.done", {
+      count: batch.added.length, frames: batch.stopped.map((frame) => frame.frameIndex + 1).join(", "),
+    });
+    $("tracking-summary").textContent = message;
+    setNotice(message, failure ? "error" : "");
+    renderQueue(); renderLayers(); syncControls(); draw(); updateSingleModeUi();
+  }
+}
+
+function undoPropagation() {
+  const gifId = currentFile()?.gifId;
+  const index = state.tracking.history.findLastIndex((batch) => batch.gifId === gifId);
+  if (index < 0 || state.tracking.active) return;
+  const [batch] = state.tracking.history.splice(index, 1);
+  for (const { target, layer } of batch.added) {
+    const index = target.detections.indexOf(layer);
+    if (index >= 0) { target.detections.splice(index, 1); target.status = ""; }
+  }
+  for (const target of batch.stopped) if (target.trackingLost === batch.id) delete target.trackingLost;
+  state.selected = Math.min(state.selected, (currentFile()?.detections.length || 0) - 1);
+  $("tracking-summary").textContent = t("tracking.undone");
+  renderQueue(); renderLayers(); syncControls(); draw(); updateSingleModeUi();
+}
+
+$("tracking-run")?.addEventListener("click", () => propagateSelectedLayer().catch((error) => setNotice(t("tracking.error", { message: error.message }), "error")));
+$("tracking-undo")?.addEventListener("click", undoPropagation);
+function cancelTracking() { state.tracking.cancel = true; $("tracking-cancel").disabled = true; }
+$("tracking-cancel")?.addEventListener("click", cancelTracking);
+$("tracking-dialog")?.addEventListener("cancel", (event) => { event.preventDefault(); cancelTracking(); });
+fetch("/api/tracking").then((response) => response.ok ? response.json() : null).then((result) => {
+  state.tracking.available = result?.ok === true;
+  syncTrackingControls();
+}).catch(() => {});
 
 function syncGlobalControls(hasLayers) {
   const toggle = $("global-enabled");
@@ -1512,9 +1770,10 @@ $("single-image-input").addEventListener("change", async (event) => {
     state.inputHandle = null;
     state.outputHandle = null;
   }
-  if (isGifFile(file)) {
+  if (isGifFile(file) || isVideoFile(file)) {
     try {
-      const items = await withGifExpandingNotice(file.name, (count) => expandGifIntake([file], { onFrameCount: count, onFrameTotal: count }));
+      const title = t(isVideoFile(file) ? "video.expanding" : "gif.expanding");
+      const items = await withGifExpandingNotice(file.name, (count) => expandGifIntake([file], { onFrameCount: count, onFrameTotal: count }), title);
       if (items.length) {
         state.queueSelection.clear();
         state.files.push(...items);
@@ -1523,7 +1782,7 @@ $("single-image-input").addEventListener("change", async (event) => {
         updateSingleModeUi();
         renderQueue();
         if (state.files.length) await showFile(state.files.length - 1);
-        setNotice(t("notice.gifReady", { count: items.length }));
+        setNotice(t(isVideoFile(file) ? "video.ready" : "notice.gifReady", { count: items.length }));
         updateSingleModeUi();
         return;
       }
@@ -1545,24 +1804,24 @@ $("single-image-input").addEventListener("change", async (event) => {
 
 $("choose-input").addEventListener("click", async () => {
   try {
-    const handle = await pickFolder();
+    const handle = await pickFolder({ includeVideo: true });
     await startFolderLoading(handle.name);
-    const files = await readImageFolder(handle);
+    const files = await readImageFolder(handle, { includeVideo: true });
     state.inputHandle = handle;
     state.singleMode = false;
     state.files.forEach((item) => URL.revokeObjectURL(item.url));
     state.gifs.clear();
     state.queueSelection.clear();
-    const gifFiles = files.filter(isGifFile);
-    const stillFiles = files.filter((file) => !isGifFile(file));
+    const animatedFiles = files.filter((file) => isGifFile(file) || isVideoFile(file));
+    const stillFiles = files.filter((file) => !isGifFile(file) && !isVideoFile(file));
     state.files = stillFiles.map(makeFile);
     state.current = -1;
     state.selected = -1;
     renderQueue();
     // Expand GIFs after stills are visible, streaming frames into the queue
     // with the loading dialog counting progress.
-    for (const file of gifFiles) {
-      $("folder-loading-title").textContent = t("gif.expanding");
+    for (const file of animatedFiles) {
+      $("folder-loading-title").textContent = t(isVideoFile(file) ? "video.expanding" : "gif.expanding");
       $("folder-loading-name").textContent = file.name;
       updateGifLoading(0);
       let expandedCount = 0;
@@ -1591,7 +1850,7 @@ $("choose-input").addEventListener("click", async () => {
   finally { $("folder-loading").close(); }
 });
 
-function mimeFromName(name) { const ext = name.split(".").pop().toLowerCase(); return ({ jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", bmp: "image/bmp", avif: "image/avif" })[ext] || ""; }
+function mimeFromName(name) { const ext = name.split(".").pop().toLowerCase(); return ({ jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", bmp: "image/bmp", avif: "image/avif", mp4: "video/mp4" })[ext] || ""; }
 
 $("choose-output").addEventListener("click", async () => { try { state.outputHandle = await pickFolder(); $("output-name").textContent = t("toolbar.outputName", { name: state.outputHandle.name }); } catch (error) { if (error.name !== "AbortError") setNotice(error.message, "error"); } });
 $("previous").addEventListener("click", () => showFile(state.current - 1));
@@ -2011,10 +2270,10 @@ function makeOptimizerFile(file) { return { file, name: file.name, url: URL.crea
 function formatBytes(bytes) { if (!bytes) return "—"; if (bytes < 1024) return `${bytes} B`; if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`; return `${(bytes / 1024 / 1024).toFixed(2)} MB`; }
 function optimizerStatus(item) { return item.optimizedBlob ? t("optimizer.ready") : t("optimizer.pending"); }
 
-async function readImageFolder(handle) {
+async function readImageFolder(handle, { includeVideo = false } = {}) {
   const files = [];
   for await (const entry of handle.values()) {
-    if (entry.kind !== "file" || !mimeFromName(entry.name)) continue;
+    if (entry.kind !== "file" || !mimeFromName(entry.name) || (!includeVideo && isVideoFile(entry))) continue;
     files.push(await entry.getFile());
     updateFolderLoading(files.length);
     if (files.length % 20 === 0) await new Promise(resolve => setTimeout(resolve, 0));

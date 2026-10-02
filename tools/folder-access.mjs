@@ -4,7 +4,8 @@ import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-const extensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".avif"]);
+const writableExtensions = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".avif"]);
+const readableExtensions = new Set([...writableExtensions, ".mp4"]);
 const grants = new Map();
 let picking = false;
 const pickerPath = fileURLToPath(new URL("./select-folder.ps1", import.meta.url));
@@ -44,18 +45,18 @@ export async function folderAccess(payload, picker = chooseFolder) {
   if (!root) throw new Error("Selecciona de nuevo la carpeta; la sesión ha terminado.");
   if (payload.action === "list") {
     const entries = await fs.readdir(root, { withFileTypes: true });
-    return { files: entries.filter(entry => entry.isFile() && extensions.has(path.extname(entry.name).toLowerCase())).map(entry => entry.name) };
+    return { files: entries.filter(entry => entry.isFile() && readableExtensions.has(path.extname(entry.name).toLowerCase())).map(entry => entry.name) };
   }
   if (payload.action === "read") {
     const name = leaf(payload.name);
-    if (!extensions.has(path.extname(name).toLowerCase())) throw new Error("Formato no permitido.");
+    if (!readableExtensions.has(path.extname(name).toLowerCase())) throw new Error("Formato no permitido.");
     const target = path.join(root, name);
     if ((await fs.realpath(target)) !== target) throw new Error("No se permiten enlaces fuera de la carpeta.");
     return { data: (await fs.readFile(target)).toString("base64") };
   }
   if (payload.action === "write") {
     const name = leaf(payload.name);
-    if (!extensions.has(path.extname(name).toLowerCase())) throw new Error("Formato no permitido.");
+    if (!writableExtensions.has(path.extname(name).toLowerCase())) throw new Error("Formato no permitido.");
     let directory = root;
     if (payload.subfolder) {
       if (!["censored", "optimized"].includes(payload.subfolder)) throw new Error("Subcarpeta inválida.");

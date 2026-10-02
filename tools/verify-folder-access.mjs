@@ -7,11 +7,17 @@ import { folderAccess } from "./folder-access.mjs";
 const root = await fs.mkdtemp(path.join(os.tmpdir(), "censor-folder-test-"));
 try {
   const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aX1cAAAAASUVORK5CYII=", "base64");
+  const mp4 = Buffer.from("video fixture");
   await fs.writeFile(path.join(root, "image.png"), png);
+  await fs.writeFile(path.join(root, "clip.mp4"), mp4);
   await fs.writeFile(path.join(root, "ignore.txt"), "ignore");
   const { id } = await folderAccess({ action: "pick" }, async () => root);
-  assert.deepEqual((await folderAccess({ action: "list", id })).files, ["image.png"]);
+  const listedFiles = (await folderAccess({ action: "list", id })).files;
+  assert.ok(listedFiles.includes("image.png"));
+  assert.ok(listedFiles.includes("clip.mp4"));
+  assert.ok(!listedFiles.includes("ignore.txt"));
   assert.equal((await folderAccess({ action: "read", id, name: "image.png" })).data, png.toString("base64"));
+  assert.equal((await folderAccess({ action: "read", id, name: "clip.mp4" })).data, mp4.toString("base64"));
   for (const subfolder of ["censored", "optimized", ""]) {
     const name = "image_" + (subfolder || "output") + ".png";
     await folderAccess({ action: "write", id, subfolder, name, dataUrl: "data:image/png;base64," + png.toString("base64") });
@@ -19,6 +25,7 @@ try {
   }
   assert.deepEqual(await fs.readFile(path.join(root, "image.png")), png);
   await assert.rejects(folderAccess({ action: "read", id, name: "../image.png" }));
+  await assert.rejects(folderAccess({ action: "write", id, name: "clip.mp4", dataUrl: "data:image/png;base64," + png.toString("base64") }));
   await assert.rejects(folderAccess({ action: "list", id: "unselected" }));
   await assert.rejects(folderAccess({ action: "write", id, subfolder: "../outside", name: "image.png" }));
   assert.deepEqual(await folderAccess({ action: "pick" }, async () => ""), { cancelled: true });

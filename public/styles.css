@@ -152,7 +152,6 @@ h2 { font-size: 16px; letter-spacing: -.02em; }
 .queue-item.selected-for-analysis { border-color: rgba(107,231,255,.72); box-shadow: inset 3px 0 var(--neon-cyan), 0 0 12px rgba(107,231,255,.12); }
 .queue-item.active.selected-for-analysis { border-color: var(--neon-cyan); box-shadow: inset 3px 0 var(--neon-pink), 0 0 0 1px rgba(107,231,255,.35), 0 0 12px rgba(107,231,255,.12); }
 .queue-item::before { content: "• • • •"; position: absolute; left: 105px; bottom: 8px; color: var(--neon-pink); font-size: 8px; letter-spacing: 2px; text-shadow: 0 0 6px rgba(255,91,215,.7); }
-.queue-item::after { content: "✦"; position: absolute; right: 8px; top: 7px; color: var(--neon-pink); text-shadow: 0 0 7px rgba(255,91,215,.8); font-size: 19px; }
 .queue-thumb { width: 88px; height: 66px; border-radius: 2px; object-fit: cover; background: #181022; border: 1px solid #4c2865; box-shadow: inset 0 0 12px rgba(255,91,215,.12); }
 .queue-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
 .queue-status { color: var(--muted); font-size: 10px; margin-top: 5px; }
@@ -198,7 +197,6 @@ input[type="range"] { width: 100%; accent-color: var(--neon-pink); margin: 0 0 1
 .queue-item.active { background: linear-gradient(90deg, rgba(255,91,215,.24), rgba(107,231,255,.07)); }
 .queue-thumb { width: 98px; height: 70px; border: 0; outline: 1px solid #70408e; outline-offset: -2px; box-shadow: inset 0 0 14px rgba(255,91,215,.2), 0 0 8px rgba(107,231,255,.12); }
 .queue-item::before { left: 116px; bottom: 7px; }
-.queue-item::after { right: 7px; top: 6px; font-size: 20px; }
 .queue-mascot { flex-basis: 211px; }
 .review { padding: 9px; }
 .canvas-wrap { border-width: 2px; border-color: #6c3190; box-shadow: inset 0 0 30px rgba(0,0,0,.58), 0 0 20px rgba(155,123,255,.2); }
@@ -760,5 +758,16 @@ input[type="range"] { width: 100%; accent-color: var(--neon-pink); margin: 0 0 1
 .optimizer-detail { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 11px; }.optimizer-detail strong { color: var(--neon-cyan); text-align: right; }
 .app-tabs { overflow-x: auto; scrollbar-width: none; }
 .app-tabs::-webkit-scrollbar { display: none; }
+.tracking-controls { padding: 10px 0 16px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+.tracking-controls > .select, .tracking-controls > .button { width: 100%; margin: 6px 0; }
+.tracking-range { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 10px 0; font-size: 11px; }
+.tracking-range input { display: block; width: 100%; min-width: 0; box-sizing: border-box; padding: 8px; margin-top: 5px; background: #12091f; color: var(--neon-cyan); border: 1px solid var(--line); font: inherit; }
+.tracking-dialog { width: min(420px, 85vw); padding: 24px; background: #12091f; color: var(--text); border: 2px solid var(--neon-pink); box-shadow: 0 0 24px #b526c655; }
+.tracking-dialog::backdrop { background: #080410bb; }
+.tracking-dialog h2 { color: var(--neon-pink); font-size: 16px; }
+.tracking-dialog progress { display: block; width: 100%; height: 18px; margin: 18px 0; accent-color: var(--neon-pink); }
+.tracking-dialog progress::-webkit-progress-bar { background: #251336; }
+.tracking-dialog progress::-webkit-progress-value { background: repeating-linear-gradient(90deg, #ff4bd6 0 8px, #cc32c0 8px 10px); }
+.tracking-dialog progress::-moz-progress-bar { background: repeating-linear-gradient(90deg, #ff4bd6 0 8px, #cc32c0 8px 10px); }
 @media (max-width: 1100px) { .optimizer-layout { grid-template-columns: 190px minmax(380px, 1fr); }.optimizer-settings { grid-column: 1 / -1; }.optimizer-toolbar { grid-template-columns: minmax(330px, 1fr) auto; }.optimizer-toolbar .toolbar-status-strip { display: none; } }
 @media (max-width: 760px) { .app-tabs { flex-basis: 40px; }.app-tab { min-width: 135px; height: 34px; padding-inline: 10px; font-size: 10px; }.optimizer-toolbar { display: block; padding: 8px; }.optimizer-toolbar .toolbar-actions { margin-top: 10px; }.optimizer-layout { display: flex; flex-direction: column; overflow: auto; }.optimizer-queue { flex: 0 0 190px; }.optimizer-preview { flex: 0 0 480px; min-height: 480px; }.optimizer-settings { flex: 0 0 auto; }.optimizer-preview-grid { min-height: 330px; }.optimizer-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }

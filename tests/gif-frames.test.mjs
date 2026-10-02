@@ -52,7 +52,7 @@ test("analysis cancellation waits for the current image and the default threshol
 
 test("all gif frames queue as pending images with timing metadata", () => {
   assert.match(appSource, /function makeGifFrameFile/);
-  assert.match(appSource, /GIF \$\{file\.frameIndex \+ 1\}/);
+  assert.match(appSource, /file\.mediaType === "video" \? "MP4" : "GIF"/);
   assert.match(appSource, /function assembleGif/);
   assert.match(appSource, /function expandGifIntake/);
   assert.match(appSource, /notice\.gifReady/);
