@@ -140,6 +140,34 @@ const GIF_EXPORT_COPY = {
 };
 for (const language of Object.keys(GIF_EXPORT_COPY)) Object.assign(ADDITIONAL_TRANSLATIONS[language], GIF_EXPORT_COPY[language]);
 
+const PLAY_COPY = {
+  es: {
+    "play.play": "Reproducir",
+    "play.stop": "Detener",
+    "play.title": "Reproducir la animación con las censuras aplicadas",
+    "play.loadError": "No se pudo preparar la reproducción: {message}",
+  },
+  en: {
+    "play.play": "Play",
+    "play.stop": "Stop",
+    "play.title": "Play the animation with censorship applied",
+    "play.loadError": "Could not prepare playback: {message}",
+  },
+  ja: {
+    "play.play": "再生",
+    "play.stop": "停止",
+    "play.title": "検閲を適用したアニメーションを再生",
+    "play.loadError": "再生を準備できませんでした: {message}",
+  },
+  zh: {
+    "play.play": "播放",
+    "play.stop": "停止",
+    "play.title": "播放已应用遮挡的动画",
+    "play.loadError": "无法准备播放：{message}",
+  },
+};
+for (const language of Object.keys(PLAY_COPY)) Object.assign(ADDITIONAL_TRANSLATIONS[language], PLAY_COPY[language]);
+
 let currentLanguage = localStorage.getItem("censor-station-language") || "es";
 if (!TRANSLATIONS[currentLanguage]) currentLanguage = "es";
 
@@ -211,6 +239,7 @@ const state = {
   },
   queueSelection: new Set(),
   tracking: { available: false, active: false, cancel: false, gifId: null, history: [] },
+  playback: { active: false, timer: 0, token: 0, frames: [], index: 0, savedIndex: -1, savedSelected: -1 },
 };
 
 const GIF_FRAME_CAP = 300;
@@ -1058,6 +1087,8 @@ function currentFile() { return state.files[state.current]; }
 
 async function showFile(index) {
   if (index < 0 || index >= state.files.length) return;
+  if (state.playback.active) stopPlayback({ restore: false });
+  else state.playback.token += 1;
   state.current = index;
   const item = currentFile();
   state.selected = item.detections.length ? 0 : -1;
@@ -1100,9 +1131,7 @@ function draw() {
   // Keep the layer stack recoverable if the component shell re-renders it.
   ensureLayerList(item);
   renderLayerThumbnails(item);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
-  item.detections.forEach((box) => { if (box.visible !== false) drawDetection(box); });
+  paintFrame(item);
   $("detection-summary").textContent = item.detections.length === 1
     ? t("canvas.summaryOne", { status: item.status || t("status.pending") })
     : item.detections.length
@@ -1110,11 +1139,126 @@ function draw() {
       : t("canvas.manualHint");
 }
 
-function drawDetection(box) {
-  const effect = createCensoredLayer(currentFile().image, box, canvas.width, canvas.height);
+function paintFrame(item) {
+  if (!item?.image) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(item.image, 0, 0, canvas.width, canvas.height);
+  item.detections.forEach((box) => { if (box.visible !== false) drawDetection(box, item); });
+}
+
+function drawDetection(box, item = currentFile()) {
+  const effect = createCensoredLayer(item.image, box, canvas.width, canvas.height);
   ctx.globalAlpha = 1;
   ctx.drawImage(effect, 0, 0);
   ctx.globalAlpha = 1;
+}
+
+function playbackFrames(item = currentFile()) {
+  if (!item || item.kind !== "gif-frame") return [];
+  return state.files
+    .filter((file) => file.kind === "gif-frame" && file.gifId === item.gifId)
+    .sort((first, second) => first.frameIndex - second.frameIndex);
+}
+
+function updatePlayButton() {
+  const button = $("play-preview");
+  if (!button) return;
+  const active = state.playback.active;
+  button.classList.toggle("playing", active);
+  $("play-preview-icon").textContent = active ? "■" : "▶";
+  const label = $("play-preview-label");
+  if (label) {
+    const key = active ? "play.stop" : "play.play";
+    label.dataset.i18n = key;
+    label.textContent = t(key);
+  }
+  button.title = t("play.title");
+  button.setAttribute("aria-label", t("play.title"));
+}
+
+function refreshPlayAvailability() {
+  const button = $("play-preview");
+  if (!button) return;
+  const frames = playbackFrames();
+  button.disabled = !state.playback.active && (frames.length < 2 || state.tracking.active || state.analysis.active);
+  updatePlayButton();
+}
+
+function stopPlayback({ restore = true } = {}) {
+  if (!state.playback.active) return;
+  state.playback.token += 1;
+  state.playback.active = false;
+  clearTimeout(state.playback.timer);
+  state.playback.timer = 0;
+  const frames = state.playback.frames;
+  const savedIndex = state.playback.savedIndex;
+  const savedSelected = state.playback.savedSelected;
+  state.playback.frames = [];
+  state.playback.savedIndex = -1;
+  state.playback.savedSelected = -1;
+  $("canvas-wrap").classList.remove("playing");
+  updatePlayButton();
+  refreshPlayAvailability();
+  if (restore && savedIndex >= 0 && state.files[savedIndex]) {
+    showFile(savedIndex).then(() => {
+      if (savedSelected >= 0 && currentFile()?.detections[savedSelected]) {
+        state.selected = savedSelected;
+        renderLayers();
+        draw();
+        syncControls();
+      }
+    });
+  } else if (frames[0]?.image) {
+    draw();
+  }
+}
+
+async function togglePlayback() {
+  if (state.playback.active) {
+    stopPlayback();
+    return;
+  }
+  if (state.tracking.active || state.analysis.active) return;
+  const frames = playbackFrames();
+  if (frames.length < 2) return;
+  const savedIndex = state.current;
+  const savedSelected = state.selected;
+  const token = ++state.playback.token;
+  try {
+    await Promise.all(frames.map(loadImage));
+  } catch (error) {
+    setNotice(t("play.loadError", { message: error.message || String(error) }), "error");
+    return;
+  }
+  if (token !== state.playback.token || state.playback.active) return;
+  state.playback.active = true;
+  state.playback.frames = frames;
+  state.playback.index = 0;
+  state.playback.savedIndex = savedIndex;
+  state.playback.savedSelected = savedSelected;
+  fitCanvas(frames[0]);
+  $("canvas-wrap").classList.add("playing");
+  $("add-box").disabled = true;
+  $("delete-box").disabled = true;
+  $("tracking-run").disabled = true;
+  updatePlayButton();
+  refreshPlayAvailability();
+
+  const step = () => {
+    if (!state.playback.active) return;
+    const frame = state.playback.frames[state.playback.index];
+    paintFrame(frame);
+    $("current-name").textContent = frame.name;
+    $("current-index").textContent = `${frame.frameIndex + 1} / ${state.playback.frames.length}`;
+    const rawDelay = Number(frame.frameDelay);
+    const delay = Number.isFinite(rawDelay) && rawDelay > 0 ? Math.max(20, Math.min(1000, rawDelay)) : 100;
+    state.playback.timer = setTimeout(() => {
+      if (!state.playback.active) return;
+      state.playback.index = (state.playback.index + 1) % state.playback.frames.length;
+      step();
+    }, delay);
+  };
+  step();
 }
 
 function tracePolygon(target, polygon) {
@@ -1515,6 +1659,7 @@ function syncControls() {
   $("padding-value").textContent = `${$("padding").value} px`;
   $("brush-size-value").textContent = `${$("brush-size").value} px`;
   renderAdvancedSettings(box);
+  refreshPlayAvailability();
 }
 
 function syncTrackingControls() {
@@ -1857,6 +2002,11 @@ $("add-box").addEventListener("click", () => {
   createManualLayer(item); renderLayers(); draw(); syncControls(); renderQueue();
 });
 
+$("play-preview").addEventListener("click", togglePlayback);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && state.playback.active) stopPlayback();
+});
+
 $("delete-box").addEventListener("click", () => {
   const item = currentFile();
   if (!item || state.selected < 0) return;
@@ -1870,6 +2020,7 @@ $("delete-box").addEventListener("click", () => {
 
 $("choose-single").addEventListener("click", () => $("single-image-input").click());
 $("single-image-input").addEventListener("change", async (event) => {
+  if (state.playback.active) stopPlayback({ restore: false });
   const file = event.target.files?.[0];
   event.target.value = "";
   if (!file) return;
@@ -1915,6 +2066,7 @@ $("single-image-input").addEventListener("change", async (event) => {
 $("choose-input").addEventListener("click", async () => {
   try {
     const handle = await pickFolder({ includeVideo: true });
+    if (state.playback.active) stopPlayback({ restore: false });
     await startFolderLoading(handle.name);
     const files = await readImageFolder(handle, { includeVideo: true });
     state.inputHandle = handle;
@@ -2700,7 +2852,7 @@ $("optimizer-save-all").addEventListener("click", async () => {
   } catch (error) { setOptimizerNotice(error.message, "error"); }
 });
 
-window.addEventListener("resize", () => { if (currentFile()?.image) { fitCanvas(currentFile()); draw(); } });
+window.addEventListener("resize", () => { if (state.playback.active) return; if (currentFile()?.image) { fitCanvas(currentFile()); draw(); } });
 if (Number($("threshold").value) === 35) {
   $("threshold").value = "85";
   $("threshold-value").textContent = "85%";
