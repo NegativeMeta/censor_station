@@ -80,10 +80,10 @@ export function SettingsPanel() {
         <label className="field-label censor-settings-label" data-i18n="censor.type">CENSOR TYPE</label>
         <label className="field-label" htmlFor="style-select" data-i18n="censor.style">Estilo de la selección</label>
         <div className="style-cards" role="group" data-i18n-aria-label="censor.style">
-          <button type="button" className="style-card style-pixel" data-style-button="pixelate" disabled><span className="style-icon button-icon icon-pixel" aria-hidden="true" /><strong data-i18n="censor.pixelate">PIXELATE</strong><b>+</b></button>
-          <button type="button" className="style-card style-blur" data-style-button="blur" disabled><span className="style-icon button-icon icon-blur" aria-hidden="true" /><strong data-i18n="censor.blur">BLUR</strong><b>+</b></button>
-          <button type="button" className="style-card style-lines" data-style-button="lines" disabled><span className="style-icon button-icon icon-lines" aria-hidden="true" /><strong data-i18n="censor.lines">LÍNEAS</strong><b>+</b></button>
-          <button type="button" className="style-card style-glow" data-style-button="glow-white" disabled><span className="style-icon button-icon icon-glow" aria-hidden="true" /><strong data-i18n="censor.glowWhite">BLANCO GLOW</strong><b>+</b></button>
+          <button type="button" className="style-card style-pixel" data-style-button="pixelate"><span className="style-icon button-icon icon-pixel" aria-hidden="true" /><strong data-i18n="censor.pixelate">PIXELATE</strong><b>+</b></button>
+          <button type="button" className="style-card style-blur" data-style-button="blur"><span className="style-icon button-icon icon-blur" aria-hidden="true" /><strong data-i18n="censor.blur">BLUR</strong><b>+</b></button>
+          <button type="button" className="style-card style-lines" data-style-button="lines"><span className="style-icon button-icon icon-lines" aria-hidden="true" /><strong data-i18n="censor.lines">LÍNEAS</strong><b>+</b></button>
+          <button type="button" className="style-card style-glow" data-style-button="glow-white"><span className="style-icon button-icon icon-glow" aria-hidden="true" /><strong data-i18n="censor.glowWhite">BLANCO GLOW</strong><b>+</b></button>
         </div>
         <select id="style-select" className="select style-select-hidden" disabled aria-hidden="true" tabIndex={-1}>
           <option value="pixelate" data-i18n="censor.pixelateOption">Píxeles</option><option value="blur" data-i18n="censor.blurOption">Desenfoque</option><option value="lines" data-i18n="censor.linesOption">Múltiples líneas negras</option><option value="glow-white" data-i18n="censor.glowWhiteOption">Blanco resplandeciente</option>

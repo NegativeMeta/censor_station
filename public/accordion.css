@@ -38,6 +38,13 @@
 }
 .accordion-panel-inner { min-height: 0; overflow: hidden; }
 
+/* A leading help paragraph has a negative top margin; reset it inside panels
+   so the first line is not clipped by the panel's overflow. */
+.settings-accordion .accordion-panel-inner > .help:first-child {
+  margin-top: 0;
+  padding-top: 2px;
+}
+
 /* Buttons and selects used to be direct children of the tracking section. */
 .settings-accordion .accordion-panel-inner > .select,
 .settings-accordion .accordion-panel-inner > .button { width: 100%; margin: 6px 0; }

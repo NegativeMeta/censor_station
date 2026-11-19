@@ -14,7 +14,7 @@ const TRANSLATIONS = {
     "classes.title": "Partes a censurar", "classes.help": "Activa o desactiva las partes detectables antes de analizar la carpeta.", "class.vagina": "Vagina", "class.penis": "Pene", "class.anus": "Ano",
     "actions.reject": "Rechazar y saltar", "actions.rejectShort": "Rechazar", "actions.approve": "APPROVE", "actions.approveAll": "APROBAR TODO", "actions.save": "GUARDAR", "layers.recheckHint": "Ctrl + clic para sumar a la re-revisión", "recheck.help": "Selecciona capas con Ctrl + clic y vuelve a detectarlas solo a ellas con el umbral actual (deslizador Umbral automático).", "recheck.run": "Re-revisar selección", "recheck.runOne": "Re-revisar 1 capa", "recheck.running": "Re-revisando {count} capas al {threshold}%…", "recheck.done": "{count} capas actualizadas.", "recheck.doneMissing": "{updated} actualizadas, {missing} sin coincidencia.", "save.saving": "Guardando…", "save.imagesSaved": "imágenes guardadas", "global.title": "Ajustes globales", "global.enable": "Aplicar a toda la cola", "global.help": "Actívalo y estos valores se aplican a todas las capas de todas las imágenes de la cola. Cambiar aquí reescribe cada capa; el pincel y las zonas dibujadas no se tocan.", "global.style": "Estilo para todas", "global.applied": "Ajustes globales aplicados a {count} capas.", "global.empty": "No hay capas en la cola. Analiza primero.", "global.previewing": "Vista previa en la imagen actual · {total} imágenes en cola.", "global.propagating": "Aplicando a la cola… {done}/{total} imágenes.",
         "notice.noImages": "No encontré imágenes compatibles en esa carpeta.", "notice.folderUnsupported": "Tu navegador no permite elegir carpetas. Usa Chrome o Edge recientes.", "notice.saveAtLeast": "Aprueba al menos una imagen antes de guardar aprobadas.", "notice.reviewComplete": "Ya no quedan imágenes por aprobar. ¿Quieres guardar ahora las imágenes aprobadas?", "notice.saveLater": "Las imágenes aprobadas quedaron listas. Puedes guardarlas con «Guardar aprobadas».", "notice.savedOne": "1 imagen guardada.", "notice.savedMany": "{count} imágenes guardadas.", "notice.analyzing": "Analizando carpeta localmente…", "notice.analyzingImage": "Analizando imagen localmente…", "notice.analysisDone": "Análisis terminado. Revisa cada imagen, ajusta las zonas y aprueba solo las correctas.", "notice.analysisImageDone": "Análisis terminado. Ajusta la zona y guarda la imagen cuando esté lista.", "notice.detectorUnavailable": "Detector automático no disponible: {message} Puedes seguir dibujando zonas manuales.", "notice.modelUnloaded": "Modelo descargado de memoria. Se recargará solo al analizar.", "notice.modelUnloadServerDown": "Sesión del navegador liberada. El servidor no respondió: arranca el backend para liberar su memoria también.", "notice.gifTooManyFrames": "«{name}» tiene {count} frames y el límite es {limit}. No se puede procesar ese GIF.", "dialog.gifLimitTitle": "GIF demasiado largo", "dialog.gifLimitBody": "«{name}» tiene {count} frames y el límite es {limit}. Reduce el GIF o divídelo en partes para censurarlo.", "dialog.dismiss": "Entendido", "gif.expanding": "Extrayendo frames del GIF…", "gif.framesLoaded": "frames cargados", "notice.gifReady": "GIF cargado: {count} frames en cola. Pulsa «Analizar» para detectar zonas.", "toolbar.analyzeGif": "Analizar frames",
-    "status.approved": "Aprobada", "status.rejected": "Saltada", "status.pending": "Pendiente", "status.noLayers": "Sin capas", "status.detectedOne": "1 capa detectada", "status.detectedMany": "{count} capas detectadas", "canvas.summaryOne": "1 capa · {status}", "canvas.summaryMany": "{count} capas · {status}", "canvas.manualHint": "Sin capas detectadas · haz clic para crear una capa", "progress.none": "Sin carpeta", "progress.one": "1 aprobada", "progress.many": "{count} aprobadas", "progress.detail": "{count} de {total} aprobadas", "progress.analyzing": "Analizando {current} de {total}", "footer.local": "Censor Station 0.1 · procesamiento local", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Izquierdo pinta · derecho borra"
+    "status.approved": "Aprobada", "status.rejected": "Saltada", "status.pending": "Pendiente", "status.edited": "Editado", "status.noLayers": "Sin capas", "status.detectedOne": "1 capa detectada", "status.detectedMany": "{count} capas detectadas", "canvas.summaryOne": "1 capa · {status}", "canvas.summaryMany": "{count} capas · {status}", "canvas.manualHint": "Sin capas detectadas · haz clic para crear una capa", "progress.none": "Sin carpeta", "progress.one": "1 aprobada", "progress.many": "{count} aprobadas", "progress.detail": "{count} de {total} aprobadas", "progress.analyzing": "Analizando {current} de {total}", "footer.local": "Censor Station 0.1 · procesamiento local", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Izquierdo pinta · derecho borra"
   },
   en: {
     "tabs.censor": "CENSOR", "tabs.optimizer": "OPTIMIZE",
@@ -31,7 +31,7 @@ const TRANSLATIONS = {
     "classes.title": "Parts to censor", "classes.help": "Enable or disable detectable parts before analyzing the folder.", "class.vagina": "Vagina", "class.penis": "Penis", "class.anus": "Anus",
     "actions.reject": "Reject and skip", "actions.rejectShort": "Reject", "actions.approve": "APPROVE", "actions.approveAll": "APPROVE ALL", "actions.save": "SAVE", "layers.recheckHint": "Ctrl + click to add to re-check", "recheck.help": "Select layers with Ctrl + click and re-detect only them with the current threshold (Automatic threshold slider).", "recheck.run": "Re-check selection", "recheck.runOne": "Re-check 1 layer", "recheck.running": "Re-checking {count} layers at {threshold}%…", "recheck.done": "{count} layers updated.", "recheck.doneMissing": "{updated} updated, {missing} with no match.", "save.saving": "Saving…", "save.imagesSaved": "images saved", "global.title": "Global settings", "global.enable": "Apply to whole queue", "global.help": "Enable it and these values apply to every layer of every queued image. Changing here rewrites each layer; brush strokes and drawn areas stay untouched.", "global.style": "Style for all", "global.applied": "Global settings applied to {count} layers.", "global.empty": "No layers in the queue. Analyze first.", "global.previewing": "Previewing on the current image · {total} images queued.", "global.propagating": "Applying to the queue… {done}/{total} images.",
     "notice.noImages": "No compatible images were found in that folder.", "notice.folderUnsupported": "Your browser cannot choose folders. Use a recent version of Chrome or Edge.", "notice.saveAtLeast": "Approve at least one image before saving approved files.", "notice.reviewComplete": "There are no more images to approve. Do you want to save the approved images now?", "notice.saveLater": "The approved images are ready. You can save them with “Save approved”.", "notice.savedOne": "1 image saved.", "notice.savedMany": "{count} images saved.", "notice.analyzing": "Analyzing folder locally…", "notice.analyzingImage": "Analyzing image locally…", "notice.analysisDone": "Analysis complete. Review each image, adjust the areas and approve only the correct ones.", "notice.analysisImageDone": "Analysis complete. Adjust the area and save the image when ready.", "notice.detectorUnavailable": "Automatic detector unavailable: {message} You can continue drawing manual areas.", "notice.modelUnloaded": "Model unloaded from memory. It reloads automatically on analyze.",     "notice.modelUnloadServerDown": "Browser session released. The server did not respond: start the backend to free its memory too.", "notice.gifTooManyFrames": "“{name}” has {count} frames and the limit is {limit}. That GIF cannot be processed.", "dialog.gifLimitTitle": "GIF too long", "dialog.gifLimitBody": "“{name}” has {count} frames and the limit is {limit}. Trim the GIF or split it into parts to censor it.", "dialog.dismiss": "Got it", "gif.expanding": "Extracting GIF frames…", "gif.framesLoaded": "frames loaded", "notice.gifReady": "GIF loaded: {count} frames queued. Press “Analyze” to detect areas.", "toolbar.analyzeGif": "Analyze frames",
-    "status.approved": "Approved", "status.rejected": "Skipped", "status.pending": "Pending", "status.noLayers": "No layers", "status.detectedOne": "1 layer detected", "status.detectedMany": "{count} layers detected", "canvas.summaryOne": "1 layer · {status}", "canvas.summaryMany": "{count} layers · {status}", "canvas.manualHint": "No layers detected · click to create a layer", "progress.none": "No folder", "progress.one": "1 approved", "progress.many": "{count} approved", "progress.detail": "{count} of {total} approved", "progress.analyzing": "Analyzing {current} of {total}", "footer.local": "Censor Station 0.1 · local processing", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Left click paints · right click erases"
+    "status.approved": "Approved", "status.rejected": "Skipped", "status.pending": "Pending", "status.edited": "Edited", "status.noLayers": "No layers", "status.detectedOne": "1 layer detected", "status.detectedMany": "{count} layers detected", "canvas.summaryOne": "1 layer · {status}", "canvas.summaryMany": "{count} layers · {status}", "canvas.manualHint": "No layers detected · click to create a layer", "progress.none": "No folder", "progress.one": "1 approved", "progress.many": "{count} approved", "progress.detail": "{count} of {total} approved", "progress.analyzing": "Analyzing {current} of {total}", "footer.local": "Censor Station 0.1 · local processing", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "Left click paints · right click erases"
   },
   ja: {
     "tabs.censor": "検閲", "tabs.optimizer": "最適化",
@@ -48,7 +48,7 @@ const TRANSLATIONS = {
     "classes.title": "検閲する部位", "classes.help": "フォルダーを解析する前に検出する部位を切り替えます。", "class.vagina": "膣", "class.penis": "陰茎", "class.anus": "肛門",
     "actions.reject": "拒否してスキップ", "actions.rejectShort": "拒否", "actions.approve": "承認", "actions.approveAll": "すべて承認", "actions.save": "保存", "layers.recheckHint": "Ctrl + クリックで再チェックに追加", "recheck.help": "Ctrl + クリックでレイヤーを選択し、現在のしきい値（自動しきい値スライダー）でそれだけを再検出します。", "recheck.run": "選択を再チェック", "recheck.runOne": "1レイヤーを再チェック", "recheck.running": "{count}レイヤーを{threshold}%で再チェック中…", "recheck.done": "{count}レイヤーを更新しました。", "recheck.doneMissing": "{updated}件更新、{missing}件は一致なし。", "save.saving": "保存中…", "save.imagesSaved": "枚保存済み", "global.title": "全体設定", "global.enable": "キュー全体に適用", "global.help": "有効にすると、ここでの値がキューの全画像・全レイヤーに適用されます。ブラシや描画範囲は変更されません。", "global.style": "全体のスタイル", "global.applied": "{count}レイヤーに全体設定を適用しました。", "global.empty": "キューにレイヤーがありません。先に解析してください。", "global.previewing": "現在の画像でプレビュー中 · キューに{total}枚。", "global.propagating": "キューに適用中… {done}/{total}枚。",
     "notice.noImages": "対応する画像が見つかりません。", "notice.folderUnsupported": "このブラウザーではフォルダーを選択できません。新しい Chrome または Edge を使用してください。", "notice.saveAtLeast": "保存する前に画像を1枚以上承認してください。", "notice.reviewComplete": "承認する画像はもうありません。承認済みの画像を保存しますか？", "notice.saveLater": "承認済みの画像を保存できます。「承認済みを保存」を押してください。", "notice.savedOne": "1枚を保存しました。", "notice.savedMany": "{count}枚を保存しました。", "notice.analyzing": "フォルダーをローカル解析中…", "notice.analyzingImage": "画像をローカル解析中…", "notice.analysisDone": "解析完了。各画像を確認し、必要なら調整して承認してください。", "notice.analysisImageDone": "解析完了。範囲を調整して、準備ができたら画像を保存してください。", "notice.detectorUnavailable": "自動検出が利用できません: {message} 手動で範囲を描けます。", "notice.modelUnloaded": "モデルをメモリから解放しました。解析時に自動で再読み込みします。",     "notice.modelUnloadServerDown": "ブラウザーのセッションを解放しました。サーバーが応答しません: バックエンドを起動してください。", "notice.gifTooManyFrames": "「{name}」は{count}フレームあり、上限は{limit}です。このGIFは処理できません。", "dialog.gifLimitTitle": "GIFが長すぎます", "dialog.gifLimitBody": "「{name}」は{count}フレームあり、上限は{limit}です。短くするか分割して検閲してください。", "dialog.dismiss": "了解", "gif.expanding": "GIFのフレームを展開中…", "gif.framesLoaded": "フレーム展開済み", "notice.gifReady": "GIFを読み込みました:{count}フレームをキューに追加しました。「解析」を押して検出してください。", "toolbar.analyzeGif": "フレームを解析",
-    "status.approved": "承認済み", "status.rejected": "スキップ", "status.pending": "保留", "status.noLayers": "レイヤーなし", "status.detectedOne": "1レイヤーを検出", "status.detectedMany": "{count}レイヤーを検出", "canvas.summaryOne": "1レイヤー · {status}", "canvas.summaryMany": "{count}レイヤー · {status}", "canvas.manualHint": "レイヤー未検出 · クリックでレイヤーを作成", "progress.none": "フォルダーなし", "progress.one": "1件承認", "progress.many": "{count}件承認", "progress.detail": "{count} / {total} 件承認", "progress.analyzing": "{current} / {total} 件を解析中", "footer.local": "Censor Station 0.1 · ローカル処理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左クリックで追加 · 右クリックで削除"
+    "status.approved": "承認済み", "status.rejected": "スキップ", "status.pending": "保留", "status.edited": "編集済み", "status.noLayers": "レイヤーなし", "status.detectedOne": "1レイヤーを検出", "status.detectedMany": "{count}レイヤーを検出", "canvas.summaryOne": "1レイヤー · {status}", "canvas.summaryMany": "{count}レイヤー · {status}", "canvas.manualHint": "レイヤー未検出 · クリックでレイヤーを作成", "progress.none": "フォルダーなし", "progress.one": "1件承認", "progress.many": "{count}件承認", "progress.detail": "{count} / {total} 件承認", "progress.analyzing": "{current} / {total} 件を解析中", "footer.local": "Censor Station 0.1 · ローカル処理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左クリックで追加 · 右クリックで削除"
   },
   zh: {
     "tabs.censor": "遮挡", "tabs.optimizer": "优化",
@@ -65,7 +65,7 @@ const TRANSLATIONS = {
     "classes.title": "要遮挡的部位", "classes.help": "分析文件夹前启用或停用要检测的部位。", "class.vagina": "阴道", "class.penis": "阴茎", "class.anus": "肛门",
     "actions.reject": "拒绝并跳过", "actions.rejectShort": "拒绝", "actions.approve": "批准", "actions.approveAll": "全部批准", "actions.save": "保存", "layers.recheckHint": "按住 Ctrl 并点击加入重新检查", "recheck.help": "按住 Ctrl 并点击选择图层，仅用当前阈值（自动阈值滑块）重新检测它们。", "recheck.run": "重新检查所选", "recheck.runOne": "重新检查 1 个图层", "recheck.running": "正在以 {threshold}% 重新检查 {count} 个图层…", "recheck.done": "已更新 {count} 个图层。", "recheck.doneMissing": "已更新 {updated} 个，{missing} 个无匹配。", "save.saving": "正在保存…", "save.imagesSaved": "张图片已保存", "global.title": "全局设置", "global.enable": "应用于整个队列", "global.help": "启用后，这些值将应用于队列中所有图片的所有图层。画笔和已绘制区域不受影响。", "global.style": "全部样式", "global.applied": "全局设置已应用于 {count} 个图层。", "global.empty": "队列中没有图层。请先分析。", "global.previewing": "正在当前图片上预览 · 队列共 {total} 张。", "global.propagating": "正在应用于队列… {done}/{total} 张。",
     "notice.noImages": "文件夹中没有兼容的图片。", "notice.folderUnsupported": "你的浏览器不支持选择文件夹。请使用新版 Chrome 或 Edge。", "notice.saveAtLeast": "请先批准至少一张图片再保存。", "notice.reviewComplete": "已经没有需要批准的图片了。现在要保存已批准的图片吗？", "notice.saveLater": "已批准的图片已经准备好。你可以点击“保存已批准”进行保存。", "notice.savedOne": "已保存 1 张图片。", "notice.savedMany": "已保存 {count} 张图片。", "notice.analyzing": "正在本地分析文件夹…", "notice.analyzingImage": "正在本地分析图片…", "notice.analysisDone": "分析完成。请检查每张图片，调整区域后再批准。", "notice.analysisImageDone": "分析完成。请调整区域，准备好后保存图片。", "notice.detectorUnavailable": "自动检测不可用：{message} 你仍可手动绘制区域。", "notice.modelUnloaded": "模型已从内存释放。分析时会自动重新加载。",     "notice.modelUnloadServerDown": "已释放浏览器会话。服务器无响应：请启动后端以释放其内存。", "notice.gifTooManyFrames": "“{name}”有 {count} 帧，上限为 {limit}。无法处理该 GIF。", "dialog.gifLimitTitle": "GIF 过长", "dialog.gifLimitBody": "“{name}”有 {count} 帧，上限为 {limit}。请裁剪或拆分后再进行遮挡。", "dialog.dismiss": "知道了", "gif.expanding": "正在提取 GIF 帧…", "gif.framesLoaded": "帧已加载", "notice.gifReady": "GIF 已加载：队列中有 {count} 帧。点击“分析”检测区域。", "toolbar.analyzeGif": "分析帧",
-    "status.approved": "已批准", "status.rejected": "已跳过", "status.pending": "待处理", "status.noLayers": "无图层", "status.detectedOne": "检测到 1 个图层", "status.detectedMany": "检测到 {count} 个图层", "canvas.summaryOne": "1 个图层 · {status}", "canvas.summaryMany": "{count} 个图层 · {status}", "canvas.manualHint": "未检测到图层 · 点击创建图层", "progress.none": "未选择文件夹", "progress.one": "已批准 1 张", "progress.many": "已批准 {count} 张", "progress.detail": "已批准 {count} / {total} 张", "progress.analyzing": "正在分析 {current} / {total}", "footer.local": "Censor Station 0.1 · 本地处理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左键绘制 · 右键擦除"
+    "status.approved": "已批准", "status.rejected": "已跳过", "status.pending": "待处理", "status.edited": "已编辑", "status.noLayers": "无图层", "status.detectedOne": "检测到 1 个图层", "status.detectedMany": "检测到 {count} 个图层", "canvas.summaryOne": "1 个图层 · {status}", "canvas.summaryMany": "{count} 个图层 · {status}", "canvas.manualHint": "未检测到图层 · 点击创建图层", "progress.none": "未选择文件夹", "progress.one": "已批准 1 张", "progress.many": "已批准 {count} 张", "progress.detail": "已批准 {count} / {total} 张", "progress.analyzing": "正在分析 {current} / {total}", "footer.local": "Censor Station 0.1 · 本地处理", "footer.motto": "Let's censor until the world is free and this tool becomes useless!", "footer.instructions": "左键绘制 · 右键擦除"
   }
 };
 
@@ -185,6 +185,7 @@ const state = {
   inputHandle: null,
   outputHandle: null,
   selected: -1,
+  defaultMode: "pixelate",
   brush: null,
   analysis: { active: false, current: 0, completed: 0, total: 0, stepFraction: 0, timer: null },
   optimizer: { files: [], current: -1, inputHandle: null, outputHandle: null, previewToken: 0 },
@@ -669,16 +670,18 @@ document.querySelectorAll("[data-app-tab]").forEach((button) => button.addEventL
 function fileStatus(file) {
   if (file.status === "approved") return t("status.approved");
   if (file.status === "rejected") return t("status.rejected");
-  if (file.trackingLost) return `${t("tracking.lost")} · f${file.frameIndex + 1}`;
   if (file.kind === "gif-frame") {
     const total = state.gifs.get(file.gifId)?.frameCount;
     const prefix = file.mediaType === "video" ? "MP4" : "GIF";
     const label = `${prefix} ${file.frameIndex + 1}${Number.isFinite(total) ? `/${total}` : ""}`;
+    if (file.trackingLost) return `${label} · ${t("status.pending")}`;
+    if (file.status === "edited") return `${label} · ${t("status.edited")}`;
     if (!file.analyzed) return `${label} · ${t("status.pending")}`;
     if (!file.detections.length) return `${label} · ${t("status.noLayers")}`;
     const base = file.detections.length === 1 ? t("status.detectedOne") : t("status.detectedMany", { count: file.detections.length });
     return `${label} · ${base}`;
   }
+  if (file.status === "edited") return t("status.edited");
   if (file.detections.length === 1) return t("status.detectedOne");
   if (file.detections.length) return t("status.detectedMany", { count: file.detections.length });
   return file.analyzed ? t("status.noLayers") : t("status.pending");
@@ -695,9 +698,9 @@ function renderQueue() {
   }
   list.className = "queue-list";
   list.innerHTML = state.files.map((file, index) => `
-    <div class="queue-item ${index === state.current ? "active" : ""} ${state.queueSelection.has(index) ? "selected-for-analysis" : ""}" data-index="${index}" role="button" tabindex="0" aria-pressed="${state.queueSelection.has(index)}">
+    <div class="queue-item ${index === state.current ? "active" : ""} ${state.queueSelection.has(index) ? "selected-for-analysis" : ""} ${file.trackingLost ? "tracking-failed" : ""}" data-index="${index}" role="button" tabindex="0" aria-pressed="${state.queueSelection.has(index)}">
       <img class="queue-thumb" src="${file.url}" alt="" />
-      <div><div class="queue-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</div><div class="queue-status ${file.status || (file.analyzed ? "detected" : "")}">${fileStatus(file)}</div></div>
+      <div><div class="queue-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</div><div class="queue-status ${file.trackingLost ? "failed" : (file.status || (file.analyzed ? "detected" : ""))}">${fileStatus(file)}</div></div>
     </div>`).join("");
   list.querySelectorAll(".queue-item").forEach((item) => {
     const select = (event) => selectQueueItem(Number(item.dataset.index), event);
@@ -1320,7 +1323,8 @@ function createMaskCanvas(box, width, height, scale, offsetX = 0, offsetY = 0) {
 canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
 function createManualLayer(item) {
-  item.detections.push(inheritGlobalSettings({ mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", polygon: [], brushEdits: [], visible: true, manualBlank: true }));
+  item.detections.push(inheritGlobalSettings({ mode: state.defaultMode || "pixelate", padding: 0, source: "manual", class: "MANUAL", polygon: [], brushEdits: [], visible: true, manualBlank: true }));
+  if (item.status !== "approved" && item.status !== "rejected") item.status = "edited";
   state.selected = item.detections.length - 1;
 }
 
@@ -1331,6 +1335,7 @@ canvas.addEventListener("pointerdown", (event) => {
   if (item.detections.length === 0) {
     createManualLayer(item);
     renderLayers();
+    renderQueue();
     syncControls();
   }
   if (state.selected < 0 || !item.detections[state.selected]) state.selected = item.detections.length - 1;
@@ -1497,12 +1502,14 @@ function syncControls() {
   $("delete-box").disabled = !enabled;
   $("selected-badge").textContent = enabled ? t("layers.selected", { index: state.selected + 1 }) : t("layers.none");
   syncGlobalControls(hasLayers);
+  const activeMode = box?.mode || state.defaultMode;
+  if (box) state.defaultMode = box.mode;
   document.querySelectorAll("[data-style-button]").forEach((button) => {
-    button.disabled = !enabled;
-    button.classList.toggle("active", enabled && button.dataset.styleButton === box.mode);
+    button.disabled = false;
+    button.classList.toggle("active", button.dataset.styleButton === activeMode);
   });
+  $("style-select").value = activeMode;
   if (enabled) {
-    $("style-select").value = box.mode;
     $("padding").value = box.padding;
   }
   $("padding-value").textContent = `${$("padding").value} px`;
@@ -1527,6 +1534,11 @@ function syncTrackingControls() {
   $("tracking-start").max = $("tracking-end").max = String(max);
   $("tracking-run").disabled = !item?.detections[state.selected] || state.tracking.active || state.analysis.active;
   $("tracking-undo").disabled = state.tracking.active || !state.tracking.history.some((batch) => batch.gifId === item?.gifId);
+}
+
+function markTrackingFailed(target, batchId) {
+  target.trackingLost = batchId;
+  if (target.status !== "approved" && target.status !== "rejected") target.status = "pending";
 }
 
 async function propagateSelectedLayer() {
@@ -1566,62 +1578,78 @@ async function propagateSelectedLayer() {
   syncTrackingControls();
   let done = 0;
   let failure = "";
+  let failedFrame = null;
+  let currentTarget = null;
+  let stopped = false;
+  let lastReached = null;
   try {
     for (const path of paths) {
-          let previous = item;
-          let layer = structuredClone(seed);
-          let hint = structuredClone(seed);
-          for (const target of path) {
-            if (state.tracking.cancel) break;
-            $("tracking-progress-text").textContent = t("tracking.progress", { done, total, frame: target.frameIndex + 1 });
-            let result = { tracked: true, layer: structuredClone(layer), confidence: 1 };
-            if (method === "motion") {
-              const response = await fetch("/api/tracking", {
-                method: "POST", headers: { "content-type": "application/json" }, signal: AbortSignal.timeout(60000),
-                body: JSON.stringify({
-                  previous: previous.url,
-                  following: target.url,
-                  layer,
-                  method,
-                  confidence: layer.trackingConfidence ?? 1,
-                  anchor: item.url,
-                  anchorLayer: seed,
-                  hintLayer: hint,
-                }),
-              });
-              result = await response.json();
-              if (!response.ok || !result.ok) throw new Error(result.message || "Tracking unavailable");
-            }
-            if (state.tracking.cancel) break;
-            done += 1;
-            $("tracking-progress").value = done;
-            if (!result.tracked) {
-              target.trackingLost = batch.id;
-              target.status = "";
-              batch.stopped.push(target);
-              break;
-            }
-            layer = result.layer;
-            hint = result.hintLayer || layer;
-            if (snapDetections) {
-              const snapped = snapLayerToDetections(layer, target);
-              if (snapped) layer = { ...layer, polygon: snapped.polygon, brushEdits: snapped.brushEdits, trackingSnap: "detection", trackingSnapScore: snapped.score };
-            }
-            layer.trackingId = batch.id;
-            layer.trackingConfidence = result.confidence;
-            layer.trackingOrigin = item.frameIndex;
-            const added = inheritGlobalSettings(structuredClone(layer));
-            target.detections.push(added);
-            target.status = "";
-            batch.added.push({ target, layer: added });
-            previous = target;
-            // Yield even in fixed-position mode so cancel and progress can render.
-            await new Promise((resolve) => requestAnimationFrame(resolve));
-          }
-          if (state.tracking.cancel) break;
+      let previous = item;
+      let layer = structuredClone(seed);
+      let hint = structuredClone(seed);
+      for (const target of path) {
+        if (state.tracking.cancel) break;
+        currentTarget = target;
+        $("tracking-progress-text").textContent = t("tracking.progress", { done, total, frame: target.frameIndex + 1 });
+        let result = { tracked: true, layer: structuredClone(layer), confidence: 1 };
+        if (method === "motion") {
+          const response = await fetch("/api/tracking", {
+            method: "POST", headers: { "content-type": "application/json" }, signal: AbortSignal.timeout(60000),
+            body: JSON.stringify({
+              previous: previous.url,
+              following: target.url,
+              layer,
+              method,
+              confidence: layer.trackingConfidence ?? 1,
+              anchor: item.url,
+              anchorLayer: seed,
+              hintLayer: hint,
+            }),
+          });
+          result = await response.json();
+          if (!response.ok || !result.ok) throw new Error(result.message || "Tracking unavailable");
         }
+        if (state.tracking.cancel) break;
+        done += 1;
+        $("tracking-progress").value = done;
+        if (!result.tracked) {
+          markTrackingFailed(target, batch.id);
+          batch.stopped.push(target);
+          failedFrame = target;
+          lastReached = target;
+          stopped = true;
+          break;
+        }
+        layer = result.layer;
+        hint = result.hintLayer || layer;
+        if (snapDetections) {
+          const snapped = snapLayerToDetections(layer, target);
+          if (snapped) layer = { ...layer, polygon: snapped.polygon, brushEdits: snapped.brushEdits, trackingSnap: "detection", trackingSnapScore: snapped.score };
+        }
+        layer.trackingId = batch.id;
+        layer.trackingConfidence = result.confidence;
+        layer.trackingOrigin = item.frameIndex;
+        const added = inheritGlobalSettings(structuredClone(layer));
+        target.detections.push(added);
+        delete target.trackingLost;
+        if (target.status !== "approved" && target.status !== "rejected") target.status = "edited";
+        batch.added.push({ target, layer: added });
+        previous = target;
+        lastReached = target;
+        currentTarget = null;
+        // Yield even in fixed-position mode so cancel and progress can render.
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+      }
+      if (state.tracking.cancel || stopped) break;
+    }
   } catch (error) {
     failure = t("tracking.error", { message: error.message });
+    if (currentTarget && !batch.stopped.includes(currentTarget)) {
+      markTrackingFailed(currentTarget, batch.id);
+      batch.stopped.push(currentTarget);
+      failedFrame = currentTarget;
+      lastReached = currentTarget;
+    }
   } finally {
     state.tracking.active = false;
     dialog.close();
@@ -1632,6 +1660,14 @@ async function propagateSelectedLayer() {
     $("tracking-summary").textContent = message;
     setNotice(message, failure ? "error" : "");
     renderQueue(); renderLayers(); syncControls(); draw(); updateSingleModeUi();
+    // The next tracking pass resumes from the frame this one reached.
+    if (!state.tracking.cancel && lastReached) {
+      const maxStart = Number($("tracking-start").max) || lastReached.frameIndex + 1;
+      $("tracking-start").value = String(Math.min(lastReached.frameIndex + 1, maxStart));
+    }
+    // If tracking could not continue, focus that frame so the user can restart there.
+    const failedIndex = failedFrame ? state.files.indexOf(failedFrame) : -1;
+    if (failedIndex >= 0) await showFile(failedIndex);
   }
 }
 
@@ -1642,9 +1678,9 @@ function undoPropagation() {
   const [batch] = state.tracking.history.splice(index, 1);
   for (const { target, layer } of batch.added) {
     const index = target.detections.indexOf(layer);
-    if (index >= 0) { target.detections.splice(index, 1); target.status = ""; }
+    if (index >= 0) { target.detections.splice(index, 1); if (target.status === "edited") target.status = ""; }
   }
-  for (const target of batch.stopped) if (target.trackingLost === batch.id) delete target.trackingLost;
+  for (const target of batch.stopped) if (target.trackingLost === batch.id) { delete target.trackingLost; if (target.status === "pending") target.status = ""; }
   state.selected = Math.min(state.selected, (currentFile()?.detections.length || 0) - 1);
   $("tracking-summary").textContent = t("tracking.undone");
   renderQueue(); renderLayers(); syncControls(); draw(); updateSingleModeUi();
@@ -1672,14 +1708,16 @@ function syncGlobalControls(hasLayers) {
   });
 }
 
-$("style-select").addEventListener("change", (event) => updateSelected("mode", event.target.value));
-document.querySelectorAll("[data-style-button]").forEach((button) => button.addEventListener("click", () => {
-  if (!currentFile()?.detections[state.selected]) return;
-  $("style-select").value = button.dataset.styleButton;
-  updateSelected("mode", button.dataset.styleButton);
+function applyCensorMode(mode) {
+  state.defaultMode = mode;
+  $("style-select").value = mode;
+  const box = currentFile()?.detections[state.selected];
+  if (box) { box.mode = mode; draw(); }
   renderLayers();
   syncControls();
-}));
+}
+$("style-select").addEventListener("change", (event) => applyCensorMode(event.target.value));
+document.querySelectorAll("[data-style-button]").forEach((button) => button.addEventListener("click", () => applyCensorMode(button.dataset.styleButton)));
 $("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value), true); });
 $("global-enabled").addEventListener("change", (event) => {
   state.global.enabled = event.target.checked;
@@ -1816,7 +1854,7 @@ function scheduleGlobalChunk(job) {
 
 $("add-box").addEventListener("click", () => {
   const item = currentFile(); if (!item) return;
-  createManualLayer(item); renderLayers(); draw(); syncControls();
+  createManualLayer(item); renderLayers(); draw(); syncControls(); renderQueue();
 });
 
 $("delete-box").addEventListener("click", () => {
@@ -1852,7 +1890,8 @@ $("single-image-input").addEventListener("change", async (event) => {
         state.brush = null;
         updateSingleModeUi();
         renderQueue();
-        if (state.files.length) await showFile(state.files.length - 1);
+        // Leave the canvas on the first frame of the GIF that was just loaded.
+        if (state.files.length) await showFile(state.files.length - items.length);
         setNotice(t(isVideoFile(file) ? "video.ready" : "notice.gifReady", { count: items.length }));
         updateSingleModeUi();
         return;

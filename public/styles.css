@@ -156,6 +156,10 @@ h2 { font-size: 16px; letter-spacing: -.02em; }
 .queue-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
 .queue-status { color: var(--muted); font-size: 10px; margin-top: 5px; }
 .queue-status.approved { color: var(--teal); }.queue-status.rejected { color: var(--red); }.queue-status.detected { color: var(--yellow); }
+.queue-status.edited { color: var(--neon-cyan); text-shadow: 0 0 6px rgba(107,231,255,.45); }
+.queue-status.failed { color: var(--red); text-shadow: 0 0 6px rgba(255,82,112,.65); }
+.queue-item.tracking-failed { border-color: rgba(255,82,112,.48); box-shadow: inset 3px 0 var(--red); }
+.queue-item.tracking-failed.active { border-color: var(--red); box-shadow: inset 3px 0 var(--red), 0 0 12px rgba(255,82,112,.28); }
 .queue-mascot { position: relative; flex: 0 0 205px; overflow: hidden; border-top: 1px solid #702b83; background: radial-gradient(ellipse at 50% 85%, rgba(255,91,215,.3), transparent 48%), linear-gradient(180deg, rgba(20,7,35,.25), rgba(55,12,64,.85)); box-shadow: inset 0 12px 20px rgba(0,0,0,.4); }
 .queue-mascot::before { content: "✦  MAGICAL QUEUE // ONLINE  ✦"; position: absolute; top: 7px; left: 0; right: 0; z-index: 2; text-align: center; color: rgba(107,231,255,.78); font-size: 8px; letter-spacing: .08em; text-shadow: 0 0 8px rgba(107,231,255,.7); }
 .queue-mascot img { position: absolute; right: 0; bottom: 0; left: 0; width: 100%; height: calc(100% - 30px); object-fit: contain; object-position: center bottom; image-rendering: pixelated; transform: scale(1.06); transform-origin: center bottom; filter: drop-shadow(0 0 8px rgba(255,91,215,.55)); }
