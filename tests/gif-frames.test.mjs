@@ -130,8 +130,8 @@ test("global settings stage preview first, propagate over time", () => {
   assert.match(appSource, /data-global-style-button/);
   assert.match(appSource, /global\.applied/);
   const settingsSource = readFileSync(new URL("../src/components/SettingsPanel.jsx", import.meta.url), "utf8");
-  assert.match(settingsSource, /id="global-padding"/);
-  assert.match(settingsSource, /id="global-advanced"/);
+  assert.doesNotMatch(settingsSource, /id="global-(padding|advanced)"/);
+  assert.match(appSource, /state\.global\[key\] = source\[key\]/);
 });
 
 test("save-single on a gif frame reassembles the whole gif", () => {

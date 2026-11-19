@@ -52,26 +52,6 @@ export function SettingsPanel() {
         <div className="selection-actions"><button id="add-box" className="button secondary" data-i18n-title="layers.add" disabled><span className="button-icon icon-plus" aria-hidden="true" /><span className="button-label" data-i18n="layers.add">Añadir capa</span></button><button id="delete-box" className="button ghost-danger" data-i18n-title="layers.delete" disabled><span className="button-icon icon-trash" aria-hidden="true" /><span className="button-label" data-i18n="layers.delete">Eliminar</span></button></div>
       </Accordion>
 
-      <Accordion id="tracking-controls" titleKey="tracking.title" title="FRAME TRACKING" className="tracking-accordion">
-        <p className="help" data-i18n="tracking.help">Propagate the selected layer from this frame. Results need review.</p>
-        <label className="field-label" htmlFor="tracking-direction" data-i18n="tracking.direction">Direction</label>
-        <select id="tracking-direction" className="select"><option value="both" data-i18n="tracking.both">Both directions</option><option value="forward" data-i18n="tracking.forward">Forward</option><option value="backward" data-i18n="tracking.backward">Backward</option></select>
-        <label className="field-label" htmlFor="tracking-method" data-i18n="tracking.method">Method</label>
-        <select id="tracking-method" className="select"><option value="motion" data-i18n="tracking.motion">Follow motion</option><option value="fixed" data-i18n="tracking.fixed">Fixed position</option></select>
-        <label className="global-toggle"><input id="tracking-snap" type="checkbox" defaultChecked /><span className="field-label" data-i18n="tracking.snapDetections">Snap to analyzed detections</span></label>
-        <div className="tracking-range"><label><span data-i18n="tracking.start">First frame</span><input id="tracking-start" type="number" min="1" defaultValue="1" /></label><label><span data-i18n="tracking.end">Last frame</span><input id="tracking-end" type="number" min="1" defaultValue="1" /></label></div>
-        <button id="tracking-run" className="button secondary" disabled data-i18n="tracking.run">Propagate layer</button>
-        <button id="tracking-undo" className="button ghost-danger" disabled data-i18n="tracking.undo">Undo propagation</button>
-        <p id="tracking-summary" className="help" aria-live="polite" />
-      </Accordion>
-
-      <dialog id="tracking-dialog" className="tracking-dialog" aria-labelledby="tracking-title">
-        <h2 id="tracking-title" data-i18n="tracking.title">FRAME TRACKING</h2>
-        <p id="tracking-progress-text" aria-live="polite" />
-        <progress id="tracking-progress" max="1" value="0" />
-        <button id="tracking-cancel" className="button secondary" data-i18n="analysis.cancel">Cancel</button>
-      </dialog>
-
       <Accordion id="censor-settings" titleKey="censor.settings" title="CENSOR SETTINGS">
       <div id="options" className="censor-settings-group">
         <label className="field-label censor-settings-label" data-i18n="controls.optionsTitle">OPTIONS</label>
@@ -112,10 +92,28 @@ export function SettingsPanel() {
       </div>
       <div id="global-settings" className="censor-settings-group">
         <GlobalApplyToggle />
-        <section id="global-advanced" className="style-advanced" hidden aria-live="polite" />
-        <div hidden><output id="global-padding-value">8 px</output><input id="global-padding" type="range" min="0" max="60" value="8" /></div>
       </div>
       </Accordion>
+
+      <Accordion id="tracking-controls" titleKey="tracking.title" title="FRAME TRACKING" className="tracking-accordion">
+        <p className="help" data-i18n="tracking.help">Propagate the selected layer from this frame. Results need review.</p>
+        <label className="field-label" htmlFor="tracking-direction" data-i18n="tracking.direction">Direction</label>
+        <select id="tracking-direction" className="select"><option value="both" data-i18n="tracking.both">Both directions</option><option value="forward" data-i18n="tracking.forward">Forward</option><option value="backward" data-i18n="tracking.backward">Backward</option></select>
+        <label className="field-label" htmlFor="tracking-method" data-i18n="tracking.method">Method</label>
+        <select id="tracking-method" className="select"><option value="motion" data-i18n="tracking.motion">Follow motion</option><option value="fixed" data-i18n="tracking.fixed">Fixed position</option></select>
+        <label className="global-toggle"><input id="tracking-snap" type="checkbox" defaultChecked /><span className="field-label" data-i18n="tracking.snapDetections">Snap to analyzed detections</span></label>
+        <div className="tracking-range"><label><span data-i18n="tracking.start">First frame</span><input id="tracking-start" type="number" min="1" defaultValue="1" /></label><label><span data-i18n="tracking.end">Last frame</span><input id="tracking-end" type="number" min="1" defaultValue="1" /></label></div>
+        <button id="tracking-run" className="button secondary" disabled data-i18n="tracking.run">Propagate layer</button>
+        <button id="tracking-undo" className="button ghost-danger" disabled data-i18n="tracking.undo">Undo propagation</button>
+        <p id="tracking-summary" className="help" aria-live="polite" />
+      </Accordion>
+
+      <dialog id="tracking-dialog" className="tracking-dialog" aria-labelledby="tracking-title">
+        <h2 id="tracking-title" data-i18n="tracking.title">FRAME TRACKING</h2>
+        <p id="tracking-progress-text" aria-live="polite" />
+        <progress id="tracking-progress" max="1" value="0" />
+        <button id="tracking-cancel" className="button secondary" data-i18n="analysis.cancel">Cancel</button>
+      </dialog>
 
       <Accordion id="gif-export" titleKey="gif.export" title="GIF EXPORT">
         <div className="field-row"><label className="field-label" htmlFor="gif-target-size" data-i18n="gif.target">Target file size</label><output id="gif-target-size-value">16 MB</output></div>

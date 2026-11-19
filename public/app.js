@@ -1442,17 +1442,6 @@ function advancedSuffix(key) {
     : key === "lineAngle" ? "°" : "";
 }
 
-function renderGlobalAdvancedSettings() {
-  const panel = $("global-advanced");
-  if (!panel) return;
-  const enabled = state.global.enabled;
-  const hasLayers = state.files.some((file) => file.detections?.length);
-  const fields = advancedFieldsFor(state.global.mode, state.global);
-  panel.hidden = !enabled || !hasLayers || !fields;
-  if (enabled && fields) syncAdvancedFields(panel, state.global.mode, state.global, true);
-  else { panel.innerHTML = ""; delete panel.dataset.layout; }
-}
-
 const settingsProcessing = { preview: null, global: null };
 
 function scheduleSettingsProcessing(global = false) {
@@ -1494,16 +1483,6 @@ $("style-advanced").addEventListener("input", (event) => {
   const output = input.closest(".advanced-setting")?.querySelector("output");
   if (output) output.textContent = `${value}${advancedSuffix(input.dataset.advancedKey)}`;
   scheduleSettingsProcessing();
-});
-
-$("global-advanced").addEventListener("input", (event) => {
-  const input = event.target.closest("[data-global-advanced-key]");
-  if (!input) return;
-  const key = input.dataset.globalAdvancedKey;
-  state.global[key] = input instanceof HTMLSelectElement ? input.value : Number(input.value);
-  const output = input.closest(".advanced-setting")?.querySelector("output");
-  if (output) output.textContent = `${state.global[key]}${advancedSuffix(key)}`;
-  scheduleSettingsProcessing(true);
 });
 
 function syncControls() {
@@ -1691,13 +1670,6 @@ function syncGlobalControls(hasLayers) {
     button.disabled = !enabled || !hasLayers;
     button.classList.toggle("active", enabled && hasLayers && button.dataset.globalStyleButton === state.global.mode);
   });
-  const padding = $("global-padding");
-  if (padding) {
-    padding.disabled = !enabled || !hasLayers;
-    padding.value = state.global.padding;
-    $("global-padding-value").textContent = `${padding.value} px`;
-  }
-  renderGlobalAdvancedSettings();
 }
 
 $("style-select").addEventListener("change", (event) => updateSelected("mode", event.target.value));
@@ -1730,16 +1702,6 @@ $("global-enabled").addEventListener("change", (event) => {
   }
   syncControls();
 });
-$("global-padding").addEventListener("input", (event) => {
-  state.global.padding = Number(event.target.value);
-  $("global-padding-value").textContent = `${event.target.value} px`;
-  scheduleSettingsProcessing(true);
-});
-document.querySelectorAll("[data-global-style-button]").forEach((button) => button.addEventListener("click", () => {
-  state.global.mode = button.dataset.globalStyleButton;
-  stageGlobalApply();
-  syncControls();
-}));
 $("brush-size").addEventListener("input", (event) => { $("brush-size-value").textContent = `${event.target.value} px`; });
 $("threshold").addEventListener("input", (event) => { $("threshold-value").textContent = `${event.target.value}%`; });
 $("mask-threshold").addEventListener("input", (event) => { $("mask-threshold-value").textContent = `${event.target.value}%`; });
