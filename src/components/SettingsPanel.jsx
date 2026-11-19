@@ -34,18 +34,25 @@ function GlobalApplyToggle() {
   };
   return <>
     <input id="global-enabled" type="checkbox" hidden checked={on} onChange={() => {}} />
-    <button type="button" className={`style-card global-apply-toggle${on ? " active" : ""}`}
-      aria-pressed={on} onClick={toggle} data-i18n-title="global.help"
-      title="Enable it and these values apply to every layer of every queued image. Changing here rewrites each layer; brush strokes and drawn areas stay untouched.">
-      <span className="style-icon button-icon icon-queue-global" aria-hidden="true" />
-      <strong>GLOBAL</strong>
-    </button>
+    <div className={`global-scope${on ? " is-on" : ""}`}>
+      <div className="global-scope-copy">
+        <strong className="censor-settings-label" data-i18n="global.title">GLOBAL</strong>
+        <span id="global-scope-count" className="global-scope-count" data-i18n="global.scopeEmpty">Sin capas todavía</span>
+      </div>
+      <button id="global-toggle" type="button" className={`global-switch${on ? " is-on" : ""}`}
+        role="switch" aria-checked={on} aria-label="GLOBAL" data-i18n-title="global.help"
+        title="Enable it to apply the current layer style to the whole queue and to new layers. Brush strokes and drawn areas stay untouched."
+        onClick={toggle}>
+        <span className="global-switch-track" aria-hidden="true"><span className="global-switch-thumb" /></span>
+        <span id="global-switch-state" className="global-switch-state">{on ? "ON" : "OFF"}</span>
+      </button>
+    </div>
   </>;
 }
 
 export function SettingsPanel() {
   return <aside className="settings card">
-    <div className="panel-heading"><div><h2 data-i18n="layers.title">SETTINGS</h2></div><span id="selected-badge" className="selection-badge" data-i18n="layers.none">Ninguna</span></div>
+    <div className="panel-heading"><div className="panel-title-row"><h2 data-i18n="layers.title">SETTINGS</h2><span id="global-mode-chip" className="global-mode-chip" hidden>GLOBAL</span></div><span id="selected-badge" className="selection-badge" data-i18n="layers.none">Ninguna</span></div>
     <div className="settings-body">
       <Accordion id="layers-accordion" titleKey="layers.stack" title="LAYER STACK">
         <div id="layer-list" className="layer-list empty-state" data-i18n="layers.empty">Analiza una imagen para crear capas.</div>

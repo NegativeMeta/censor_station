@@ -168,6 +168,38 @@ const PLAY_COPY = {
 };
 for (const language of Object.keys(PLAY_COPY)) Object.assign(ADDITIONAL_TRANSLATIONS[language], PLAY_COPY[language]);
 
+const GLOBAL_UI_COPY = {
+  es: {
+    "global.title": "GLOBAL",
+    "global.scope": "{layers} capas · {images} imágenes",
+    "global.scopeEmpty": "Sin capas todavía",
+    "global.chip": "GLOBAL · {layers}",
+    "global.help": "Actívalo para aplicar el estilo de la capa actual a toda la cola y a las capas nuevas. El pincel y las zonas dibujadas no se tocan.",
+  },
+  en: {
+    "global.title": "GLOBAL",
+    "global.scope": "{layers} layers · {images} images",
+    "global.scopeEmpty": "No layers yet",
+    "global.chip": "GLOBAL · {layers}",
+    "global.help": "Enable it to apply the current layer style to the whole queue and to new layers. Brush strokes and drawn areas stay untouched.",
+  },
+  ja: {
+    "global.title": "グローバル",
+    "global.scope": "{images}枚の画像 · {layers}レイヤー",
+    "global.scopeEmpty": "レイヤーがありません",
+    "global.chip": "グローバル · {layers}",
+    "global.help": "有効にすると、現在のレイヤーのスタイルをキュー全体と新しいレイヤーに適用します。ブラシと描画範囲は変更されません。",
+  },
+  zh: {
+    "global.title": "全局",
+    "global.scope": "{images} 张图片 · {layers} 个图层",
+    "global.scopeEmpty": "暂无图层",
+    "global.chip": "全局 · {layers}",
+    "global.help": "启用后，当前图层的样式会应用到整个队列和新建图层。画笔和已绘制区域不受影响。",
+  },
+};
+for (const language of Object.keys(GLOBAL_UI_COPY)) Object.assign(ADDITIONAL_TRANSLATIONS[language], GLOBAL_UI_COPY[language]);
+
 let currentLanguage = localStorage.getItem("censor-station-language") || "es";
 if (!TRANSLATIONS[currentLanguage]) currentLanguage = "es";
 
@@ -1631,21 +1663,20 @@ $("style-advanced").addEventListener("input", (event) => {
   box[input.dataset.advancedKey] = value;
   const output = input.closest(".advanced-setting")?.querySelector("output");
   if (output) output.textContent = `${value}${advancedSuffix(input.dataset.advancedKey)}`;
-  scheduleSettingsProcessing();
+  scheduleSettingsProcessing(state.global.enabled);
 });
 
 function syncControls() {
   syncTrackingControls();
   const box = currentFile()?.detections[state.selected];
   const enabled = Boolean(box);
-  const hasLayers = state.files.some((file) => file.detections?.length);
   $("add-box").disabled = !currentFile();
   $("style-select").disabled = !enabled;
   $("padding").disabled = !enabled || Boolean(box?.manualBlank);
   $("brush-size").disabled = !enabled;
   $("delete-box").disabled = !enabled;
   $("selected-badge").textContent = enabled ? t("layers.selected", { index: state.selected + 1 }) : t("layers.none");
-  syncGlobalControls(hasLayers);
+  syncGlobalControls();
   const activeMode = box?.mode || state.defaultMode;
   if (box) state.defaultMode = box.mode;
   document.querySelectorAll("[data-style-button]").forEach((button) => {
@@ -1841,23 +1872,56 @@ fetch("/api/tracking").then((response) => response.ok ? response.json() : null).
   syncTrackingControls();
 }).catch(() => {});
 
-function syncGlobalControls(hasLayers) {
+const GLOBAL_STYLE_KEYS = ["mode", "padding", "pixelFrequency", "pixelShape", "pixelIrregularity", "blurRadius", "blurPasses", "lineCount", "lineThickness", "lineAngle", "glowRadius", "glowStrength"];
+
+function copyGlobalStyleFrom(source) {
+  if (!source) return;
+  for (const key of GLOBAL_STYLE_KEYS) {
+    if (key in source) state.global[key] = source[key];
+  }
+}
+
+function globalScopeCounts() {
+  let layers = 0;
+  let images = 0;
+  for (const file of state.files) {
+    const count = file.detections?.length || 0;
+    if (count) {
+      layers += count;
+      images += 1;
+    }
+  }
+  return { layers, images };
+}
+
+function syncGlobalControls() {
   const toggle = $("global-enabled");
   const enabled = Boolean(toggle?.checked);
   state.global.enabled = enabled;
-  const hint = $("global-hint");
-  if (hint) hint.style.opacity = enabled ? "1" : ".55";
-  document.querySelectorAll("[data-global-style-button]").forEach((button) => {
-    button.disabled = !enabled || !hasLayers;
-    button.classList.toggle("active", enabled && hasLayers && button.dataset.globalStyleButton === state.global.mode);
-  });
+  const { layers, images } = globalScopeCounts();
+  const count = $("global-scope-count");
+  if (count) count.textContent = layers ? t("global.scope", { layers, images }) : t("global.scopeEmpty");
+  const chip = $("global-mode-chip");
+  if (chip) {
+    chip.hidden = !enabled;
+    chip.textContent = t("global.chip", { layers });
+  }
+  const switchButton = $("global-toggle");
+  if (switchButton) {
+    switchButton.classList.toggle("is-on", enabled);
+    switchButton.setAttribute("aria-checked", String(enabled));
+  }
+  const scope = document.querySelector(".global-scope");
+  if (scope) scope.classList.toggle("is-on", enabled);
+  const stateLabel = $("global-switch-state");
+  if (stateLabel) stateLabel.textContent = enabled ? "ON" : "OFF";
 }
 
 function applyCensorMode(mode) {
   state.defaultMode = mode;
   $("style-select").value = mode;
   const box = currentFile()?.detections[state.selected];
-  if (box) { box.mode = mode; draw(); }
+  if (box) { box.mode = mode; if (state.global.enabled) stageGlobalApply(); else draw(); }
   renderLayers();
   syncControls();
 }
@@ -1869,13 +1933,7 @@ $("global-enabled").addEventListener("change", (event) => {
   if (state.global.enabled) {
     // Global mode mirrors the layer the user is looking at, not a separate
     // set of settings: copy its censorship config before applying it.
-    const source = currentFile()?.detections?.[state.selected];
-    if (source) {
-      for (const key of ["mode", "padding", "pixelFrequency", "pixelShape", "pixelIrregularity",
-        "blurRadius", "blurPasses", "lineCount", "lineThickness", "lineAngle", "glowRadius", "glowStrength"]) {
-        if (key in source) state.global[key] = source[key];
-      }
-    }
+    copyGlobalStyleFrom(currentFile()?.detections?.[state.selected]);
     stageGlobalApply();
   } else {
     // Disabling stops any in-flight propagation; already-restyled layers keep
@@ -1894,7 +1952,7 @@ $("mask-inset").addEventListener("input", (event) => {
   currentFile()?.detections.filter((box) => box.source === "auto").forEach((box) => { box.maskInset = value; });
   scheduleSettingsProcessing();
 });
-function updateSelected(key, value, deferred = false) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; if (deferred) scheduleSettingsProcessing(); else draw(); }
+function updateSelected(key, value, deferred = false) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; if (deferred) scheduleSettingsProcessing(state.global.enabled); else if (state.global.enabled) stageGlobalApply(); else draw(); }
 
 /** Rewrite style-related fields on every layer of every queued image.
  *  Geometry (polygon, brushEdits, manualBlank, visible) is never touched,
@@ -1951,6 +2009,7 @@ function stageGlobalApply() {
   settingsProcessing.global = null;
   const job = ++state.global.job;
   const current = currentFile();
+  copyGlobalStyleFrom(current?.detections?.[state.selected] || current?.detections?.[0]);
   if (current?.detections?.length) {
     for (const box of current.detections) applyGlobalToBox(box);
     renderLayers();

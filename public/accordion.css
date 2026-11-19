@@ -49,25 +49,77 @@
 .settings-accordion .accordion-panel-inner > .select,
 .settings-accordion .accordion-panel-inner > .button { width: 100%; margin: 6px 0; }
 
-/* Single toggle that applies the selected layer's config to the whole queue.
-   It reuses the CENSOR TYPE style-card look. */
-.global-apply-toggle {
-  color: #e2fff2;
-  border-color: #4f9c84;
+/* Global scope switch: an explicit scope control, not a fifth censor type. */
+.global-scope {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 11px;
+  border: 1px solid #7a3542;
+  background: linear-gradient(100deg, rgba(122, 53, 66, .34), rgba(70, 20, 30, .16));
+  box-shadow: inset 0 0 12px rgba(232, 121, 138, .08);
+}
+.global-scope.is-on {
+  border-color: #3f6f61;
+  background: linear-gradient(100deg, rgba(47, 107, 91, .34), rgba(28, 69, 60, .16));
+  box-shadow: inset 0 0 12px rgba(120, 230, 190, .08);
+}
+.global-scope-copy { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.global-scope .censor-settings-label { margin: 0; color: #ffb3bf; font-size: 11px; letter-spacing: .1em; }
+.global-scope.is-on .censor-settings-label { color: #a8f5d8; }
+.global-scope-count { color: #c98d97; font-size: 10px; line-height: 1.25; }
+.global-scope.is-on .global-scope-count { color: #8fc9b4; }
+.global-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  padding: 4px 7px;
+  border: 1px solid #a34858;
+  background: #2a1018;
+  color: #ffd6db;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.global-switch:hover { border-color: #e8798a; }
+.global-switch-track {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border: 1px solid #a34858;
+  background: #1b0a10;
+}
+.global-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background: #b25a68;
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.global-switch.is-on { border-color: #7fe0bb; background: #102b25; color: #f2fff9; box-shadow: 0 0 10px rgba(127, 224, 187, .35); }
+.global-switch.is-on .global-switch-track { border-color: #7fe0bb; background: #0b1f1a; }
+.global-switch.is-on .global-switch-thumb { transform: translateX(14px); background: #8affd1; box-shadow: 0 0 6px #8affd1; }
+.global-switch-state { font-size: 9px; letter-spacing: .08em; }
+.global-mode-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border: 1px solid #7fe0bb;
   background: linear-gradient(100deg, #2f6b5b, #1c453c);
-  box-shadow: inset 0 0 12px rgba(120, 230, 190, .14), 0 0 8px rgba(120, 230, 190, .12);
-  transition: filter .2s ease, box-shadow .2s ease;
+  color: #eafff6;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 8px rgba(127, 224, 187, .28);
 }
-.global-apply-toggle:hover { filter: brightness(1.15); }
-.global-apply-toggle[aria-pressed="true"] {
-  color: #f2fff9;
-  border-color: #7fe0bb;
-  background: linear-gradient(100deg, #49a784, #2b6b56);
-  box-shadow: inset 0 0 15px rgba(180, 255, 220, .18), 0 0 15px rgba(127, 224, 187, .45);
-}
-.global-apply-toggle .style-icon.icon-queue-global {
-  background-image: url('/assets/pixel/global-queue-icon.png');
-}
+.global-mode-chip::before { content: ""; width: 5px; height: 5px; background: #8affd1; box-shadow: 0 0 6px #8affd1; }
+.global-mode-chip[hidden] { display: none; }
+.panel-title-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 
 /* Grouped controls inside the CENSOR SETTINGS accordion. */
 .censor-settings-group + .censor-settings-group {
@@ -78,5 +130,5 @@
 .censor-settings-label { display: block; margin-bottom: 6px; color: var(--neon-pink); }
 
 @media (prefers-reduced-motion: reduce) {
-  .accordion-panel, .accordion-chevron, .global-apply-toggle { transition: none; }
+  .accordion-panel, .accordion-chevron, .global-switch, .global-switch-thumb { transition: none; }
 }

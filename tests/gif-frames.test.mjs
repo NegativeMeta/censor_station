@@ -127,7 +127,7 @@ test("global settings stage preview first, propagate over time", () => {
   assert.match(appSource, /global\.previewing/);
   assert.match(appSource, /function applyGlobalToAllLayers/);
   assert.match(appSource, /box\.polygon/);
-  assert.match(appSource, /data-global-style-button/);
+  assert.match(appSource, /function globalScopeCounts/);
   assert.match(appSource, /global\.applied/);
   const settingsSource = readFileSync(new URL("../src/components/SettingsPanel.jsx", import.meta.url), "utf8");
   assert.doesNotMatch(settingsSource, /id="global-(padding|advanced)"/);
