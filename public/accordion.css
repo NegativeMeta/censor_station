@@ -1,0 +1,75 @@
+/* Animated accordion sections for the right settings rail. */
+.settings-accordion { grid-column: 1 / -1; min-width: 0; }
+.settings-accordion.tracking-accordion { padding: 0; margin-bottom: 0; border-bottom: 0; background: transparent; }
+
+.accordion-trigger {
+  appearance: none;
+  width: 100%;
+  border-left: 0;
+  border-right: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.accordion-trigger:hover .eyebrow,
+.accordion-trigger:focus-visible .eyebrow { filter: brightness(1.25); }
+.accordion-trigger:focus-visible { outline: 1px solid var(--neon-cyan); outline-offset: -2px; }
+
+.accordion-chevron {
+  color: var(--neon-pink);
+  font-size: 16px;
+  line-height: 1;
+  transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+}
+.settings-accordion.open .accordion-chevron { transform: rotate(180deg); }
+
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows .3s cubic-bezier(.4, 0, .2, 1), opacity .22s ease, visibility .3s;
+}
+.settings-accordion.open .accordion-panel {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+}
+.accordion-panel-inner { min-height: 0; overflow: hidden; }
+
+/* Buttons and selects used to be direct children of the tracking section. */
+.settings-accordion .accordion-panel-inner > .select,
+.settings-accordion .accordion-panel-inner > .button { width: 100%; margin: 6px 0; }
+
+/* Single toggle that applies the selected layer's config to the whole queue.
+   It reuses the CENSOR TYPE style-card look. */
+.global-apply-toggle {
+  color: #e2fff2;
+  border-color: #4f9c84;
+  background: linear-gradient(100deg, #2f6b5b, #1c453c);
+  box-shadow: inset 0 0 12px rgba(120, 230, 190, .14), 0 0 8px rgba(120, 230, 190, .12);
+  transition: filter .2s ease, box-shadow .2s ease;
+}
+.global-apply-toggle:hover { filter: brightness(1.15); }
+.global-apply-toggle[aria-pressed="true"] {
+  color: #f2fff9;
+  border-color: #7fe0bb;
+  background: linear-gradient(100deg, #49a784, #2b6b56);
+  box-shadow: inset 0 0 15px rgba(180, 255, 220, .18), 0 0 15px rgba(127, 224, 187, .45);
+}
+.global-apply-toggle .style-icon.icon-queue-global {
+  background-image: url('/assets/pixel/global-queue-icon.png');
+}
+
+/* Grouped controls inside the CENSOR SETTINGS accordion. */
+.censor-settings-group + .censor-settings-group {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.censor-settings-label { display: block; margin-bottom: 6px; color: var(--neon-pink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .accordion-panel, .accordion-chevron, .global-apply-toggle { transition: none; }
+}

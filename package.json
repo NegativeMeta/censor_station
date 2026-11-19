@@ -9,6 +9,7 @@
   "description": "Revisor local de imágenes con censura automática y aprobación manual.",
   "scripts": {
     "dev": "vite",
+    "dev:all": "node tools/dev-all.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "prestart": "npm run build",
