@@ -132,6 +132,14 @@ const ADDITIONAL_TRANSLATIONS = {
   },
 };
 
+const GIF_EXPORT_COPY = {
+  es: { "gif.export": "EXPORTAR GIF", "gif.target": "Peso máximo", "gif.unlimited": "Sin límite", "gif.targetHelp": "0 conserva la resolución original. Con un límite se prueban resoluciones menores sin quitar frames; reducirlas pierde detalle.", "gif.tooLarge": "No se pudo alcanzar el peso objetivo. Aumenta el límite." },
+  en: { "gif.export": "GIF EXPORT", "gif.target": "Maximum file size", "gif.unlimited": "Unlimited", "gif.targetHelp": "0 keeps the original resolution. A limit tries smaller resolutions without removing frames; resizing loses detail.", "gif.tooLarge": "Unable to meet the target file size. Increase the limit." },
+  ja: { "gif.export": "GIF書き出し", "gif.target": "最大ファイルサイズ", "gif.unlimited": "制限なし", "gif.targetHelp": "0は元の解像度を維持します。制限時はフレームを削除せず解像度を下げます。細部は失われます。", "gif.tooLarge": "目標サイズに収まりません。上限を増やしてください。" },
+  zh: { "gif.export": "导出GIF", "gif.target": "最大文件大小", "gif.unlimited": "无限制", "gif.targetHelp": "0保留原始分辨率。设置限制后会尝试降低分辨率，不删除帧，但会损失细节。", "gif.tooLarge": "无法满足目标大小，请提高上限。" },
+};
+for (const language of Object.keys(GIF_EXPORT_COPY)) Object.assign(ADDITIONAL_TRANSLATIONS[language], GIF_EXPORT_COPY[language]);
+
 let currentLanguage = localStorage.getItem("censor-station-language") || "es";
 if (!TRANSLATIONS[currentLanguage]) currentLanguage = "es";
 
@@ -159,6 +167,15 @@ const TRACKING_COPY = {
 const TRACKING_KEYS = ["title", "help", "direction", "both", "forward", "backward", "method", "motion", "fixed", "start", "end", "run", "undo", "progress", "stopped", "done", "undone", "empty", "range", "error", "cancelled", "lost"];
 for (const [language, copy] of Object.entries(TRACKING_COPY)) {
   TRACKING_KEYS.forEach((key, index) => { TRANSLATIONS[language][`tracking.${key}`] = copy[index]; });
+}
+const TRACKING_SNAP_LABELS = {
+  en: "Snap to analyzed detections",
+  es: "Ajustar a detecciones analizadas",
+  ja: "解析済み検出に合わせる",
+  zh: "对齐到已分析检测",
+};
+for (const [language, label] of Object.entries(TRACKING_SNAP_LABELS)) {
+  TRANSLATIONS[language]["tracking.snapDetections"] = label;
 }
 
 const state = {
@@ -368,6 +385,9 @@ async function decodeMp4Frames(file, { onExtractProgress } = {}) {
 
     for (const point of schedule) {
       if (point.timestamp > 0) await seekVideoFrame(video, point.timestamp);
+      // Let the decoded frame settle before sampling it; drawing immediately
+      // after `seeked` can capture an in-progress/low-quality frame.
+      await new Promise((resolve) => requestAnimationFrame(resolve));
       context.drawImage(video, 0, 0, width, height);
       const blob = await new Promise((resolve, reject) => {
         canvasElement.toBlob((result) => result ? resolve(result) : reject(new Error("No se pudo guardar un frame del MP4.")), "image/png");
@@ -598,6 +618,7 @@ function selectedClasses() {
 }
 
 function applyLanguage() {
+  renderGifTargetSize();
   document.documentElement.lang = currentLanguage;
   document.querySelectorAll("[data-i18n]").forEach((element) => {
     if (element.id === "input-name" && (state.inputHandle || state.singleMode)) return;
@@ -1116,6 +1137,10 @@ function polygonBounds(polygon) {
   return { x: x1, y: y1, w: Math.max(1, x2 - x1), h: Math.max(1, y2 - y1) };
 }
 
+function snapLayerToDetections(layer, target, threshold) {
+  return window.__censorStationTracking?.snapLayerToDetections?.(layer, target, threshold) || null;
+}
+
 function paintBounds(box) {
   const base = polygonBounds(box.polygon);
   let x1 = base ? base.x : Infinity, y1 = base ? base.y : Infinity;
@@ -1295,7 +1320,7 @@ function createMaskCanvas(box, width, height, scale, offsetX = 0, offsetY = 0) {
 canvas.addEventListener("contextmenu", (event) => event.preventDefault());
 
 function createManualLayer(item) {
-  item.detections.push({ mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", polygon: [], brushEdits: [], visible: true, manualBlank: true });
+  item.detections.push(inheritGlobalSettings({ mode: "pixelate", padding: 0, source: "manual", class: "MANUAL", polygon: [], brushEdits: [], visible: true, manualBlank: true }));
   state.selected = item.detections.length - 1;
 }
 
@@ -1357,9 +1382,31 @@ function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
 
 function renderAdvancedSettings(box) {
   const panel = $("style-advanced");
-  if (!box) { panel.hidden = true; panel.innerHTML = ""; return; }
+  if (!box) { panel.hidden = true; panel.innerHTML = ""; delete panel.dataset.layout; return; }
   panel.hidden = false;
-  panel.innerHTML = advancedFieldsFor(box.mode, box);
+  syncAdvancedFields(panel, box.mode, box);
+}
+
+function syncAdvancedFields(panel, mode, values, global = false) {
+  const layout = `${currentLanguage}:${mode}:${global}`;
+  const attribute = global ? "data-global-advanced-key" : "data-advanced-key";
+  const fields = advancedFieldsFor(mode, values);
+  if (panel.dataset.layout !== layout) {
+    panel.innerHTML = global ? fields.replaceAll("data-advanced-key", attribute) : fields;
+    panel.dataset.layout = layout;
+    return;
+  }
+  // Keep live input nodes: replacing them on input releases native drag capture.
+  const template = document.createElement("template");
+  template.innerHTML = fields;
+  for (const source of template.content.querySelectorAll("[data-advanced-key]")) {
+    const key = source.dataset.advancedKey;
+    const input = panel.querySelector(`[${attribute}="${key}"]`);
+    if (!input) continue;
+    if (input.value !== source.value) input.value = source.value;
+    const output = input.closest(".advanced-setting")?.querySelector("output");
+    if (output) output.textContent = `${source.value}${advancedSuffix(key)}`;
+  }
 }
 
 function advancedFieldsFor(mode, values) {
@@ -1402,10 +1449,41 @@ function renderGlobalAdvancedSettings() {
   const hasLayers = state.files.some((file) => file.detections?.length);
   const fields = advancedFieldsFor(state.global.mode, state.global);
   panel.hidden = !enabled || !hasLayers || !fields;
-  panel.innerHTML = enabled && fields
-    ? fields.replaceAll('data-advanced-key="', 'data-global-advanced-key="')
-    : "";
+  if (enabled && fields) syncAdvancedFields(panel, state.global.mode, state.global, true);
+  else { panel.innerHTML = ""; delete panel.dataset.layout; }
 }
+
+const settingsProcessing = { preview: null, global: null };
+
+function scheduleSettingsProcessing(global = false) {
+  const key = global ? "global" : "preview";
+  clearTimeout(settingsProcessing[key]);
+  if (global) {
+    // Stop an older propagation job while the user is choosing a new value.
+    state.global.job += 1;
+    state.global.queue = [];
+  }
+  settingsProcessing[key] = setTimeout(() => {
+    settingsProcessing[key] = null;
+    if (global) { if (state.global.enabled) stageGlobalApply(); }
+    else draw();
+  }, global ? 180 : 120);
+}
+
+function flushSettingsProcessing() {
+  const preview = settingsProcessing.preview !== null;
+  const global = settingsProcessing.global !== null;
+  clearTimeout(settingsProcessing.preview);
+  clearTimeout(settingsProcessing.global);
+  settingsProcessing.preview = settingsProcessing.global = null;
+  if (global && state.global.enabled) stageGlobalApply();
+  else if (preview) draw();
+}
+
+// Native change fires when a range drag ends (also supports keyboard input).
+document.querySelector(".settings").addEventListener("change", (event) => {
+  if (event.target.matches('input[type="range"], select')) flushSettingsProcessing();
+});
 
 $("style-advanced").addEventListener("input", (event) => {
   const input = event.target.closest("[data-advanced-key]");
@@ -1415,7 +1493,7 @@ $("style-advanced").addEventListener("input", (event) => {
   box[input.dataset.advancedKey] = value;
   const output = input.closest(".advanced-setting")?.querySelector("output");
   if (output) output.textContent = `${value}${advancedSuffix(input.dataset.advancedKey)}`;
-  draw();
+  scheduleSettingsProcessing();
 });
 
 $("global-advanced").addEventListener("input", (event) => {
@@ -1425,7 +1503,7 @@ $("global-advanced").addEventListener("input", (event) => {
   state.global[key] = input instanceof HTMLSelectElement ? input.value : Number(input.value);
   const output = input.closest(".advanced-setting")?.querySelector("output");
   if (output) output.textContent = `${state.global[key]}${advancedSuffix(key)}`;
-  stageGlobalApply();
+  scheduleSettingsProcessing(true);
 });
 
 function syncControls() {
@@ -1488,7 +1566,8 @@ async function propagateSelectedLayer() {
     setNotice(t("tracking.range"), "error"); return;
   }
   const method = $("tracking-method").value;
-  const direction = $("tracking-direction").value;
+    const direction = $("tracking-direction").value;
+    const snapDetections = $("tracking-snap")?.checked ?? true;
   const paths = [];
   if (direction !== "backward") paths.push(frames.filter((frame) => frame.frameIndex > item.frameIndex && frame.frameIndex <= end));
   if (direction !== "forward") paths.push(frames.filter((frame) => frame.frameIndex < item.frameIndex && frame.frameIndex >= start).reverse());
@@ -1510,43 +1589,58 @@ async function propagateSelectedLayer() {
   let failure = "";
   try {
     for (const path of paths) {
-      let previous = item;
-      let layer = structuredClone(seed);
-      for (const target of path) {
-        if (state.tracking.cancel) break;
-        $("tracking-progress-text").textContent = t("tracking.progress", { done, total, frame: target.frameIndex + 1 });
-        let result = { tracked: true, layer: structuredClone(layer), confidence: 1 };
-        if (method === "motion") {
-          const response = await fetch("/api/tracking", {
-            method: "POST", headers: { "content-type": "application/json" }, signal: AbortSignal.timeout(60000),
-            body: JSON.stringify({ previous: previous.url, following: target.url, layer, method }),
-          });
-          result = await response.json();
-          if (!response.ok || !result.ok) throw new Error(result.message || "Tracking unavailable");
+          let previous = item;
+          let layer = structuredClone(seed);
+          let hint = structuredClone(seed);
+          for (const target of path) {
+            if (state.tracking.cancel) break;
+            $("tracking-progress-text").textContent = t("tracking.progress", { done, total, frame: target.frameIndex + 1 });
+            let result = { tracked: true, layer: structuredClone(layer), confidence: 1 };
+            if (method === "motion") {
+              const response = await fetch("/api/tracking", {
+                method: "POST", headers: { "content-type": "application/json" }, signal: AbortSignal.timeout(60000),
+                body: JSON.stringify({
+                  previous: previous.url,
+                  following: target.url,
+                  layer,
+                  method,
+                  confidence: layer.trackingConfidence ?? 1,
+                  anchor: item.url,
+                  anchorLayer: seed,
+                  hintLayer: hint,
+                }),
+              });
+              result = await response.json();
+              if (!response.ok || !result.ok) throw new Error(result.message || "Tracking unavailable");
+            }
+            if (state.tracking.cancel) break;
+            done += 1;
+            $("tracking-progress").value = done;
+            if (!result.tracked) {
+              target.trackingLost = batch.id;
+              target.status = "";
+              batch.stopped.push(target);
+              break;
+            }
+            layer = result.layer;
+            hint = result.hintLayer || layer;
+            if (snapDetections) {
+              const snapped = snapLayerToDetections(layer, target);
+              if (snapped) layer = { ...layer, polygon: snapped.polygon, brushEdits: snapped.brushEdits, trackingSnap: "detection", trackingSnapScore: snapped.score };
+            }
+            layer.trackingId = batch.id;
+            layer.trackingConfidence = result.confidence;
+            layer.trackingOrigin = item.frameIndex;
+            const added = inheritGlobalSettings(structuredClone(layer));
+            target.detections.push(added);
+            target.status = "";
+            batch.added.push({ target, layer: added });
+            previous = target;
+            // Yield even in fixed-position mode so cancel and progress can render.
+            await new Promise((resolve) => requestAnimationFrame(resolve));
+          }
+          if (state.tracking.cancel) break;
         }
-        if (state.tracking.cancel) break;
-        done += 1;
-        $("tracking-progress").value = done;
-        if (!result.tracked) {
-          target.trackingLost = batch.id;
-          target.status = "";
-          batch.stopped.push(target);
-          break;
-        }
-        layer = result.layer;
-        layer.trackingId = batch.id;
-        layer.trackingConfidence = result.confidence;
-        layer.trackingOrigin = item.frameIndex;
-        const added = structuredClone(layer);
-        target.detections.push(added);
-        target.status = "";
-        batch.added.push({ target, layer: added });
-        previous = target;
-        // Yield even in fixed-position mode so cancel and progress can render.
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-      }
-      if (state.tracking.cancel) break;
-    }
   } catch (error) {
     failure = t("tracking.error", { message: error.message });
   } finally {
@@ -1614,7 +1708,7 @@ document.querySelectorAll("[data-style-button]").forEach((button) => button.addE
   renderLayers();
   syncControls();
 }));
-$("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value)); });
+$("padding").addEventListener("input", (event) => { $("padding-value").textContent = `${event.target.value} px`; updateSelected("padding", Number(event.target.value), true); });
 $("global-enabled").addEventListener("change", (event) => {
   state.global.enabled = event.target.checked;
   if (state.global.enabled) {
@@ -1630,7 +1724,7 @@ $("global-enabled").addEventListener("change", (event) => {
 $("global-padding").addEventListener("input", (event) => {
   state.global.padding = Number(event.target.value);
   $("global-padding-value").textContent = `${event.target.value} px`;
-  stageGlobalApply();
+  scheduleSettingsProcessing(true);
 });
 document.querySelectorAll("[data-global-style-button]").forEach((button) => button.addEventListener("click", () => {
   state.global.mode = button.dataset.globalStyleButton;
@@ -1644,9 +1738,9 @@ $("mask-inset").addEventListener("input", (event) => {
   const value = Number(event.target.value);
   $("mask-inset-value").textContent = `${value} px`;
   currentFile()?.detections.filter((box) => box.source === "auto").forEach((box) => { box.maskInset = value; });
-  draw();
+  scheduleSettingsProcessing();
 });
-function updateSelected(key, value) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; draw(); }
+function updateSelected(key, value, deferred = false) { const box = currentFile()?.detections[state.selected]; if (!box) return; box[key] = value; if (deferred) scheduleSettingsProcessing(); else draw(); }
 
 /** Rewrite style-related fields on every layer of every queued image.
  *  Geometry (polygon, brushEdits, manualBlank, visible) is never touched,
@@ -1660,6 +1754,12 @@ function applyGlobalToAllLayers() {
     }
   }
   return count;
+}
+
+// New layers inherit the current style only while global settings are enabled.
+function inheritGlobalSettings(box) {
+  if (state.global.enabled) applyGlobalToBox(box);
+  return box;
 }
 
 function applyGlobalToBox(box) {
@@ -1693,6 +1793,8 @@ function refreshAfterGlobalApply(count) {
  *  unavailable). Each new global edit cancels the previous job and restarts
  *  from the current values, so rapid slider drags never pile up work. */
 function stageGlobalApply() {
+  clearTimeout(settingsProcessing.global);
+  settingsProcessing.global = null;
   const job = ++state.global.job;
   const current = currentFile();
   if (current?.detections?.length) {
@@ -1926,7 +2028,15 @@ async function saveApprovedGifFrames(approved, onOneSaved) {
 }
 
 /** Build the final GIF: frames with layers go censored, the rest go untouched. */
+function renderGifTargetSize() {
+  const value = Number($("gif-target-size").value);
+  $("gif-target-size-value").textContent = value ? `${value} MB` : t("gif.unlimited");
+}
+$("gif-target-size").addEventListener("input", renderGifTargetSize);
+
 async function assembleGif(record) {
+  flushSettingsProcessing();
+  const targetBytes = Number($("gif-target-size").value) * 1000000;
   const frames = [];
   for (const meta of record.frames) {
     const item = state.files.find((file) => file.kind === "gif-frame" && file.gifId === record.id && file.frameIndex === meta.index);
@@ -1942,11 +2052,11 @@ async function assembleGif(record) {
     const response = await fetch("/api/gif/assemble", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ loop: record.loop, quality: 90, frames }),
+      body: JSON.stringify({ loop: record.loop, quality: 90, targetBytes, frames }),
     });
     result = await response.json();
     if (!response.ok || !result.ok) throw new Error(result.message || "GIF assembly failed.");
-    result = { blob: dataUrlToBlob(result.dataUrl), encoder: result.encoder };
+    result = { ...result, blob: dataUrlToBlob(result.dataUrl) };
   } catch (serverError) {
     console.warn("Server GIF assembly unavailable; using the browser encoder.", serverError);
     result = null;
@@ -1954,27 +2064,52 @@ async function assembleGif(record) {
   if (!result) {
     const tools = gifTools();
     if (!tools?.encodeGif) throw new Error("El ensamblador GIF no está disponible.");
-    const encodeFrames = [];
-    for (const frame of frames) {
-      encodeFrames.push({ ...(await frameDataUrlToRgba(frame.dataUrl)), delay: frame.delay, index: frame.index });
+    let best = null;
+    let attempts = 0;
+    const encode = async (width) => {
+      const height = Math.max(1, Math.round(record.height * width / record.width));
+      const encodeFrames = [];
+      for (const frame of frames) {
+        encodeFrames.push({ ...(await frameDataUrlToRgba(frame.dataUrl, width, height)), delay: frame.delay, index: frame.index });
+      }
+      encodeFrames.sort((a, b) => a.index - b.index);
+      const blob = tools.encodeGif(encodeFrames, { width, height, loop: record.loop });
+      attempts += 1;
+      if ((!targetBytes || blob.size <= targetBytes) && (!best || blob.size > best.blob.size)) best = { blob, width, height, encoder: "gifenc" };
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      return blob.size;
+    };
+    const originalSize = await encode(record.width);
+    if (targetBytes && originalSize > targetBytes) {
+      await encode(1);
+      let low = 2, high = record.width - 1;
+      while (low <= high && attempts < 12) {
+        const width = Math.floor((low + high) / 2);
+        const size = await encode(width);
+        if (size <= targetBytes) low = width + 1;
+        else high = width - 1;
+      }
     }
-    encodeFrames.sort((a, b) => a.index - b.index);
-    result = { blob: tools.encodeGif(encodeFrames, { width: record.width, height: record.height, loop: record.loop }), encoder: "gifenc" };
+    if (!best) throw new Error(t("gif.tooLarge"));
+    result = { ...best, attempts };
   }
+  if (targetBytes && result.blob.size > targetBytes) throw new Error(t("gif.tooLarge"));
   await writeGifOutput(record, result.blob);
+  $("gif-export-result").textContent = `${record.name}: ${result.width} × ${result.height} · ${(result.blob.size / 1000000).toFixed(2)} MB`;
   record.savedEncoder = result.encoder;
 }
 
-function frameDataUrlToRgba(dataUrl) {
+function frameDataUrlToRgba(dataUrl, width, height) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => {
       try {
         const canvasElement = document.createElement("canvas");
-        canvasElement.width = image.naturalWidth;
-        canvasElement.height = image.naturalHeight;
+        canvasElement.width = width || image.naturalWidth;
+        canvasElement.height = height || image.naturalHeight;
         const context = canvasElement.getContext("2d", { willReadFrequently: true });
-        context.drawImage(image, 0, 0);
+        context.imageSmoothingQuality = "high";
+        context.drawImage(image, 0, 0, canvasElement.width, canvasElement.height);
         resolve({ rgba: new Uint8ClampedArray(context.getImageData(0, 0, canvasElement.width, canvasElement.height).data) });
       } catch (error) { reject(error); }
     };
@@ -2168,7 +2303,7 @@ async function fetchDetections(image, { threshold, maskThreshold, classes } = {}
     result = await response.json();
     if (!response.ok || !result.ok) throw new Error(result.message || result.hint || "Detector no disponible.");
   }
-  return (result.detections || []).map((detection) => ({
+  return (result.detections || []).map((detection) => inheritGlobalSettings({
     polygon: detection.polygon || [],
     mode: "pixelate", padding: Number($("padding").value), maskInset: Number($("mask-inset").value), source: "auto", class: detection.class, score: detection.score, brushEdits: [], visible: true,
   }));
@@ -2196,6 +2331,7 @@ function blobToDataUrl(blob) { return new Promise((resolve) => { const reader = 
 function dataUrlToBlob(dataUrl) { const match = /^data:([^;]+);base64,(.+)$/s.exec(dataUrl || ""); if (!match) throw new Error("El optimizador devolvió una imagen inválida."); const binary = atob(match[2]); const bytes = new Uint8Array(binary.length); for (let index = 0; index < binary.length; index++) bytes[index] = binary.charCodeAt(index); return new Blob([bytes], { type: match[1] }); }
 
 async function createCensoredOutput(item) {
+  flushSettingsProcessing();
   await loadImage(item);
   const output = document.createElement("canvas"); output.width = item.image.naturalWidth; output.height = item.image.naturalHeight; const outputCtx = output.getContext("2d"); outputCtx.drawImage(item.image, 0, 0);
   for (const box of item.detections) if (box.visible !== false) renderSavedBox(outputCtx, item.image, box);

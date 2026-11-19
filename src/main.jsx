@@ -3,6 +3,9 @@ import { App } from "./App.jsx";
 import { createZip } from "./browserArchive.js";
 import { decodeGif, encodeGif, isAnimatedGifBlob } from "./browserGif.js";
 import { createWebDetector } from "./webDetector.js";
+import { snapLayerToDetections } from "./trackingSnap.js";
+
+window.__censorStationTracking = { snapLayerToDetections };
 
 render(<App />, document.getElementById("app"));
 

@@ -101,6 +101,15 @@ the queue. Correct that frame and propagate again over the remaining range.
 other layers stay intact. Cancellation keeps completed additions, which can be
 reviewed or undone. Re-running adds layers; undo a previous run if replacing it.
 
+**Snap to analyzed detections** (enabled by default) re-fits each propagated
+outline to the detection on the target frame that overlaps it best by shape
+(rasterized polygon IoU, not bounding boxes). The class label only breaks
+near-ties: a detection that fits clearly worse never wins because of its label.
+A missing or unrelated detection falls back to motion tracking instead of
+jumping to the wrong region. This is the most reliable way to stop drift on
+long animations; the tracker also tries an anchor-guided outline and an
+edge-snapped outline when no detection is available.
+
 Install Python dependencies with `python -m pip install -r requirements.txt`.
 This feature requires the desktop server and is hidden in the standalone web
 version. Optical flow works best on small movements with visible texture;

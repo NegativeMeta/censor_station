@@ -17,7 +17,7 @@ const detectorWorker = createPythonWorker({ projectRoot: __dirname, moduleName: 
 const optimizerWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.optimizer_worker", label: "Pillow" });
 const gifWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.gif_worker", label: "GIF" });
 const trackingWorker = createPythonWorker({ projectRoot: __dirname, moduleName: "tools.python.tracking", label: "Tracking" });
-const MAX_GIF_ASSEMBLY_REQUEST_BYTES = 256 * 1024 * 1024;
+const MAX_GIF_ASSEMBLY_REQUEST_BYTES = 1024 * 1024 * 1024;
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -59,9 +59,22 @@ async function trackLayer(request, response) {
     if (!payload.layer || !["motion", "fixed"].includes(payload.method)) throw new Error("Invalid tracking request.");
     const previous = decodeDataUrl(payload.previous);
     const following = decodeDataUrl(payload.following);
-    const result = await withTemporaryImage({ ...previous, prefix: "censor-track-" }, ({ imagePath: previousPath }) =>
+    const anchor = payload.anchor && payload.anchorLayer ? decodeDataUrl(payload.anchor) : null;
+    const run = (anchorPath) => withTemporaryImage({ ...previous, prefix: "censor-track-" }, ({ imagePath: previousPath }) =>
       withTemporaryImage({ ...following, prefix: "censor-track-" }, ({ imagePath: followingPath }) =>
-        trackingWorker.request({ previousPath, followingPath, layer: payload.layer, method: payload.method })));
+        trackingWorker.request({
+          previousPath,
+          followingPath,
+          layer: payload.layer,
+          method: payload.method,
+                    confidence: payload.confidence,
+                    anchorPath,
+                    anchorLayer: payload.anchorLayer,
+                    hintLayer: payload.hintLayer,
+                  })));
+    const result = anchor
+      ? await withTemporaryImage({ ...anchor, prefix: "censor-track-anchor-" }, ({ imagePath }) => run(imagePath))
+      : await run(undefined);
     sendJson(response, 200, { ...result, ok: true });
   } catch (error) {
     sendJson(response, 500, { ok: false, message: error instanceof Error ? error.message : "Tracking failed." });
@@ -188,10 +201,11 @@ async function gifAssemble(request, response) {
         outputPath,
         loop: payload.loop,
         quality: payload.quality,
+        targetBytes: payload.targetBytes,
         frames: metas.map((frame) => ({ index: frame.index, delay: frame.delay, file: path.basename(String(frame.file || `${frame.index}.png`)) })),
       });
       const bytes = await fs.readFile(outputPath);
-      sendJson(response, 200, { ok: true, encoder: result.encoder, frames: result.frames, loop: result.loop, dataUrl: `data:image/gif;base64,${bytes.toString("base64")}`, size: bytes.length });
+      sendJson(response, 200, { ok: true, ...result, dataUrl: `data:image/gif;base64,${bytes.toString("base64")}`, size: bytes.length });
     } finally {
       await fs.rm(tempDir, { recursive: true, force: true });
     }

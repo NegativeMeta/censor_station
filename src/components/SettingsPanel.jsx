@@ -13,6 +13,7 @@ export function SettingsPanel() {
         <select id="tracking-direction" className="select"><option value="both" data-i18n="tracking.both">Both directions</option><option value="forward" data-i18n="tracking.forward">Forward</option><option value="backward" data-i18n="tracking.backward">Backward</option></select>
         <label className="field-label" htmlFor="tracking-method" data-i18n="tracking.method">Method</label>
         <select id="tracking-method" className="select"><option value="motion" data-i18n="tracking.motion">Follow motion</option><option value="fixed" data-i18n="tracking.fixed">Fixed position</option></select>
+        <label className="global-toggle"><input id="tracking-snap" type="checkbox" defaultChecked /><span className="field-label" data-i18n="tracking.snapDetections">Snap to analyzed detections</span></label>
         <div className="tracking-range"><label><span data-i18n="tracking.start">First frame</span><input id="tracking-start" type="number" min="1" defaultValue="1" /></label><label><span data-i18n="tracking.end">Last frame</span><input id="tracking-end" type="number" min="1" defaultValue="1" /></label></div>
         <button id="tracking-run" className="button secondary" disabled data-i18n="tracking.run">Propagate layer</button>
         <button id="tracking-undo" className="button ghost-danger" disabled data-i18n="tracking.undo">Undo propagation</button>
@@ -72,6 +73,14 @@ export function SettingsPanel() {
       <input id="mask-inset" type="range" min="0" max="4" step="1" value="1" />
       <p className="help" data-i18n="controls.maskInsetHelp">Recorta un poco el borde de las máscaras automáticas.</p>
       </div>
+      <div className="divider parts-divider" />
+      <section className="gif-export-options">
+        <div className="settings-section-heading"><span className="eyebrow" data-i18n="gif.export">GIF EXPORT</span></div>
+        <div className="field-row"><label className="field-label" htmlFor="gif-target-size" data-i18n="gif.target">Target file size</label><output id="gif-target-size-value" /></div>
+        <input id="gif-target-size" type="range" min="0" max="100" step="1" value="0" />
+        <p className="help" data-i18n="gif.targetHelp">0 keeps the original resolution. A limit tries smaller resolutions without removing frames.</p>
+        <p id="gif-export-result" className="help" aria-live="polite" />
+      </section>
       <div className="divider parts-divider" />
       <section className="censor-parts">
         <label className="field-label" data-i18n="classes.title">Partes a censurar</label>
