@@ -748,30 +748,91 @@ function fileStatus(file) {
   return file.analyzed ? t("status.noLayers") : t("status.pending");
 }
 
+const queueRows = new Map();
+
+function createQueueRow(file) {
+  const node = document.createElement("div");
+  node.className = "queue-item";
+  node.setAttribute("role", "button");
+  node.tabIndex = 0;
+  node._file = file;
+  const thumb = document.createElement("img");
+  thumb.className = "queue-thumb";
+  thumb.alt = "";
+  thumb.loading = "lazy";
+  thumb.decoding = "async";
+  thumb.src = file.url;
+  const copy = document.createElement("div");
+  const name = document.createElement("div");
+  name.className = "queue-name";
+  const status = document.createElement("div");
+  status.className = "queue-status";
+  copy.append(name, status);
+  node.append(thumb, copy);
+  node._name = name;
+  node._status = status;
+  const select = (event) => selectQueueItem(Number(node.dataset.index), event);
+  node.addEventListener("click", select);
+  node.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    event.preventDefault();
+    select(event);
+  });
+  return node;
+}
+
+function updateQueueRow(node, file, index) {
+  const active = index === state.current;
+  const selected = state.queueSelection.has(index);
+  const failed = Boolean(file.trackingLost);
+  const statusClass = failed ? "failed" : (file.status || (file.analyzed ? "detected" : ""));
+  const className = `queue-item${active ? " active" : ""}${selected ? " selected-for-analysis" : ""}${failed ? " tracking-failed" : ""}`;
+  if (node.className !== className) node.className = className;
+  if (node.dataset.index !== String(index)) node.dataset.index = String(index);
+  const pressed = String(selected);
+  if (node.getAttribute("aria-pressed") !== pressed) node.setAttribute("aria-pressed", pressed);
+  if (node._name.textContent !== file.name) {
+    node._name.textContent = file.name;
+    node._name.title = file.name;
+  }
+  const statusText = fileStatus(file);
+  if (node._status.textContent !== statusText) node._status.textContent = statusText;
+  const statusClassName = `queue-status ${statusClass}`;
+  if (node._status.className !== statusClassName) node._status.className = statusClassName;
+}
+
 function renderQueue() {
   const list = $("queue-list");
   $("queue-count").textContent = String(state.files.length);
   $("item-count").textContent = `ITEMS: ${state.files.length}`;
   if (!state.files.length) {
+    queueRows.clear();
     list.className = "queue-list empty-state";
     list.textContent = t("queue.empty");
     return;
   }
-  list.className = "queue-list";
-  list.innerHTML = state.files.map((file, index) => `
-    <div class="queue-item ${index === state.current ? "active" : ""} ${state.queueSelection.has(index) ? "selected-for-analysis" : ""} ${file.trackingLost ? "tracking-failed" : ""}" data-index="${index}" role="button" tabindex="0" aria-pressed="${state.queueSelection.has(index)}">
-      <img class="queue-thumb" src="${file.url}" alt="" />
-      <div><div class="queue-name" title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</div><div class="queue-status ${file.trackingLost ? "failed" : (file.status || (file.analyzed ? "detected" : ""))}">${fileStatus(file)}</div></div>
-    </div>`).join("");
-  list.querySelectorAll(".queue-item").forEach((item) => {
-    const select = (event) => selectQueueItem(Number(item.dataset.index), event);
-    item.addEventListener("click", select);
-    item.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      select(event);
-    });
+  if (list.classList.contains("empty-state")) {
+    list.textContent = "";
+    list.className = "queue-list";
+  }
+  const present = new Set(state.files);
+  [...list.children].forEach((child) => {
+    if (!present.has(child._file)) {
+      child.remove();
+      if (child._file) queueRows.delete(child._file);
+    }
   });
+  let cursor = 0;
+  for (const file of state.files) {
+    let node = queueRows.get(file);
+    if (!node) {
+      node = createQueueRow(file);
+      queueRows.set(file, node);
+    }
+    updateQueueRow(node, file, cursor);
+    if (list.children[cursor] !== node) list.insertBefore(node, list.children[cursor] || null);
+    cursor += 1;
+  }
 }
 
 function selectQueueItem(index, event = {}) {
@@ -824,7 +885,12 @@ function paintLayerThumbnail(target, image, box) {
   const imageWidth = image.naturalWidth || image.width;
   const imageHeight = image.naturalHeight || image.height;
   const bounds = polygonBounds(box.polygon) || { x: 0, y: 0, w: imageWidth, h: imageHeight };
-  const side = Math.max(1, Math.round(Math.min(imageWidth, imageHeight, Math.max(bounds.w, bounds.h) * 1.35)));
+  // A blank manual layer used to crop the whole image just to paint an empty
+  // 84px thumbnail; cap only that case so real layer previews keep context.
+  const blank = Boolean(box.manualBlank) && !box.polygon?.length && !(box.brushEdits?.length);
+  const side = Math.max(1, Math.round(blank
+    ? Math.min(imageWidth, imageHeight, 192)
+    : Math.min(imageWidth, imageHeight, Math.max(bounds.w, bounds.h) * 1.35)));
   const centerX = bounds.x + bounds.w / 2;
   const centerY = bounds.y + bounds.h / 2;
   const cropX = clamp(centerX - side / 2, 0, Math.max(0, imageWidth - side));
@@ -858,6 +924,39 @@ function renderLayerThumbnails(item) {
     paintLayerThumbnail(target, item.image, box);
     target.dataset.signature = signature;
   });
+}
+
+// The first thumbnail for a large image pays a one-off canvas/GPU setup cost.
+// Warm it while the image is idle so the first pointer-down does not stall.
+function warmLayerThumbnail(item) {
+  if (!item?.image || item.thumbnailWarm) return;
+  const pixels = (item.image.naturalWidth || 0) * (item.image.naturalHeight || 0);
+  if (pixels <= 500000) {
+    item.thumbnailWarm = true;
+    return;
+  }
+  item.thumbnailWarm = true;
+  const target = document.createElement("canvas");
+  target.width = 84;
+  target.height = 84;
+  paintLayerThumbnail(target, item.image, {
+    mode: state.defaultMode || "pixelate",
+    padding: 0,
+    polygon: [],
+    brushEdits: [],
+    manualBlank: true,
+    visible: true,
+  });
+}
+
+function scheduleLayerThumbnailWarmup(item) {
+  if (!item?.image || item.thumbnailWarm) return;
+  const run = () => {
+    if (currentFile() !== item || item.thumbnailWarm) return;
+    warmLayerThumbnail(item);
+  };
+  if (typeof requestIdleCallback === "function") requestIdleCallback(run, { timeout: 500 });
+  else setTimeout(run, 80);
 }
 
 function renderLayers() {
@@ -1139,6 +1238,7 @@ async function showFile(index) {
   draw();
   syncControls();
   updateSingleModeUi();
+  scheduleLayerThumbnailWarmup(item);
 }
 
 function fitCanvas(item) {
@@ -1160,10 +1260,13 @@ function ensureLayerList(item) {
 function draw() {
   const item = currentFile();
   if (!item?.image) return;
-  // Keep the layer stack recoverable if the component shell re-renders it.
-  ensureLayerList(item);
-  renderLayerThumbnails(item);
   paintFrame(item);
+  // Keep the layer stack recoverable if the component shell re-renders it.
+  // While brushing, defer thumbnail work so the canvas updates without a stall.
+  if (!state.brush) {
+    ensureLayerList(item);
+    renderLayerThumbnails(item);
+  }
   $("detection-summary").textContent = item.detections.length === 1
     ? t("canvas.summaryOne", { status: item.status || t("status.pending") })
     : item.detections.length
@@ -1508,11 +1611,9 @@ canvas.addEventListener("pointerdown", (event) => {
   const item = currentFile();
   if (!item?.image) return;
   if (event.button !== 0 && event.button !== 2) return;
-  if (item.detections.length === 0) {
+  const created = item.detections.length === 0;
+  if (created) {
     createManualLayer(item);
-    renderLayers();
-    renderQueue();
-    syncControls();
   }
   if (state.selected < 0 || !item.detections[state.selected]) state.selected = item.detections.length - 1;
   const rect = canvas.getBoundingClientRect();
@@ -1522,6 +1623,8 @@ canvas.addEventListener("pointerdown", (event) => {
   event.preventDefault();
   brushAt((event.clientX - rect.left) / scale, (event.clientY - rect.top) / scale);
   syncControls();
+  // Let the censorship paint before rebuilding the layer row and its thumbnail.
+  if (created) requestAnimationFrame(() => { renderLayers(); renderQueue(); syncControls(); });
 });
 
 canvas.addEventListener("pointermove", (event) => {
@@ -1534,8 +1637,20 @@ canvas.addEventListener("pointermove", (event) => {
   }
 });
 
-canvas.addEventListener("pointerup", () => { state.brush = null; });
-canvas.addEventListener("pointercancel", () => { state.brush = null; });
+canvas.addEventListener("pointerup", () => {
+  state.brush = null;
+  const item = currentFile();
+  if (!item?.image) return;
+  ensureLayerList(item);
+  renderLayerThumbnails(item);
+});
+canvas.addEventListener("pointercancel", () => {
+  state.brush = null;
+  const item = currentFile();
+  if (!item?.image) return;
+  ensureLayerList(item);
+  renderLayerThumbnails(item);
+});
 function brushRadius() { return Math.max(2, Number($("brush-size").value || 24)) / Number(canvas.dataset.scale || 1); }
 function brushAt(x, y) { brushLine(x, y, true); }
 function brushLine(x, y, first = false) {

@@ -102,7 +102,7 @@ test("Analyze images targets queue selection without a separate help or action b
     /async function detectAll/,
     /state\.queueSelection/,
     /selected-for-analysis/,
-    /aria-pressed="\$\{state\.queueSelection\.has\(index\)\}"/,
+    /node\.setAttribute\("aria-pressed", pressed\)/,
     /event\.ctrlKey \|\| event\.metaKey/,
     /function removeLegacyQueueSelectionUi/,
   ]) assert.match(appSource, snippet);

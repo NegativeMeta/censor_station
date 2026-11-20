@@ -16,8 +16,9 @@ test("tracking marks applied frames edited and stopped frames pending", () => {
 });
 
 test("failed tracking frames render a red pending status", () => {
-  assert.match(appSource, /file\.trackingLost \? "tracking-failed"/);
-  assert.match(appSource, /queue-status \$\{file\.trackingLost \? "failed"/);
+  assert.match(appSource, /const failed = Boolean\(file\.trackingLost\)/);
+  assert.match(appSource, /\$\{failed \? " tracking-failed"/);
+  assert.match(appSource, /const statusClass = failed \? "failed"/);
   assert.match(stylesSource, /\.queue-status\.failed/);
   assert.match(stylesSource, /\.queue-status\.edited/);
 });
